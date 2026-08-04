@@ -11,7 +11,7 @@
 	<Description><![CDATA[Models interaction between three different pieces of equipment at harvest (combine, grain cart, and truck). The Harvest Simulator is designed to demonstrate the logistical dynamics associated with harvesting crops and allows for the user to visualize the complexities associated with mamaging equipment during harvest. The model begins with the combine starting harvesting. Once the hopper is full, the combine will stop. In the intrecative mode, the model requires the user to control the actions of the grain cart and the truck as the combine harvests. The grain cart can be sent to the combine or to the truck to unload. The truck can be sent to the field or to the bin to unload. You can also switch to automatic control mode. Also, the mdoel shows how to use the Fluid Library in the context of frequently connecting and disconnecting components.]]></Description>
 	<EngineVersion>6</EngineVersion>
 	<JavaPackageName><![CDATA[harvest_simulator]]></JavaPackageName>
-	<ModelTimeUnit><![CDATA[Minute]]></ModelTimeUnit>
+	<ModelTimeUnit><![CDATA[Week]]></ModelTimeUnit>
 	<Folders>
 	</Folders>
 	<ActiveObjectClasses>
@@ -91,11 +91,11 @@
 					<OccurrenceDate>1412323200000</OccurrenceDate>
 					<OccurrenceTime Class="CodeUnitValue">
 						<Code><![CDATA[0]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
+						<Unit Class="TimeUnits"><![CDATA[WEEK]]></Unit>
 					</OccurrenceTime>
 					<RecurrenceCode Class="CodeUnitValue">
 						<Code><![CDATA[1]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
+						<Unit Class="TimeUnits"><![CDATA[WEEK]]></Unit>
 					</RecurrenceCode>
 			</DatasetsCreationProperties>
 			<ScaleRuler>
@@ -1586,11 +1586,11 @@ final static CellDirection NOTSTARTED = null;
 					<OccurrenceDate>1412323200000</OccurrenceDate>
 					<OccurrenceTime Class="CodeUnitValue">
 						<Code><![CDATA[0]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
+						<Unit Class="TimeUnits"><![CDATA[WEEK]]></Unit>
 					</OccurrenceTime>
 					<RecurrenceCode Class="CodeUnitValue">
 						<Code><![CDATA[1]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
+						<Unit Class="TimeUnits"><![CDATA[WEEK]]></Unit>
 					</RecurrenceCode>
 			</DatasetsCreationProperties>
 			<ScaleRuler>
@@ -1977,17 +1977,6 @@ YCompleted = YCompletedNow();
 						<FillColor>2056965426</FillColor>
 					</Properties>
 				</StatechartElement>
-				<StatechartElement Class="FinalState" ParentState="ROOT_NODE">
-					<Id>1169735952550</Id>
-					<Name><![CDATA[MoveFinal]]></Name>
-					<X>890</X><Y>550</Y>
-					<Label><X>10</X><Y>10</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<Properties>	
-					</Properties>	
-				</StatechartElement>
 				<StatechartElement Class="State" ParentState="MoveHarvesting" ParentStateId="1169735952562">
 					<Id>1169735952559</Id>
 					<Name><![CDATA[GoingSouth]]></Name>
@@ -2339,17 +2328,17 @@ send( "COMPLETED", main.cart );]]></ExitAction>
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1169735952553</Id>
 					<Name><![CDATA[transition4]]></Name>
-					<X>890</X><Y>500</Y>
+					<X>890</X><Y>470</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<Points>
 						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>0</X><Y>40</Y></Point>
+						<Point><X>-130</X><Y>-230</Y></Point>
 					</Points>
 					<IconOffset>14.0</IconOffset>
-					<Properties Source="1169735952563" Target="1169735952550" Trigger="message">
+					<Properties Source="1169735952563" Target="1169735952565" Trigger="message">
 						<Action><![CDATA[setRotation( 0 );]]></Action>
 						<Timeout Class="CodeUnitValue">
 							<Code><![CDATA[1]]></Code>
@@ -2415,12 +2404,12 @@ main.onCompleted();]]></Action>
 						<Point><X>0</X><Y>40</Y></Point>
 					</Points>
 					<IconOffset>14.0</IconOffset>
-					<Properties Source="1169735952565" Target="1169735952564" Trigger="timeout">
+					<Properties Source="1169735952565" Target="1169735952564" Trigger="condition">
 						<Timeout Class="CodeUnitValue">
-							<Code><![CDATA[0]]></Code>
-							<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
 						</Timeout>
-						<Condition><![CDATA[true]]></Condition>
+						<Condition><![CDATA[!main.siembraCompleta]]></Condition>
 						<Rate Class="CodeUnitValue">
 							<Code><![CDATA[1]]></Code>
 							<Unit Class="RateUnits"><![CDATA[PER_MINUTE]]></Unit>
@@ -3396,11 +3385,11 @@ for( int i=0; i<Xunits.length; i++ ) {
 					<OccurrenceDate>1412323200000</OccurrenceDate>
 					<OccurrenceTime Class="CodeUnitValue">
 						<Code><![CDATA[0]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
+						<Unit Class="TimeUnits"><![CDATA[WEEK]]></Unit>
 					</OccurrenceTime>
 					<RecurrenceCode Class="CodeUnitValue">
 						<Code><![CDATA[1]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
+						<Unit Class="TimeUnits"><![CDATA[WEEK]]></Unit>
 					</RecurrenceCode>
 			</DatasetsCreationProperties>
 			<ScaleRuler>
@@ -3490,7 +3479,7 @@ for( int i=0; i<Xunits.length; i++ ) {
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
 						<Type><![CDATA[boolean]]></Type>        
 						<InitialValue Class="CodeValue">
-							<Code><![CDATA[true]]></Code>
+							<Code><![CDATA[false]]></Code>
 						</InitialValue>
 					</Properties>
 				</Variable>
@@ -3715,8 +3704,7 @@ for( int i=0; i<Xunits.length; i++ ) {
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="100" Height="30">
-						<EntryAction><![CDATA[diasHastaMadurez = triangular(diasMaduracionMin, diasMaduracionModa, diasMaduracionMax);
-siembraCompleta = false;]]></EntryAction>
+						<EntryAction><![CDATA[diasHastaMadurez = triangular(diasMaduracionMin, diasMaduracionModa, diasMaduracionMax);]]></EntryAction>
 						<FillColor>-10496</FillColor>
 					</Properties>
 				</StatechartElement>
@@ -3794,6 +3782,37 @@ siembraCompleta = false;]]></EntryAction>
 					<Properties Source="1785872297912" Target="1785872303710" Trigger="timeout">
 						<Timeout Class="CodeUnitValue">
 							<Code><![CDATA[diasHastaMadurez]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</Timeout>
+						<Condition><![CDATA[true]]></Condition>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_MINUTE]]></Unit>
+						</Rate>
+						<MessageType><![CDATA[Object]]></MessageType>
+						<DefaultTransition>true</DefaultTransition>
+						<FilterType><![CDATA[unconditionally]]></FilterType>
+						<EqualsExpression><![CDATA["text"]]></EqualsExpression>
+						<SatisfiesExpression><![CDATA[true]]></SatisfiesExpression>
+					</Properties>	
+				</StatechartElement>
+				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
+					<Id>1785874175951</Id>
+					<Name><![CDATA[transition2]]></Name>
+					<X>640</X><Y>190</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Points>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>-200</X><Y>0</Y></Point>
+					</Points>
+					<IconOffset>20.0</IconOffset>
+					<Properties Source="1785872303710" Target="1785872291055" Trigger="timeout">
+						<Action><![CDATA[siembraCompleta=false;]]></Action>
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[0]]></Code>
 							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
 						</Timeout>
 						<Condition><![CDATA[true]]></Condition>
@@ -6041,11 +6060,11 @@ the field, or use Automatic control.]]></Text>
 					<OccurrenceDate>1412323200000</OccurrenceDate>
 					<OccurrenceTime Class="CodeUnitValue">
 						<Code><![CDATA[0]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
+						<Unit Class="TimeUnits"><![CDATA[WEEK]]></Unit>
 					</OccurrenceTime>
 					<RecurrenceCode Class="CodeUnitValue">
 						<Code><![CDATA[1]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
+						<Unit Class="TimeUnits"><![CDATA[WEEK]]></Unit>
 					</RecurrenceCode>
 			</DatasetsCreationProperties>
 			<ScaleRuler>
@@ -7348,16 +7367,16 @@ the field, or use Automatic control.]]></Text>
 		<Name><![CDATA[RunConfiguration]]></Name>
 		<MaximumMemory>512</MaximumMemory>
 		<ModelTimeProperties>
-			<StopOption><![CDATA[Stop at specified time]]></StopOption>
+			<StopOption><![CDATA[Stop at specified date]]></StopOption>
 			<InitialDate><![CDATA[1523836800000]]></InitialDate>	
 			<InitialTime><![CDATA[0.0]]></InitialTime>	
-			<FinalDate><![CDATA[1523848800000]]></FinalDate>	
-			<FinalTime><![CDATA[200.0]]></FinalTime>	
+			<FinalDate><![CDATA[1650079200000]]></FinalDate>	
+			<FinalTime><![CDATA[2104040.0]]></FinalTime>	
 		</ModelTimeProperties>
 		<AnimationProperties>
 			<StopNever>true</StopNever>
-			<ExecutionMode>realTimeScaled</ExecutionMode>
-			<RealTimeScale>1.0</RealTimeScale>
+			<ExecutionMode>virtualTime</ExecutionMode>
+			<RealTimeScale>50.0</RealTimeScale>
 			<EnableZoomAndPanning>false</EnableZoomAndPanning>
 			<EnableDeveloperPanel>false</EnableDeveloperPanel>
 			<ShowDeveloperPanelOnStart>false</ShowDeveloperPanelOnStart>
@@ -7614,11 +7633,11 @@ FluidExit/FluidEnter blocks, which triggers flow of crops.
 				<RealTimeScale>1.0</RealTimeScale>
 			</PresentationProperties>
 			<ModelTimeProperties>
-				<StopOption><![CDATA[Never]]></StopOption>
+				<StopOption><![CDATA[Stop at specified date]]></StopOption>
 				<InitialDate><![CDATA[1523836800000]]></InitialDate>
 				<InitialTime><![CDATA[0.0]]></InitialTime>
-				<FinalDate><![CDATA[1523842800000]]></FinalDate>
-				<FinalTime><![CDATA[100.0]]></FinalTime>
+				<FinalDate><![CDATA[1778895600000]]></FinalDate>
+				<FinalTime><![CDATA[421.7242063492063]]></FinalTime>
 			</ModelTimeProperties>
 			<BypassInitialScreen>false</BypassInitialScreen>
 		</SimulationExperiment>	
