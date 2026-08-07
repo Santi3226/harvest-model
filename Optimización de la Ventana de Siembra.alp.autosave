@@ -1424,6 +1424,21 @@ final static CellDirection NOTSTARTED = null;
 						</InitialValue>
 					</Properties>
 				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1786000000504</Id>
+					<Name><![CDATA[tUltimoEstado]]></Name>
+					<X>950</X><Y>420</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
 				<Variable Class="Parameter">
 					<Id>1169735952567</Id>
 					<Name><![CDATA[Capacity]]></Name>
@@ -1576,21 +1591,6 @@ final static CellDirection NOTSTARTED = null;
 							<DelimeterType>NO_DELIMETER</DelimeterType>
 						</ParameterEditor>
 					</Properties>                 
-				</Variable>
-							<Variable Class="PlainVariable">
-					<Id>1786000000504</Id>
-					<Name><![CDATA[tUltimoEstado]]></Name>
-					<X>950</X><Y>420</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[0]]></Code>
-						</InitialValue>
-					</Properties>
 				</Variable>
 			</Variables>
 			<StatechartElements>
@@ -3029,6 +3029,51 @@ for( int i=0; i<Xunits.length; i++ ) {
 						</InitialValue>
 					</Properties>
 				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1786000000501</Id>
+					<Name><![CDATA[horasCosechando]]></Name>
+					<X>950</X><Y>-160</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1786000000502</Id>
+					<Name><![CDATA[horasDetenida]]></Name>
+					<X>950</X><Y>-120</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1786000000503</Id>
+					<Name><![CDATA[viajesCamion]]></Name>
+					<X>950</X><Y>-80</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
 				<Variable Class="Parameter">
 					<Id>1169735952668</Id>
 					<Name><![CDATA[HarvestDensity]]></Name>
@@ -3158,51 +3203,6 @@ for( int i=0; i<Xunits.length; i++ ) {
 							<DelimeterType>NO_DELIMETER</DelimeterType>
 						</ParameterEditor>
 					</Properties>                 
-				</Variable>
-							<Variable Class="PlainVariable">
-					<Id>1786000000501</Id>
-					<Name><![CDATA[horasCosechando]]></Name>
-					<X>950</X><Y>-160</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[0]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1786000000502</Id>
-					<Name><![CDATA[horasDetenida]]></Name>
-					<X>950</X><Y>-120</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[0]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1786000000503</Id>
-					<Name><![CDATA[viajesCamion]]></Name>
-					<X>950</X><Y>-80</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[0]]></Code>
-						</InitialValue>
-					</Properties>
 				</Variable>
 			</Variables>
 			<StatechartElements>
@@ -3481,7 +3481,7 @@ traceln( "CAMPANIA | cosechando=" + horasCosechando + " h | detenida=" + horasDe
 						<Parameter>
 							<Name><![CDATA[Capacity]]></Name>
 							<Value Class="CodeValue">
-								<Code><![CDATA[50000]]></Code>
+								<Code><![CDATA[2500]]></Code>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -3557,7 +3557,7 @@ traceln( "CAMPANIA | cosechando=" + horasCosechando + " h | detenida=" + horasDe
 						<Parameter>
 							<Name><![CDATA[Speed]]></Name>
 							<Value Class="CodeUnitValue">
-								<Code><![CDATA[15]]></Code>
+								<Code><![CDATA[2]]></Code>
 								<Unit Class="SpeedUnits"><![CDATA[KPH]]></Unit>
 							</Value>
 						</Parameter>

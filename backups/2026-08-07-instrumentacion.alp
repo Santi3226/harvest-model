@@ -3481,7 +3481,7 @@ traceln( "CAMPANIA | cosechando=" + horasCosechando + " h | detenida=" + horasDe
 						<Parameter>
 							<Name><![CDATA[Capacity]]></Name>
 							<Value Class="CodeValue">
-								<Code><![CDATA[50000]]></Code>
+								<Code><![CDATA[2500]]></Code>
 							</Value>
 						</Parameter>
 						<Parameter>
@@ -3557,7 +3557,7 @@ traceln( "CAMPANIA | cosechando=" + horasCosechando + " h | detenida=" + horasDe
 						<Parameter>
 							<Name><![CDATA[Speed]]></Name>
 							<Value Class="CodeUnitValue">
-								<Code><![CDATA[15]]></Code>
+								<Code><![CDATA[2]]></Code>
 								<Unit Class="SpeedUnits"><![CDATA[KPH]]></Unit>
 							</Value>
 						</Parameter>
