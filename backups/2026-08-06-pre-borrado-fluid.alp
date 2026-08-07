@@ -116,51 +116,6 @@
 			<CurrentLevel>1567517860766</CurrentLevel>
 			<ConnectionsId>1385550499631</ConnectionsId>
 			<Variables>
-				<Variable Class="PlainVariable">
-					<Id>1786000000101</Id>
-					<Name><![CDATA[nivel]]></Name>
-					<X>750</X><Y>260</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[0]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1786000000102</Id>
-					<Name><![CDATA[tasaActual]]></Name>
-					<X>750</X><Y>300</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[0]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1786000000103</Id>
-					<Name><![CDATA[tUltimo]]></Name>
-					<X>750</X><Y>340</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[0]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
 				<Variable Class="Parameter">
 					<Id>1169735952509</Id>
 					<Name><![CDATA[Speed]]></Name>
@@ -266,7 +221,120 @@
 						</ParameterEditor>
 					</Properties>                 
 				</Variable>
+							<Variable Class="PlainVariable">
+					<Id>1786000000101</Id>
+					<Name><![CDATA[nivel]]></Name>
+					<X>750</X><Y>260</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1786000000102</Id>
+					<Name><![CDATA[tasaActual]]></Name>
+					<X>750</X><Y>300</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1786000000103</Id>
+					<Name><![CDATA[tUltimo]]></Name>
+					<X>750</X><Y>340</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
 			</Variables>
+			<Connectors>
+				<Connector>
+					<Id>1527507897842</Id>
+					<Name><![CDATA[connector]]></Name>
+					<X>450</X><Y>50</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<SourceEmbeddedObjectReference>
+						<PackageName><![CDATA[harvest_simulator]]></PackageName>
+						<ClassName><![CDATA[Cart]]></ClassName>
+						<ItemName><![CDATA[grainIn]]></ItemName>
+					</SourceEmbeddedObjectReference>
+					<SourceConnectableItemReference>
+						<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+						<ClassName><![CDATA[FluidEnter]]></ClassName>
+						<ItemName><![CDATA[out]]></ItemName>
+					</SourceConnectableItemReference>
+					<TargetEmbeddedObjectReference>
+						<PackageName><![CDATA[harvest_simulator]]></PackageName>
+						<ClassName><![CDATA[Cart]]></ClassName>
+						<ItemName><![CDATA[tank]]></ItemName>
+					</TargetEmbeddedObjectReference>
+					<TargetConnectableItemReference>
+						<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+						<ClassName><![CDATA[Tank]]></ClassName>
+						<ItemName><![CDATA[in]]></ItemName>
+					</TargetConnectableItemReference>
+					<Points>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>60</X><Y>0</Y></Point>
+					</Points>
+				</Connector>
+				<Connector>
+					<Id>1527507908479</Id>
+					<Name><![CDATA[connector1]]></Name>
+					<X>600</X><Y>100</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<SourceEmbeddedObjectReference>
+						<PackageName><![CDATA[harvest_simulator]]></PackageName>
+						<ClassName><![CDATA[Cart]]></ClassName>
+						<ItemName><![CDATA[grainOut]]></ItemName>
+					</SourceEmbeddedObjectReference>
+					<SourceConnectableItemReference>
+						<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+						<ClassName><![CDATA[FluidExit]]></ClassName>
+						<ItemName><![CDATA[in]]></ItemName>
+					</SourceConnectableItemReference>
+					<TargetEmbeddedObjectReference>
+						<PackageName><![CDATA[harvest_simulator]]></PackageName>
+						<ClassName><![CDATA[Cart]]></ClassName>
+						<ItemName><![CDATA[tank]]></ItemName>
+					</TargetEmbeddedObjectReference>
+					<TargetConnectableItemReference>
+						<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+						<ClassName><![CDATA[Tank]]></ClassName>
+						<ItemName><![CDATA[out]]></ItemName>
+					</TargetConnectableItemReference>
+					<Points>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>-60</X><Y>0</Y></Point>
+					</Points>
+				</Connector>
+			</Connectors>
 			<StatechartElements>
 				<StatechartElement Class="State" ParentState="ROOT_NODE">
 					<Id>1169735952504</Id>
@@ -289,15 +357,15 @@
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="110" Height="30">
-						<EntryAction><![CDATA[// sin la Fluid Library el camion ya no se llena por conexion de puertos:
-// hay que avisarle para que entre en Loading y acumule
-send( "START_LOADING", main.truck );
+						<EntryAction><![CDATA[grainOut.connect( main.truck.grainIn );
 actualizarNivel();
-tasaActual = -UnloadingRate / second();
-tUltimo = time();
-if ( inState( AtUnloading ) ) { trBecameEmpty.cancel(); trBecameEmpty.start(); }]]></EntryAction>
-						<ExitAction><![CDATA[actualizarNivel();
-tasaActual = 0;]]></ExitAction>
+tasaActual = -UnloadingRate;
+tUltimo = time();]]></EntryAction>
+						<ExitAction><![CDATA[grainOut.disconnect();
+actualizarNivel();
+tasaActual = 0;
+if ( abs( nivel - tank.amount() ) > 0.01 )
+	traceln( "DESVIO cart(descarga) t=" + time() + " nivel=" + nivel + " tank=" + tank.amount() );]]></ExitAction>
 						<FillColor>-10496</FillColor>
 					</Properties>
 				</StatechartElement>
@@ -328,15 +396,15 @@ setSpeed( main.combine.getSpeed() );
 //start moving with combine
 moveWithCombine();
 actualizarNivel();
-// la tasa la fija la cosechadora al entrar en WithCart: es la unica que sabe
-// cuanto grano hay disponible. Sin acople, el carro no recibe nada.
-tasaActual = 0;
+tasaActual = main.combine.UnloadingRate;
 tUltimo = time();]]></EntryAction>
 						<ExitAction><![CDATA[send( "FINISHED_UNLOADING", main.combine );
 //restore original speed
 setSpeed( Speed, KPH );
 actualizarNivel();
-tasaActual = 0;]]></ExitAction>
+tasaActual = 0;
+if ( abs( nivel - tank.amount() ) > 0.01 )
+	traceln( "DESVIO cart(carga) t=" + time() + " nivel=" + nivel + " tank=" + tank.amount() );]]></ExitAction>
 						<FillColor>-6632142</FillColor>
 					</Properties>
 				</StatechartElement>
@@ -479,10 +547,10 @@ moveTo( x, y );
 						<Point><X>0</X><Y>40</Y></Point>
 					</Points>
 					<IconOffset>15.0</IconOffset>
-					<Properties Source="1169735952505" Target="1169735952506" Trigger="timeout">
+					<Properties Source="1169735952505" Target="1169735952506" Trigger="message">
 						<Timeout Class="CodeUnitValue">
-							<Code><![CDATA[tasaActual > 0 ? ( ( Capacity - nivel ) / tasaActual ) / second() : 1e12]]></Code>
-							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
 						</Timeout>
 						<Condition><![CDATA[true]]></Condition>
 						<Rate Class="CodeUnitValue">
@@ -511,11 +579,11 @@ moveTo( x, y );
 						<Point><X>30</X><Y>-330</Y></Point>
 					</Points>
 					<IconOffset>269.0</IconOffset>
-					<Properties Source="1169735952504" Target="1169735952508" Trigger="timeout">
+					<Properties Source="1169735952504" Target="1169735952508" Trigger="message">
 						<Action><![CDATA[send( "FINISHED_LOADING", main.truck );]]></Action>
 						<Timeout Class="CodeUnitValue">
-							<Code><![CDATA[tasaActual < 0 ? ( nivel / -tasaActual ) / second() : 1e12]]></Code>
-							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
 						</Timeout>
 						<Condition><![CDATA[true]]></Condition>
 						<Rate Class="CodeUnitValue">
@@ -727,7 +795,6 @@ moveTo( x, y );
 					</Points>
 					<IconOffset>19.0</IconOffset>
 					<Properties Source="1169735952503" Target="1169735952502" Trigger="message">
-						<Action><![CDATA[if ( inState( AtUnloading ) ) { trBecameEmpty.cancel(); trBecameEmpty.start(); }]]></Action>
 						<Timeout Class="CodeUnitValue">
 							<Code><![CDATA[1]]></Code>
 							<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
@@ -798,7 +865,7 @@ if( main.combine.isMoving() ) {
 
 ]]></Body>
 				</Function>
-				<Function AccessType="default" StaticFunction="false">
+							<Function AccessType="default" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[void]]></ReturnType>
 					<Id>1786000000104</Id>
@@ -808,12 +875,10 @@ if( main.combine.isMoving() ) {
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[// integra el nivel en unidades de tiempo del modelo
+					<Body><![CDATA[// integra el nivel en unidades de tiempo del modelo,
+// misma convencion de tasa que usa la Fluid Library
 double dt = time() - tUltimo;
-double bruto = nivel + tasaActual * dt;
-if ( bruto > Capacity ) { main.masaDescartada += bruto - Capacity; bruto = Capacity; }
-if ( bruto < 0 )        { main.masaInventada  += -bruto;           bruto = 0; }
-nivel = bruto;
+nivel = max( 0.0, min( Capacity, nivel + tasaActual * dt ) );
 tUltimo = time();]]></Body>
 				</Function>
 			</Functions>
@@ -859,6 +924,302 @@ tUltimo = time();]]></Body>
 					</ActiveObjectClass>
 				</ContainerLink>
 			</ContainerLinks>
+			<EmbeddedObjects>
+				<EmbeddedObject>
+					<Id>1527507859596</Id>
+					<Name><![CDATA[tank]]></Name>
+					<X>510</X><Y>40</Y>
+					<Label><X>-5</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+						<ClassName><![CDATA[Tank]]></ClassName>
+					</ActiveObjectClass>
+					<GenericParameterSubstitute>
+						<GenericParameterSubstituteReference>
+							<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+							<ClassName><![CDATA[Tank]]></ClassName>
+							<ItemName><![CDATA[1412618001571]]></ItemName>
+						</GenericParameterSubstituteReference>
+					</GenericParameterSubstitute>
+					<Parameters>
+						<Parameter>
+							<Name><![CDATA[capacity]]></Name>
+							<Value Class="CodeUnitValue">
+								<Code><![CDATA[Capacity]]></Code>
+								<Unit Class="AmountUnits"><![CDATA[KILOGRAM]]></Unit>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[initialAmount]]></Name>
+							<Value Class="CodeUnitValue">
+								<Code><![CDATA[0]]></Code>
+								<Unit Class="AmountUnits"><![CDATA[KILOGRAM]]></Unit>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[limitRateOut]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[true]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[maxRateOut]]></Name>
+							<Value Class="CodeUnitValue">
+								<Code><![CDATA[UnloadingRate]]></Code>
+								<Unit Class="FlowRateUnits"><![CDATA[KILOGRAM_PER_SECOND]]></Unit>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[customPriority]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[priorityOutCustom]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[customInitialBatch]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[initialBatch]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[customInitialBatchColor]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[initialBatchColor]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[modeOutputBatch]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[outputBatch]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[customOutputBatchColor]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[outputBatchColor]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[storageTank]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[showBatchesInFlowchart]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onFull]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[send( "FULL", this );]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onEmpty]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[send( "EMPTY", this );]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[actionOnAbove]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[amountAbove]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onAbove]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[actionOnBelow]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[amountBelow]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onBelow]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onNewBatchIn]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onNewBatchOut]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onRateChange]]></Name>
+						</Parameter>
+					</Parameters>
+					<ReplicationFlag>false</ReplicationFlag>
+					<Replication Class="CodeValue">
+						<Code><![CDATA[100]]></Code>
+					</Replication>
+					<CollectionType>ARRAY_LIST_BASED</CollectionType>
+					<InitialLocationType>XYZ</InitialLocationType>
+					<XCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</XCode>
+					<YCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</YCode>
+					<ZCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ZCode>
+					<ColumnCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ColumnCode>
+					<RowCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</RowCode>
+					<LocationNameCode Class="CodeValue">
+						<Code><![CDATA[""]]></Code>
+					</LocationNameCode>
+					<InitializationType>SPECIFIED_NUMBER</InitializationType>
+					<InitializationDatabaseTableQuery>
+						<Id>1169735939990</Id>
+						<TableReference>
+						</TableReference>
+					</InitializationDatabaseTableQuery>
+					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+					<QuantityColumn>
+					</QuantityColumn>
+				</EmbeddedObject>
+				<EmbeddedObject>
+					<Id>1527509240680</Id>
+					<Name><![CDATA[grainOut]]></Name>
+					<X>600</X><Y>90</Y>
+					<Label><X>-15</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+						<ClassName><![CDATA[FluidExit]]></ClassName>
+					</ActiveObjectClass>
+					<GenericParameterSubstitute>
+						<GenericParameterSubstituteReference>
+							<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+							<ClassName><![CDATA[FluidExit]]></ClassName>
+							<ItemName><![CDATA[1414747502602]]></ItemName>
+						</GenericParameterSubstituteReference>
+					</GenericParameterSubstitute>
+					<Parameters>
+						<Parameter>
+							<Name><![CDATA[fluidEnter]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[showBatchesInFlowchart]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onNewBatchIn]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onRateChange]]></Name>
+						</Parameter>
+					</Parameters>
+					<ReplicationFlag>false</ReplicationFlag>
+					<Replication Class="CodeValue">
+						<Code><![CDATA[100]]></Code>
+					</Replication>
+					<CollectionType>ARRAY_LIST_BASED</CollectionType>
+					<InitialLocationType>XYZ</InitialLocationType>
+					<XCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</XCode>
+					<YCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</YCode>
+					<ZCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ZCode>
+					<ColumnCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ColumnCode>
+					<RowCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</RowCode>
+					<LocationNameCode Class="CodeValue">
+						<Code><![CDATA[""]]></Code>
+					</LocationNameCode>
+					<InitializationType>SPECIFIED_NUMBER</InitializationType>
+					<InitializationDatabaseTableQuery>
+						<Id>1169735939989</Id>
+						<TableReference>
+						</TableReference>
+					</InitializationDatabaseTableQuery>
+					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+					<QuantityColumn>
+					</QuantityColumn>
+				</EmbeddedObject>
+				<EmbeddedObject>
+					<Id>1527509246553</Id>
+					<Name><![CDATA[grainIn]]></Name>
+					<X>420</X><Y>40</Y>
+					<Label><X>-10</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+						<ClassName><![CDATA[FluidEnter]]></ClassName>
+					</ActiveObjectClass>
+					<GenericParameterSubstitute>
+						<GenericParameterSubstituteReference>
+							<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+							<ClassName><![CDATA[FluidEnter]]></ClassName>
+							<ItemName><![CDATA[1414749060515]]></ItemName>
+						</GenericParameterSubstituteReference>
+					</GenericParameterSubstitute>
+					<Parameters>
+						<Parameter>
+							<Name><![CDATA[limitRateOut]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[maxRateOut]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[showBatchesInFlowchart]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onNewBatchOut]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onRateChange]]></Name>
+						</Parameter>
+					</Parameters>
+					<ReplicationFlag>false</ReplicationFlag>
+					<Replication Class="CodeValue">
+						<Code><![CDATA[100]]></Code>
+					</Replication>
+					<CollectionType>ARRAY_LIST_BASED</CollectionType>
+					<InitialLocationType>XYZ</InitialLocationType>
+					<XCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</XCode>
+					<YCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</YCode>
+					<ZCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ZCode>
+					<ColumnCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ColumnCode>
+					<RowCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</RowCode>
+					<LocationNameCode Class="CodeValue">
+						<Code><![CDATA[""]]></Code>
+					</LocationNameCode>
+					<InitializationType>SPECIFIED_NUMBER</InitializationType>
+					<InitializationDatabaseTableQuery>
+						<Id>1169735939988</Id>
+						<TableReference>
+						</TableReference>
+					</InitializationDatabaseTableQuery>
+					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+					<QuantityColumn>
+					</QuantityColumn>
+				</EmbeddedObject>
+			</EmbeddedObjects>
 
 			<Presentation>
 				<Level>
@@ -1364,66 +1725,6 @@ final static CellDirection NOTSTARTED = null;
 						</InitialValue>
 					</Properties>
 				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1786000000301</Id>
-					<Name><![CDATA[nivel]]></Name>
-					<X>750</X><Y>260</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[0]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1786000000302</Id>
-					<Name><![CDATA[tasaActual]]></Name>
-					<X>750</X><Y>300</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[0]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1786000000303</Id>
-					<Name><![CDATA[tUltimo]]></Name>
-					<X>750</X><Y>340</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[0]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1786000000305</Id>
-					<Name><![CDATA[tasaCosecha]]></Name>
-					<X>750</X><Y>380</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[0]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
 				<Variable Class="Parameter">
 					<Id>1169735952567</Id>
 					<Name><![CDATA[Capacity]]></Name>
@@ -1578,6 +1879,74 @@ final static CellDirection NOTSTARTED = null;
 					</Properties>                 
 				</Variable>
 			</Variables>
+			<Connectors>
+				<Connector>
+					<Id>1527509008213</Id>
+					<Name><![CDATA[connector]]></Name>
+					<X>690</X><Y>50</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<SourceEmbeddedObjectReference>
+						<PackageName><![CDATA[harvest_simulator]]></PackageName>
+						<ClassName><![CDATA[Combine]]></ClassName>
+						<ItemName><![CDATA[grainIn]]></ItemName>
+					</SourceEmbeddedObjectReference>
+					<SourceConnectableItemReference>
+						<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+						<ClassName><![CDATA[FluidSource]]></ClassName>
+						<ItemName><![CDATA[out]]></ItemName>
+					</SourceConnectableItemReference>
+					<TargetEmbeddedObjectReference>
+						<PackageName><![CDATA[harvest_simulator]]></PackageName>
+						<ClassName><![CDATA[Combine]]></ClassName>
+						<ItemName><![CDATA[tank]]></ItemName>
+					</TargetEmbeddedObjectReference>
+					<TargetConnectableItemReference>
+						<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+						<ClassName><![CDATA[Tank]]></ClassName>
+						<ItemName><![CDATA[in]]></ItemName>
+					</TargetConnectableItemReference>
+					<Points>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>60</X><Y>0</Y></Point>
+					</Points>
+				</Connector>
+				<Connector>
+					<Id>1527509008215</Id>
+					<Name><![CDATA[connector1]]></Name>
+					<X>840</X><Y>100</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<SourceEmbeddedObjectReference>
+						<PackageName><![CDATA[harvest_simulator]]></PackageName>
+						<ClassName><![CDATA[Combine]]></ClassName>
+						<ItemName><![CDATA[grainOut]]></ItemName>
+					</SourceEmbeddedObjectReference>
+					<SourceConnectableItemReference>
+						<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+						<ClassName><![CDATA[FluidExit]]></ClassName>
+						<ItemName><![CDATA[in]]></ItemName>
+					</SourceConnectableItemReference>
+					<TargetEmbeddedObjectReference>
+						<PackageName><![CDATA[harvest_simulator]]></PackageName>
+						<ClassName><![CDATA[Combine]]></ClassName>
+						<ItemName><![CDATA[tank]]></ItemName>
+					</TargetEmbeddedObjectReference>
+					<TargetConnectableItemReference>
+						<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+						<ClassName><![CDATA[Tank]]></ClassName>
+						<ItemName><![CDATA[out]]></ItemName>
+					</TargetConnectableItemReference>
+					<Points>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>-60</X><Y>0</Y></Point>
+					</Points>
+				</Connector>
+			</Connectors>
 			<StatechartElements>
 				<StatechartElement Class="State" ParentState="ROOT_NODE">
 					<Id>1169735952546</Id>
@@ -1588,13 +1957,8 @@ final static CellDirection NOTSTARTED = null;
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="420" Height="260">
-						<EntryAction><![CDATA[actualizarNivel();
-tasaCosecha = harvestRate() / second();
-tasaActual = tasaCosecha;
-tUltimo = time();]]></EntryAction>
-						<ExitAction><![CDATA[actualizarNivel();
-tasaCosecha = 0;
-tasaActual = 0;]]></ExitAction>
+						<EntryAction><![CDATA[grainIn.set_rate( harvestRate() );]]></EntryAction>
+						<ExitAction><![CDATA[grainIn.set_rate( 0 );]]></ExitAction>
 						<FillColor>2056965426</FillColor>
 					</Properties>
 				</StatechartElement>
@@ -1619,10 +1983,6 @@ tasaActual = 0;]]></ExitAction>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="120" Height="30">
-						<EntryAction><![CDATA[// tolva llena: la maquina se detuvo (STOP), no cosecha nada mas
-actualizarNivel();
-tasaCosecha = 0;
-tasaActual = 0;]]></EntryAction>
 						<FillColor>-29696</FillColor>
 					</Properties>
 				</StatechartElement>
@@ -1774,29 +2134,9 @@ moveTo( x, y );
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="340" Height="30">
-						<EntryAction><![CDATA[actualizarNivel();
-main.cart.actualizarNivel();
-// 1) volcado del buffer de la tolva al carro: instantaneo a escala del modelo,
-//    y conservativo por construccion (lo que sale de uno entra en el otro)
-double espacio = main.cart.Capacity - main.cart.nivel;
-double lote = min( nivel, espacio );
-nivel -= lote;
-main.cart.nivel += lote;
-// 2) mientras siguen acoplados el carro recibe exactamente lo que se cosecha,
-//    no la tasa nominal de descarga: la tolva ya esta vacia
-tasaCosecha = harvestRate() / second();
-tasaActual = 0;
-tUltimo = time();
-main.cart.tasaActual = tasaCosecha;
-main.cart.tUltimo = time();
-if ( main.cart.inState( Cart.Loading ) ) { main.cart.Full.cancel(); main.cart.Full.start(); }]]></EntryAction>
-						<ExitAction><![CDATA[send( "COMPLETED", main.cart );
-actualizarNivel();
-tasaCosecha = harvestRate() / second();
-tasaActual = tasaCosecha;
-// se corta el acople: el carro deja de recibir aunque siga en Loading
-main.cart.actualizarNivel();
-main.cart.tasaActual = 0;]]></ExitAction>
+						<EntryAction><![CDATA[grainOut.connect( main.cart.grainIn );]]></EntryAction>
+						<ExitAction><![CDATA[grainOut.disconnect();
+send( "COMPLETED", main.cart );]]></ExitAction>
 						<FillColor>-10496</FillColor>
 					</Properties>
 				</StatechartElement>
@@ -1889,11 +2229,11 @@ main.cart.tasaActual = 0;]]></ExitAction>
 						<Point><X>70</X><Y>0</Y></Point>
 					</Points>
 					<IconOffset>29.0</IconOffset>
-					<Properties Source="1169735952542" Target="1169735952541" Trigger="timeout">
+					<Properties Source="1169735952542" Target="1169735952541" Trigger="message">
 						<Action><![CDATA[send( "STOP", this );]]></Action>
 						<Timeout Class="CodeUnitValue">
-							<Code><![CDATA[tasaActual > 0 ? ( ( Capacity - nivel ) / tasaActual ) / second() : 1e12]]></Code>
-							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
 						</Timeout>
 						<Condition><![CDATA[true]]></Condition>
 						<Rate Class="CodeUnitValue">
@@ -2305,26 +2645,6 @@ return YCompleted;
 					<Body><![CDATA[return getSpeed(MPS) * scale.toLengthUnits(RowWidth, METER) * HarvestDensity;
 ]]></Body>
 				</Function>
-				<Function AccessType="default" StaticFunction="false">
-					<ReturnModificator>VOID</ReturnModificator>
-					<ReturnType><![CDATA[void]]></ReturnType>
-					<Id>1786000000304</Id>
-					<Name><![CDATA[actualizarNivel]]></Name>
-					<X>750</X><Y>380</Y>
-					<Label><X>20</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[// integra el nivel en unidades de tiempo del modelo
-double dt = time() - tUltimo;
-// masa que entra al sistema por cosecha (para la auditoria de conservacion)
-main.totalCosechado += tasaCosecha * dt;
-double bruto = nivel + tasaActual * dt;
-if ( bruto > Capacity ) { main.masaDescartada += bruto - Capacity; bruto = Capacity; }
-if ( bruto < 0 )        { main.masaInventada  += -bruto;           bruto = 0; }
-nivel = bruto;
-tUltimo = time();]]></Body>
-				</Function>
 			</Functions>
 			<AgentLinks>
 				<AgentLink>
@@ -2373,6 +2693,342 @@ tUltimo = time();]]></Body>
 					</ActiveObjectClass>
 				</ContainerLink>
 			</ContainerLinks>
+			<EmbeddedObjects>
+				<EmbeddedObject>
+					<Id>1527509008177</Id>
+					<Name><![CDATA[tank]]></Name>
+					<X>750</X><Y>40</Y>
+					<Label><X>-5</X><Y>-15</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+						<ClassName><![CDATA[Tank]]></ClassName>
+					</ActiveObjectClass>
+					<GenericParameterSubstitute>
+						<GenericParameterSubstituteReference>
+							<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+							<ClassName><![CDATA[Tank]]></ClassName>
+							<ItemName><![CDATA[1412618001571]]></ItemName>
+						</GenericParameterSubstituteReference>
+					</GenericParameterSubstitute>
+					<Parameters>
+						<Parameter>
+							<Name><![CDATA[capacity]]></Name>
+							<Value Class="CodeUnitValue">
+								<Code><![CDATA[Capacity]]></Code>
+								<Unit Class="AmountUnits"><![CDATA[KILOGRAM]]></Unit>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[initialAmount]]></Name>
+							<Value Class="CodeUnitValue">
+								<Code><![CDATA[0]]></Code>
+								<Unit Class="AmountUnits"><![CDATA[KILOGRAM]]></Unit>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[limitRateOut]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[true]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[maxRateOut]]></Name>
+							<Value Class="CodeUnitValue">
+								<Code><![CDATA[UnloadingRate]]></Code>
+								<Unit Class="FlowRateUnits"><![CDATA[KILOGRAM_PER_SECOND]]></Unit>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[customPriority]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[priorityOutCustom]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[customInitialBatch]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[initialBatch]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[customInitialBatchColor]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[initialBatchColor]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[modeOutputBatch]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[outputBatch]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[customOutputBatchColor]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[outputBatchColor]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[storageTank]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[showBatchesInFlowchart]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onFull]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[send( "FULL", this );]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onEmpty]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[actionOnAbove]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[amountAbove]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onAbove]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[actionOnBelow]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[amountBelow]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onBelow]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onNewBatchIn]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onNewBatchOut]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onRateChange]]></Name>
+						</Parameter>
+					</Parameters>
+					<ReplicationFlag>false</ReplicationFlag>
+					<Replication Class="CodeValue">
+						<Code><![CDATA[100]]></Code>
+					</Replication>
+					<CollectionType>ARRAY_LIST_BASED</CollectionType>
+					<InitialLocationType>XYZ</InitialLocationType>
+					<XCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</XCode>
+					<YCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</YCode>
+					<ZCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ZCode>
+					<ColumnCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ColumnCode>
+					<RowCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</RowCode>
+					<LocationNameCode Class="CodeValue">
+						<Code><![CDATA[""]]></Code>
+					</LocationNameCode>
+					<InitializationType>SPECIFIED_NUMBER</InitializationType>
+					<InitializationDatabaseTableQuery>
+						<Id>1169735939980</Id>
+						<TableReference>
+						</TableReference>
+					</InitializationDatabaseTableQuery>
+					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+					<QuantityColumn>
+					</QuantityColumn>
+				</EmbeddedObject>
+				<EmbeddedObject>
+					<Id>1527509008187</Id>
+					<Name><![CDATA[grainIn]]></Name>
+					<X>660</X><Y>40</Y>
+					<Label><X>-10</X><Y>-15</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+						<ClassName><![CDATA[FluidSource]]></ClassName>
+					</ActiveObjectClass>
+					<GenericParameterSubstitute>
+						<GenericParameterSubstituteReference>
+							<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+							<ClassName><![CDATA[FluidSource]]></ClassName>
+							<ItemName><![CDATA[1412618001591]]></ItemName>
+						</GenericParameterSubstituteReference>
+					</GenericParameterSubstitute>
+					<Parameters>
+						<Parameter>
+							<Name><![CDATA[maxRate]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[rate]]></Name>
+							<Value Class="CodeUnitValue">
+								<Code><![CDATA[0]]></Code>
+								<Unit Class="FlowRateUnits"><![CDATA[KILOGRAM_PER_SECOND]]></Unit>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[infiniteCapacity]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[initialAmount]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[customPriority]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[priorityOutCustom]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[modeBatchCustom]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[true]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[customBatch]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[customBatchColor]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[true]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[batchColor]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[green]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[storageTank]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[showBatchesInFlowchart]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onEmpty]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onNewBatchOut]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onRateChange]]></Name>
+						</Parameter>
+					</Parameters>
+					<ReplicationFlag>false</ReplicationFlag>
+					<Replication Class="CodeValue">
+						<Code><![CDATA[100]]></Code>
+					</Replication>
+					<CollectionType>ARRAY_LIST_BASED</CollectionType>
+					<InitialLocationType>XYZ</InitialLocationType>
+					<XCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</XCode>
+					<YCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</YCode>
+					<ZCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ZCode>
+					<ColumnCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ColumnCode>
+					<RowCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</RowCode>
+					<LocationNameCode Class="CodeValue">
+						<Code><![CDATA[""]]></Code>
+					</LocationNameCode>
+					<InitializationType>SPECIFIED_NUMBER</InitializationType>
+					<InitializationDatabaseTableQuery>
+						<Id>1169735939979</Id>
+						<TableReference>
+						</TableReference>
+					</InitializationDatabaseTableQuery>
+					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+					<QuantityColumn>
+					</QuantityColumn>
+				</EmbeddedObject>
+				<EmbeddedObject>
+					<Id>1527509071394</Id>
+					<Name><![CDATA[grainOut]]></Name>
+					<X>840</X><Y>90</Y>
+					<Label><X>-20</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+						<ClassName><![CDATA[FluidExit]]></ClassName>
+					</ActiveObjectClass>
+					<GenericParameterSubstitute>
+						<GenericParameterSubstituteReference>
+							<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+							<ClassName><![CDATA[FluidExit]]></ClassName>
+							<ItemName><![CDATA[1414747502602]]></ItemName>
+						</GenericParameterSubstituteReference>
+					</GenericParameterSubstitute>
+					<Parameters>
+						<Parameter>
+							<Name><![CDATA[fluidEnter]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[showBatchesInFlowchart]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onNewBatchIn]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onRateChange]]></Name>
+						</Parameter>
+					</Parameters>
+					<ReplicationFlag>false</ReplicationFlag>
+					<Replication Class="CodeValue">
+						<Code><![CDATA[100]]></Code>
+					</Replication>
+					<CollectionType>ARRAY_LIST_BASED</CollectionType>
+					<InitialLocationType>XYZ</InitialLocationType>
+					<XCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</XCode>
+					<YCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</YCode>
+					<ZCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ZCode>
+					<ColumnCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ColumnCode>
+					<RowCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</RowCode>
+					<LocationNameCode Class="CodeValue">
+						<Code><![CDATA[""]]></Code>
+					</LocationNameCode>
+					<InitializationType>SPECIFIED_NUMBER</InitializationType>
+					<InitializationDatabaseTableQuery>
+						<Id>1169735939978</Id>
+						<TableReference>
+						</TableReference>
+					</InitializationDatabaseTableQuery>
+					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+					<QuantityColumn>
+					</QuantityColumn>
+				</EmbeddedObject>
+			</EmbeddedObjects>
 
 			<Presentation>
 				<Level>
@@ -2656,7 +3312,7 @@ tUltimo = time();]]></Body>
 					<LineStyle>SOLID</LineStyle>
 					<Width>14</Width>
 					<Height>19</Height>
-					<WidthCode><![CDATA[nivel / Capacity * 14]]></WidthCode>
+					<WidthCode><![CDATA[tank.amount() / Capacity * 14]]></WidthCode>
 					<Rotation>0.0</Rotation>
 					<FillColor>-16744448</FillColor>
 					<FillMaterial>null</FillMaterial>
@@ -2696,7 +3352,7 @@ tUltimo = time();]]></Body>
 					<Z>0</Z>
 					<ZCode><![CDATA[6]]></ZCode>
 					<ZHeight>2</ZHeight>
-					<ZHeightCode><![CDATA[nivel / Capacity * 10]]></ZHeightCode>
+					<ZHeightCode><![CDATA[tank.amount() / Capacity * 10]]></ZHeightCode>
 					<LineWidth>1</LineWidth>
 					<LineColor/>
 					<LineMaterial>null</LineMaterial>
@@ -2890,111 +3546,6 @@ for( int i=0; i<Xunits.length; i++ ) {
 						</InitialValue>
 					</Properties>
 				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1786000000401</Id>
-					<Name><![CDATA[nivelSilo]]></Name>
-					<X>750</X><Y>-480</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[0]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1786000000402</Id>
-					<Name><![CDATA[tasaSilo]]></Name>
-					<X>750</X><Y>-440</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[0]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1786000000403</Id>
-					<Name><![CDATA[tUltimoSilo]]></Name>
-					<X>750</X><Y>-400</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[0]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1786000000405</Id>
-					<Name><![CDATA[CapacidadSilo]]></Name>
-					<X>750</X><Y>-360</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[10000]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1786000000406</Id>
-					<Name><![CDATA[totalCosechado]]></Name>
-					<X>750</X><Y>-320</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[0]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1786000000407</Id>
-					<Name><![CDATA[masaDescartada]]></Name>
-					<X>750</X><Y>-280</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[0]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1786000000408</Id>
-					<Name><![CDATA[masaInventada]]></Name>
-					<X>750</X><Y>-240</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[0]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
 				<Variable Class="Parameter">
 					<Id>1169735952668</Id>
 					<Name><![CDATA[HarvestDensity]]></Name>
@@ -3126,6 +3677,74 @@ for( int i=0; i<Xunits.length; i++ ) {
 					</Properties>                 
 				</Variable>
 			</Variables>
+			<Connectors>
+				<Connector>
+					<Id>1527597184315</Id>
+					<Name><![CDATA[connector]]></Name>
+					<X>-450</X><Y>-400</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<SourceEmbeddedObjectReference>
+						<PackageName><![CDATA[harvest_simulator]]></PackageName>
+						<ClassName><![CDATA[Main]]></ClassName>
+						<ItemName><![CDATA[grainIn]]></ItemName>
+					</SourceEmbeddedObjectReference>
+					<SourceConnectableItemReference>
+						<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+						<ClassName><![CDATA[FluidEnter]]></ClassName>
+						<ItemName><![CDATA[out]]></ItemName>
+					</SourceConnectableItemReference>
+					<TargetEmbeddedObjectReference>
+						<PackageName><![CDATA[harvest_simulator]]></PackageName>
+						<ClassName><![CDATA[Main]]></ClassName>
+						<ItemName><![CDATA[pipeline]]></ItemName>
+					</TargetEmbeddedObjectReference>
+					<TargetConnectableItemReference>
+						<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+						<ClassName><![CDATA[Pipeline]]></ClassName>
+						<ItemName><![CDATA[in]]></ItemName>
+					</TargetConnectableItemReference>
+					<Points>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>50</X><Y>0</Y></Point>
+					</Points>
+				</Connector>
+				<Connector>
+					<Id>1527597184316</Id>
+					<Name><![CDATA[connector1]]></Name>
+					<X>-350</X><Y>-400</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<SourceEmbeddedObjectReference>
+						<PackageName><![CDATA[harvest_simulator]]></PackageName>
+						<ClassName><![CDATA[Main]]></ClassName>
+						<ItemName><![CDATA[pipeline]]></ItemName>
+					</SourceEmbeddedObjectReference>
+					<SourceConnectableItemReference>
+						<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+						<ClassName><![CDATA[Pipeline]]></ClassName>
+						<ItemName><![CDATA[out]]></ItemName>
+					</SourceConnectableItemReference>
+					<TargetEmbeddedObjectReference>
+						<PackageName><![CDATA[harvest_simulator]]></PackageName>
+						<ClassName><![CDATA[Main]]></ClassName>
+						<ItemName><![CDATA[bin]]></ItemName>
+					</TargetEmbeddedObjectReference>
+					<TargetConnectableItemReference>
+						<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+						<ClassName><![CDATA[Tank]]></ClassName>
+						<ItemName><![CDATA[in]]></ItemName>
+					</TargetConnectableItemReference>
+					<Points>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>50</X><Y>0</Y></Point>
+					</Points>
+				</Connector>
+			</Connectors>
 			<StatechartElements>
 				<StatechartElement Class="State" ParentState="ROOT_NODE">
 					<Id>1785872291055</Id>
@@ -3161,7 +3780,7 @@ for( int i=0; i<Xunits.length; i++ ) {
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="100" Height="30">
-						<EntryAction><![CDATA[traceln( "Cultivo maduro el dia " + time(DAY) + " — listo para cosecha");]]></EntryAction>
+						<EntryAction><![CDATA[traceln("Cultivo maduro el día " + time(DAY) + " — listo para cosecha");]]></EntryAction>
 						<FillColor>-10496</FillColor>
 					</Properties>
 				</StatechartElement>
@@ -3288,45 +3907,8 @@ combine.moveControl.onChange();]]></Action>
 int min = (int)( ( time() % hour() ) / minute() );
 textTimeCompleted.setText( "Completed in " + hrs + " hours " + min + " minutes" );
 siembraCompleta = true;
-auditarMasa();
 cicloCultivo.onChange();
 //getEngine().finish();]]></Body>
-				</Function>
-				<Function AccessType="default" StaticFunction="false">
-					<ReturnModificator>VOID</ReturnModificator>
-					<ReturnType><![CDATA[void]]></ReturnType>
-					<Id>1786000000404</Id>
-					<Name><![CDATA[actualizarSilo]]></Name>
-					<X>750</X><Y>-500</Y>
-					<Label><X>20</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[double dt = time() - tUltimoSilo;
-nivelSilo = max( 0.0, nivelSilo + tasaSilo * dt );
-tUltimoSilo = time();]]></Body>
-				</Function>
-				<Function AccessType="default" StaticFunction="false">
-					<ReturnModificator>VOID</ReturnModificator>
-					<ReturnType><![CDATA[void]]></ReturnType>
-					<Id>1786000000409</Id>
-					<Name><![CDATA[auditarMasa]]></Name>
-					<X>750</X><Y>-460</Y>
-					<Label><X>20</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[// fuerza la puesta al dia de los cuatro recipientes y verifica conservacion
-combine.actualizarNivel();
-cart.actualizarNivel();
-truck.actualizarNivel();
-actualizarSilo();
-double enSistema = combine.nivel + cart.nivel + truck.nivel + nivelSilo;
-double fuga = totalCosechado - enSistema - masaDescartada + masaInventada;
-double pct = totalCosechado > 0 ? 100 * fuga / totalCosechado : 0;
-traceln( "AUDITORIA t=" + time() + " | cosechado=" + totalCosechado + " enSistema=" + enSistema
-         + " descartado=" + masaDescartada + " inventado=" + masaInventada
-         + " | FUGA=" + fuga + " (" + pct + "%)" );]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -3600,6 +4182,337 @@ traceln( "AUDITORIA t=" + time() + " | cosechado=" + totalCosechado + " enSistem
 					<InitializationType>SPECIFIED_NUMBER</InitializationType>
 					<InitializationDatabaseTableQuery>
 						<Id>1169735939973</Id>
+						<TableReference>
+						</TableReference>
+					</InitializationDatabaseTableQuery>
+					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+					<QuantityColumn>
+					</QuantityColumn>
+				</EmbeddedObject>
+				<EmbeddedObject>
+					<Id>1527509334575</Id>
+					<Name><![CDATA[bin]]></Name>
+					<X>-300</X><Y>-410</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+						<ClassName><![CDATA[Tank]]></ClassName>
+					</ActiveObjectClass>
+					<GenericParameterSubstitute>
+						<GenericParameterSubstituteReference>
+							<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+							<ClassName><![CDATA[Tank]]></ClassName>
+							<ItemName><![CDATA[1412618001571]]></ItemName>
+						</GenericParameterSubstituteReference>
+					</GenericParameterSubstitute>
+					<Parameters>
+						<Parameter>
+							<Name><![CDATA[capacity]]></Name>
+							<Value Class="CodeUnitValue">
+								<Code><![CDATA[10000]]></Code>
+								<Unit Class="AmountUnits"><![CDATA[KILOGRAM]]></Unit>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[initialAmount]]></Name>
+							<Value Class="CodeUnitValue">
+								<Code><![CDATA[0]]></Code>
+								<Unit Class="AmountUnits"><![CDATA[KILOGRAM]]></Unit>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[limitRateOut]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[maxRateOut]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[customPriority]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[priorityOutCustom]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[customInitialBatch]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[initialBatch]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[customInitialBatchColor]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[initialBatchColor]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[modeOutputBatch]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[outputBatch]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[customOutputBatchColor]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[outputBatchColor]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[storageTank]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[storageTank]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[showBatchesInFlowchart]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onFull]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onEmpty]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[actionOnAbove]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[amountAbove]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onAbove]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[actionOnBelow]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[amountBelow]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onBelow]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onNewBatchIn]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onNewBatchOut]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onRateChange]]></Name>
+						</Parameter>
+					</Parameters>
+					<ReplicationFlag>false</ReplicationFlag>
+					<Replication Class="CodeValue">
+						<Code><![CDATA[100]]></Code>
+					</Replication>
+					<CollectionType>ARRAY_LIST_BASED</CollectionType>
+					<InitialLocationType>XYZ</InitialLocationType>
+					<XCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</XCode>
+					<YCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</YCode>
+					<ZCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ZCode>
+					<ColumnCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ColumnCode>
+					<RowCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</RowCode>
+					<LocationNameCode Class="CodeValue">
+						<Code><![CDATA[""]]></Code>
+					</LocationNameCode>
+					<InitializationType>SPECIFIED_NUMBER</InitializationType>
+					<InitializationDatabaseTableQuery>
+						<Id>1169735939972</Id>
+						<TableReference>
+						</TableReference>
+					</InitializationDatabaseTableQuery>
+					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+					<QuantityColumn>
+					</QuantityColumn>
+				</EmbeddedObject>
+				<EmbeddedObject>
+					<Id>1527509334593</Id>
+					<Name><![CDATA[grainIn]]></Name>
+					<X>-480</X><Y>-410</Y>
+					<Label><X>-15</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+						<ClassName><![CDATA[FluidEnter]]></ClassName>
+					</ActiveObjectClass>
+					<GenericParameterSubstitute>
+						<GenericParameterSubstituteReference>
+							<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+							<ClassName><![CDATA[FluidEnter]]></ClassName>
+							<ItemName><![CDATA[1414749060515]]></ItemName>
+						</GenericParameterSubstituteReference>
+					</GenericParameterSubstitute>
+					<Parameters>
+						<Parameter>
+							<Name><![CDATA[limitRateOut]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[maxRateOut]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[showBatchesInFlowchart]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onNewBatchOut]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onRateChange]]></Name>
+						</Parameter>
+					</Parameters>
+					<ReplicationFlag>false</ReplicationFlag>
+					<Replication Class="CodeValue">
+						<Code><![CDATA[100]]></Code>
+					</Replication>
+					<CollectionType>ARRAY_LIST_BASED</CollectionType>
+					<InitialLocationType>XYZ</InitialLocationType>
+					<XCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</XCode>
+					<YCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</YCode>
+					<ZCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ZCode>
+					<ColumnCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ColumnCode>
+					<RowCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</RowCode>
+					<LocationNameCode Class="CodeValue">
+						<Code><![CDATA[""]]></Code>
+					</LocationNameCode>
+					<InitializationType>SPECIFIED_NUMBER</InitializationType>
+					<InitializationDatabaseTableQuery>
+						<Id>1169735939971</Id>
+						<TableReference>
+						</TableReference>
+					</InitializationDatabaseTableQuery>
+					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+					<QuantityColumn>
+					</QuantityColumn>
+				</EmbeddedObject>
+				<EmbeddedObject>
+					<Id>1527597182634</Id>
+					<Name><![CDATA[pipeline]]></Name>
+					<X>-400</X><Y>-410</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+						<ClassName><![CDATA[Pipeline]]></ClassName>
+					</ActiveObjectClass>
+					<GenericParameterSubstitute>
+						<GenericParameterSubstituteReference>
+							<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+							<ClassName><![CDATA[Pipeline]]></ClassName>
+							<ItemName><![CDATA[1412618001587]]></ItemName>
+						</GenericParameterSubstituteReference>
+					</GenericParameterSubstitute>
+					<Parameters>
+						<Parameter>
+							<Name><![CDATA[capacity]]></Name>
+							<Value Class="CodeUnitValue">
+								<Code><![CDATA[100]]></Code>
+								<Unit Class="AmountUnits"><![CDATA[KILOGRAM]]></Unit>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[initialAmount]]></Name>
+							<Value Class="CodeUnitValue">
+								<Code><![CDATA[0]]></Code>
+								<Unit Class="AmountUnits"><![CDATA[KILOGRAM]]></Unit>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[limitRate]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[maxRate]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[customPriority]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[priorityOutCustom]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[customInitialBatch]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[initialBatch]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[customInitialBatchColor]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[initialBatchColor]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[pipe]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[pipe1]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[showBatchesInFlowchart]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onFull]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onNewBatchIn]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onNewBatchOut]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onRateChange]]></Name>
+						</Parameter>
+					</Parameters>
+					<ReplicationFlag>false</ReplicationFlag>
+					<Replication Class="CodeValue">
+						<Code><![CDATA[100]]></Code>
+					</Replication>
+					<CollectionType>ARRAY_LIST_BASED</CollectionType>
+					<InitialLocationType>XYZ</InitialLocationType>
+					<XCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</XCode>
+					<YCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</YCode>
+					<ZCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ZCode>
+					<ColumnCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ColumnCode>
+					<RowCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</RowCode>
+					<LocationNameCode Class="CodeValue">
+						<Code><![CDATA[""]]></Code>
+					</LocationNameCode>
+					<InitializationType>SPECIFIED_NUMBER</InitializationType>
+					<InitializationDatabaseTableQuery>
+						<Id>1169735939970</Id>
 						<TableReference>
 						</TableReference>
 					</InitializationDatabaseTableQuery>
@@ -4416,7 +5329,7 @@ de la Cosechadora]]></Text>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<YCode><![CDATA[91 * ( 1 - nivelSilo / CapacidadSilo )]]></YCode>
+					<YCode><![CDATA[91 * ( 1 - bin.amount() / bin.capacity )]]></YCode>
 					<EmbeddedIcon>false</EmbeddedIcon>
 					<Z>0</Z>
 					<ZHeight>1</ZHeight>
@@ -4426,7 +5339,7 @@ de la Cosechadora]]></Text>
 					<LineStyle>SOLID</LineStyle>
 					<Width>84</Width>
 					<Height>91</Height>
-					<HeightCode><![CDATA[nivelSilo / CapacidadSilo * 91]]></HeightCode>
+					<HeightCode><![CDATA[bin.amount() / bin.capacity * 91]]></HeightCode>
 					<Rotation>0.0</Rotation>
 					<FillColor>-16744448</FillColor>
 					<FillMaterial>null</FillMaterial>
@@ -4443,7 +5356,7 @@ de la Cosechadora]]></Text>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<VisibleCode><![CDATA[tasaSilo > 0]]></VisibleCode>
+					<VisibleCode><![CDATA[grainIn.out.rate() > 0]]></VisibleCode>
 					<EmbeddedIcon>false</EmbeddedIcon>
 					<Z>0</Z>
 					<ZHeight>1</ZHeight>
@@ -5215,51 +6128,6 @@ de la Cosechadora]]></Text>
 			<CurrentLevel>1567517860769</CurrentLevel>
 			<ConnectionsId>1385550499657</ConnectionsId>
 			<Variables>
-				<Variable Class="PlainVariable">
-					<Id>1786000000201</Id>
-					<Name><![CDATA[nivel]]></Name>
-					<X>750</X><Y>260</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[0]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1786000000202</Id>
-					<Name><![CDATA[tasaActual]]></Name>
-					<X>750</X><Y>300</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[0]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1786000000203</Id>
-					<Name><![CDATA[tUltimo]]></Name>
-					<X>750</X><Y>340</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[0]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
 				<Variable Class="Parameter">
 					<Id>1169735952750</Id>
 					<Name><![CDATA[Capacity]]></Name>
@@ -5360,7 +6228,120 @@ de la Cosechadora]]></Text>
 						</ParameterEditor>
 					</Properties>                 
 				</Variable>
+							<Variable Class="PlainVariable">
+					<Id>1786000000201</Id>
+					<Name><![CDATA[nivel]]></Name>
+					<X>750</X><Y>260</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1786000000202</Id>
+					<Name><![CDATA[tasaActual]]></Name>
+					<X>750</X><Y>300</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1786000000203</Id>
+					<Name><![CDATA[tUltimo]]></Name>
+					<X>750</X><Y>340</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
 			</Variables>
+			<Connectors>
+				<Connector>
+					<Id>1527509321737</Id>
+					<Name><![CDATA[connector]]></Name>
+					<X>450</X><Y>50</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<SourceEmbeddedObjectReference>
+						<PackageName><![CDATA[harvest_simulator]]></PackageName>
+						<ClassName><![CDATA[Truck]]></ClassName>
+						<ItemName><![CDATA[grainIn]]></ItemName>
+					</SourceEmbeddedObjectReference>
+					<SourceConnectableItemReference>
+						<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+						<ClassName><![CDATA[FluidEnter]]></ClassName>
+						<ItemName><![CDATA[out]]></ItemName>
+					</SourceConnectableItemReference>
+					<TargetEmbeddedObjectReference>
+						<PackageName><![CDATA[harvest_simulator]]></PackageName>
+						<ClassName><![CDATA[Truck]]></ClassName>
+						<ItemName><![CDATA[tank]]></ItemName>
+					</TargetEmbeddedObjectReference>
+					<TargetConnectableItemReference>
+						<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+						<ClassName><![CDATA[Tank]]></ClassName>
+						<ItemName><![CDATA[in]]></ItemName>
+					</TargetConnectableItemReference>
+					<Points>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>60</X><Y>0</Y></Point>
+					</Points>
+				</Connector>
+				<Connector>
+					<Id>1527509321739</Id>
+					<Name><![CDATA[connector1]]></Name>
+					<X>600</X><Y>100</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<SourceEmbeddedObjectReference>
+						<PackageName><![CDATA[harvest_simulator]]></PackageName>
+						<ClassName><![CDATA[Truck]]></ClassName>
+						<ItemName><![CDATA[grainOut]]></ItemName>
+					</SourceEmbeddedObjectReference>
+					<SourceConnectableItemReference>
+						<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+						<ClassName><![CDATA[FluidExit]]></ClassName>
+						<ItemName><![CDATA[in]]></ItemName>
+					</SourceConnectableItemReference>
+					<TargetEmbeddedObjectReference>
+						<PackageName><![CDATA[harvest_simulator]]></PackageName>
+						<ClassName><![CDATA[Truck]]></ClassName>
+						<ItemName><![CDATA[tank]]></ItemName>
+					</TargetEmbeddedObjectReference>
+					<TargetConnectableItemReference>
+						<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+						<ClassName><![CDATA[Tank]]></ClassName>
+						<ItemName><![CDATA[out]]></ItemName>
+					</TargetConnectableItemReference>
+					<Points>
+						<Point><X>0</X><Y>0</Y></Point>
+						<Point><X>-60</X><Y>0</Y></Point>
+					</Points>
+				</Connector>
+			</Connectors>
 			<StatechartElements>
 				<StatechartElement Class="State" ParentState="ROOT_NODE">
 					<Id>1169735952745</Id>
@@ -5397,16 +6378,15 @@ de la Cosechadora]]></Text>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="110" Height="30">
-						<EntryAction><![CDATA[actualizarNivel();
-tasaActual = -UnloadingRate / second();
-tUltimo = time();
-main.actualizarSilo();
-main.tasaSilo = UnloadingRate / second();
-main.tUltimoSilo = time();]]></EntryAction>
-						<ExitAction><![CDATA[actualizarNivel();
+						<EntryAction><![CDATA[grainOut.connect( main.grainIn );
+actualizarNivel();
+tasaActual = -UnloadingRate;
+tUltimo = time();]]></EntryAction>
+						<ExitAction><![CDATA[grainOut.disconnect();
+actualizarNivel();
 tasaActual = 0;
-main.actualizarSilo();
-main.tasaSilo = 0;]]></ExitAction>
+if ( abs( nivel - tank.amount() ) > 0.01 )
+	traceln( "DESVIO truck(descarga) t=" + time() + " nivel=" + nivel + " tank=" + tank.amount() );]]></ExitAction>
 						<FillColor>-10496</FillColor>
 					</Properties>
 				</StatechartElement>
@@ -5447,11 +6427,12 @@ main.tasaSilo = 0;]]></ExitAction>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="110" Height="30">
 						<EntryAction><![CDATA[actualizarNivel();
-tasaActual = main.cart.UnloadingRate / second();
-tUltimo = time();
-if ( inState( AtField ) ) { transition5.cancel(); transition5.start(); }]]></EntryAction>
+tasaActual = main.cart.UnloadingRate;
+tUltimo = time();]]></EntryAction>
 						<ExitAction><![CDATA[actualizarNivel();
-tasaActual = 0;]]></ExitAction>
+tasaActual = 0;
+if ( abs( nivel - tank.amount() ) > 0.01 )
+	traceln( "DESVIO truck(carga) t=" + time() + " nivel=" + nivel + " tank=" + tank.amount() );]]></ExitAction>
 						<FillColor>-6632142</FillColor>
 					</Properties>
 				</StatechartElement>
@@ -5546,10 +6527,10 @@ tasaActual = 0;]]></ExitAction>
 						<Point><X>0</X><Y>40</Y></Point>
 					</Points>
 					<IconOffset>14.0</IconOffset>
-					<Properties Source="1169735952745" Target="1169735952748" Trigger="timeout">
+					<Properties Source="1169735952745" Target="1169735952748" Trigger="message">
 						<Timeout Class="CodeUnitValue">
-							<Code><![CDATA[tasaActual > 0 ? ( ( Capacity - nivel ) / tasaActual ) / second() : 1e12]]></Code>
-							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
 						</Timeout>
 						<Condition><![CDATA[true]]></Condition>
 						<Rate Class="CodeUnitValue">
@@ -5609,10 +6590,10 @@ tasaActual = 0;]]></ExitAction>
 						<Point><X>0</X><Y>40</Y></Point>
 					</Points>
 					<IconOffset>14.0</IconOffset>
-					<Properties Source="1169735952747" Target="1169735952746" Trigger="timeout">
+					<Properties Source="1169735952747" Target="1169735952746" Trigger="message">
 						<Timeout Class="CodeUnitValue">
-							<Code><![CDATA[tasaActual < 0 ? ( nivel / -tasaActual ) / second() : 1e12]]></Code>
-							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
 						</Timeout>
 						<Condition><![CDATA[true]]></Condition>
 						<Rate Class="CodeUnitValue">
@@ -5701,7 +6682,6 @@ tasaActual = 0;]]></ExitAction>
 					</Points>
 					<IconOffset>14.0</IconOffset>
 					<Properties Source="1169735952743" Target="1169735952744" Trigger="message">
-						<Action><![CDATA[if ( inState( AtField ) ) { transition5.cancel(); transition5.start(); }]]></Action>
 						<Timeout Class="CodeUnitValue">
 							<Code><![CDATA[1]]></Code>
 							<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
@@ -5734,7 +6714,7 @@ tasaActual = 0;]]></ExitAction>
 
 ]]></Body>
 				</Function>
-				<Function AccessType="default" StaticFunction="false">
+							<Function AccessType="default" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[void]]></ReturnType>
 					<Id>1786000000204</Id>
@@ -5744,12 +6724,10 @@ tasaActual = 0;]]></ExitAction>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[// integra el nivel en unidades de tiempo del modelo
+					<Body><![CDATA[// integra el nivel en unidades de tiempo del modelo,
+// misma convencion de tasa que usa la Fluid Library
 double dt = time() - tUltimo;
-double bruto = nivel + tasaActual * dt;
-if ( bruto > Capacity ) { main.masaDescartada += bruto - Capacity; bruto = Capacity; }
-if ( bruto < 0 )        { main.masaInventada  += -bruto;           bruto = 0; }
-nivel = bruto;
+nivel = max( 0.0, min( Capacity, nivel + tasaActual * dt ) );
 tUltimo = time();]]></Body>
 				</Function>
 			</Functions>
@@ -5795,6 +6773,302 @@ tUltimo = time();]]></Body>
 					</ActiveObjectClass>
 				</ContainerLink>
 			</ContainerLinks>
+			<EmbeddedObjects>
+				<EmbeddedObject>
+					<Id>1527509321711</Id>
+					<Name><![CDATA[tank]]></Name>
+					<X>510</X><Y>40</Y>
+					<Label><X>-5</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+						<ClassName><![CDATA[Tank]]></ClassName>
+					</ActiveObjectClass>
+					<GenericParameterSubstitute>
+						<GenericParameterSubstituteReference>
+							<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+							<ClassName><![CDATA[Tank]]></ClassName>
+							<ItemName><![CDATA[1412618001571]]></ItemName>
+						</GenericParameterSubstituteReference>
+					</GenericParameterSubstitute>
+					<Parameters>
+						<Parameter>
+							<Name><![CDATA[capacity]]></Name>
+							<Value Class="CodeUnitValue">
+								<Code><![CDATA[Capacity]]></Code>
+								<Unit Class="AmountUnits"><![CDATA[KILOGRAM]]></Unit>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[initialAmount]]></Name>
+							<Value Class="CodeUnitValue">
+								<Code><![CDATA[0]]></Code>
+								<Unit Class="AmountUnits"><![CDATA[KILOGRAM]]></Unit>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[limitRateOut]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[true]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[maxRateOut]]></Name>
+							<Value Class="CodeUnitValue">
+								<Code><![CDATA[UnloadingRate]]></Code>
+								<Unit Class="FlowRateUnits"><![CDATA[KILOGRAM_PER_SECOND]]></Unit>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[customPriority]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[priorityOutCustom]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[customInitialBatch]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[initialBatch]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[customInitialBatchColor]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[initialBatchColor]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[modeOutputBatch]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[outputBatch]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[customOutputBatchColor]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[outputBatchColor]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[storageTank]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[showBatchesInFlowchart]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onFull]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[send( "FULL", this );]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onEmpty]]></Name>
+							<Value Class="CodeValue">
+								<Code><![CDATA[send( "EMPTY", this );]]></Code>
+							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[actionOnAbove]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[amountAbove]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onAbove]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[actionOnBelow]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[amountBelow]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onBelow]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onNewBatchIn]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onNewBatchOut]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onRateChange]]></Name>
+						</Parameter>
+					</Parameters>
+					<ReplicationFlag>false</ReplicationFlag>
+					<Replication Class="CodeValue">
+						<Code><![CDATA[100]]></Code>
+					</Replication>
+					<CollectionType>ARRAY_LIST_BASED</CollectionType>
+					<InitialLocationType>XYZ</InitialLocationType>
+					<XCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</XCode>
+					<YCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</YCode>
+					<ZCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ZCode>
+					<ColumnCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ColumnCode>
+					<RowCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</RowCode>
+					<LocationNameCode Class="CodeValue">
+						<Code><![CDATA[""]]></Code>
+					</LocationNameCode>
+					<InitializationType>SPECIFIED_NUMBER</InitializationType>
+					<InitializationDatabaseTableQuery>
+						<Id>1169735939964</Id>
+						<TableReference>
+						</TableReference>
+					</InitializationDatabaseTableQuery>
+					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+					<QuantityColumn>
+					</QuantityColumn>
+				</EmbeddedObject>
+				<EmbeddedObject>
+					<Id>1527509321721</Id>
+					<Name><![CDATA[grainOut]]></Name>
+					<X>600</X><Y>90</Y>
+					<Label><X>-10</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+						<ClassName><![CDATA[FluidExit]]></ClassName>
+					</ActiveObjectClass>
+					<GenericParameterSubstitute>
+						<GenericParameterSubstituteReference>
+							<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+							<ClassName><![CDATA[FluidExit]]></ClassName>
+							<ItemName><![CDATA[1414747502602]]></ItemName>
+						</GenericParameterSubstituteReference>
+					</GenericParameterSubstitute>
+					<Parameters>
+						<Parameter>
+							<Name><![CDATA[fluidEnter]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[showBatchesInFlowchart]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onNewBatchIn]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onRateChange]]></Name>
+						</Parameter>
+					</Parameters>
+					<ReplicationFlag>false</ReplicationFlag>
+					<Replication Class="CodeValue">
+						<Code><![CDATA[100]]></Code>
+					</Replication>
+					<CollectionType>ARRAY_LIST_BASED</CollectionType>
+					<InitialLocationType>XYZ</InitialLocationType>
+					<XCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</XCode>
+					<YCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</YCode>
+					<ZCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ZCode>
+					<ColumnCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ColumnCode>
+					<RowCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</RowCode>
+					<LocationNameCode Class="CodeValue">
+						<Code><![CDATA[""]]></Code>
+					</LocationNameCode>
+					<InitializationType>SPECIFIED_NUMBER</InitializationType>
+					<InitializationDatabaseTableQuery>
+						<Id>1169735939963</Id>
+						<TableReference>
+						</TableReference>
+					</InitializationDatabaseTableQuery>
+					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+					<QuantityColumn>
+					</QuantityColumn>
+				</EmbeddedObject>
+				<EmbeddedObject>
+					<Id>1527509321728</Id>
+					<Name><![CDATA[grainIn]]></Name>
+					<X>420</X><Y>40</Y>
+					<Label><X>-10</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<ActiveObjectClass>
+						<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+						<ClassName><![CDATA[FluidEnter]]></ClassName>
+					</ActiveObjectClass>
+					<GenericParameterSubstitute>
+						<GenericParameterSubstituteReference>
+							<PackageName><![CDATA[com.anylogic.libraries.fluid]]></PackageName>
+							<ClassName><![CDATA[FluidEnter]]></ClassName>
+							<ItemName><![CDATA[1414749060515]]></ItemName>
+						</GenericParameterSubstituteReference>
+					</GenericParameterSubstitute>
+					<Parameters>
+						<Parameter>
+							<Name><![CDATA[limitRateOut]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[maxRateOut]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[showBatchesInFlowchart]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onNewBatchOut]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[onRateChange]]></Name>
+						</Parameter>
+					</Parameters>
+					<ReplicationFlag>false</ReplicationFlag>
+					<Replication Class="CodeValue">
+						<Code><![CDATA[100]]></Code>
+					</Replication>
+					<CollectionType>ARRAY_LIST_BASED</CollectionType>
+					<InitialLocationType>XYZ</InitialLocationType>
+					<XCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</XCode>
+					<YCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</YCode>
+					<ZCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ZCode>
+					<ColumnCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</ColumnCode>
+					<RowCode Class="CodeValue">
+						<Code><![CDATA[0]]></Code>
+					</RowCode>
+					<LocationNameCode Class="CodeValue">
+						<Code><![CDATA[""]]></Code>
+					</LocationNameCode>
+					<InitializationType>SPECIFIED_NUMBER</InitializationType>
+					<InitializationDatabaseTableQuery>
+						<Id>1169735939962</Id>
+						<TableReference>
+						</TableReference>
+					</InitializationDatabaseTableQuery>
+					<InitializationDatabaseType>ONE_AGENT_PER_DATABASE_RECORD</InitializationDatabaseType>
+					<QuantityColumn>
+					</QuantityColumn>
+				</EmbeddedObject>
+			</EmbeddedObjects>
 
 			<Presentation>
 				<Level>
@@ -6509,6 +7783,12 @@ de Operaciones Agricolas]]></Text>
 			<Location>FILE_SYSTEM</Location>
 		</Resource>
 	</ModelResources>
+    <RequiredLibraryReference>
+		<LibraryName><![CDATA[com.anylogic.libraries.fluid]]></LibraryName>
+		<VersionMajor>2</VersionMajor>
+		<VersionMinor>0</VersionMinor>
+		<VersionBuild>0</VersionBuild>
+    </RequiredLibraryReference>
     <RequiredLibraryReference>
 		<LibraryName><![CDATA[com.anylogic.libraries.modules.markup_descriptors]]></LibraryName>
 		<VersionMajor>1</VersionMajor>
