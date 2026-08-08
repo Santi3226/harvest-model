@@ -17,7 +17,7 @@ Materia de Simulación, carrera de Ingeniería en Sistemas (UTN Rosario).
 
 **Alcance real: el modelo cubre el proceso productivo integrado — siembra + crecimiento + cosecha.** No es solo siembra.
 
-**Entregables esperados.**
+**Resultados que el modelo tiene que poder mostrar.** Ojo: **no hay entregas por etapas.** La cursada tiene una sola presentación del trabajo completo. Esta lista son los resultados que esa presentación debe sostener, no hitos con fecha.
 1. Curvas de probabilidad de terminar la siembra dentro de la ventana objetivo (ej. antes del 15 de noviembre) bajo distintos escenarios climáticos históricos.
 2. Cuantificación de los cuellos de botella logísticos (tiempo de máquina parada esperando recarga).
 3. Análisis financiero de trade-off: costo de alquiler de maquinaria extra contra beneficio de evitar pérdidas de rendimiento.
