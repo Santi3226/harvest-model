@@ -26,6 +26,19 @@ Materia de Simulación, carrera de Ingeniería en Sistemas (UTN Rosario).
 
 ## 2. Entorno
 
+> **Hay dos máquinas.** Este documento se escribió en la de Ubuntu. Verificá en qué entorno estás antes de razonar sobre rutas: las de la sección 3 y el `javap` del aprendizaje 10 son de Linux y no existen en Windows.
+
+### Windows (agregado 2026-08-07)
+
+- **SO:** Windows 11 Pro. AnyLogic 8.9.9 PLE en `C:\Program Files\AnyLogic 8.9 Personal Learning Edition\`.
+- **Modelo:** `C:\Users\Santiago\Models\Optimización de la Ventana de Siembra\` (la carpeta **no** se llama `Harvest Simulator`).
+- **Workspace:** `C:\Users\Santiago\.AnyLogicPLE\Workspace8.8\Optimización de la Ventana de Siembra\`. Los `.java` de `src.generated\` son **stubs** de autocompletado (todo lanza `UnsupportedOperationException`): sirven para verificar nombres de estados y campos `Statechart`, no para leer lógica.
+- **`javap`:** `C:\Program Files\AnyLogic 8.9 Personal Learning Edition\jre\bin\javap.exe -classpath "C:\Program Files\AnyLogic 8.9 Personal Learning Edition\plugins\com.anylogic.engine_8.9.9.202607020720\com.anylogic.engine.jar" <clase>`. Algunas clases (`UtilitiesRandom`) no están en ese jar; para esas, armar el classpath desde el `.classpath` del proyecto del workspace.
+- **Se puede editar el `.alp` con AnyLogic abierto:** detecta el cambio externo y pide confirmación para recargar el modelo. No hace falta cerrarlo. Aun así conviene mirar el `.alp.autosave` antes de editar: si es más nuevo que el `.alp`, AnyLogic tiene estado en memoria sin volcar. Comparar los `<Id>` de ambos alcanza para saber si la diferencia es semántica o solo formato (AnyLogic re-serializa con su propia indentación y orden dentro de `<Variables>`).
+- Sin sesión de AnyLogic abierta el archivo no queda bloqueado; igual conviene respaldo fechado antes de cada edición.
+
+### Ubuntu
+
 - **SO:** Ubuntu 26.04 (GNOME sobre Wayland). **AnyLogic 8.9.9 Personal Learning Edition** instalado en `/home/renaiss/Descargas/anylogic`.
 - **Problema conocido:** en la sesión GNOME/Wayland, AnyLogic (SWT) no permite arrastrar bloques de la paleta al canvas, y los campos de texto tienen retardo y pierden caracteres (culpa de `ibus-daemon`).
 - **Solución que funciona:** iniciar sesión en **Xfce** (instalado con `sudo apt install xfce4`, manteniendo `gdm3` como gestor). Ahí el drag-and-drop anda bien.
@@ -39,12 +52,12 @@ Materia de Simulación, carrera de Ingeniería en Sistemas (UTN Rosario).
 
 ## 3. Archivos
 
-| Qué | Dónde |
-|---|---|
-| Modelo | `/home/renaiss/Models/Harvest Simulator/Optimización de la Ventana de Siembra.alp` |
-| Respaldos fechados | `.../Harvest Simulator/backups/` |
-| Plan de migración | `.../docs/superpowers/plans/2026-08-06-migracion-fluid-library.md` |
-| Este documento | `.../docs/CONTEXTO-TRASPASO.md` |
+| Qué | Dónde (Ubuntu) | Dónde (Windows) |
+|---|---|---|
+| Modelo | `/home/renaiss/Models/Harvest Simulator/Optimización de la Ventana de Siembra.alp` | `C:\Users\Santiago\Models\Optimización de la Ventana de Siembra\Optimización de la Ventana de Siembra.alp` |
+| Respaldos fechados | `.../Harvest Simulator/backups/` | `...\Optimización de la Ventana de Siembra\backups\` |
+| Plan de migración | `.../docs/superpowers/plans/2026-08-06-migracion-fluid-library.md` | ídem, relativo a la carpeta del modelo |
+| Este documento | `.../docs/CONTEXTO-TRASPASO.md` | ídem |
 
 La carpeta del modelo es un repositorio git.
 
@@ -103,6 +116,10 @@ Todos contradicen algún supuesto razonable y cada uno costó al menos una corri
 10. **Verificar APIs con `javap`**, no de memoria: `/home/renaiss/Descargas/anylogic/jre/bin/javap -classpath /home/renaiss/Descargas/anylogic/plugins/com.anylogic.engine_8.9.9.*/com.anylogic.engine.jar <clase>`.
 11. **El `.alp` es XML** y se puede editar con scripts de Python. Procedimiento seguro: copia de respaldo fechada → editar con reemplazos que aborten si el patrón no aparece exactamente una vez → validar con `xml.etree.ElementTree.parse`.
 12. **Límites de PLE:** 10 tipos de agente, 200 bloques por tipo, 50.000 agentes dinámicos.
+13. **Las transiciones por condición NO se re-evalúan cuando la variable la modifica otro agente.** AnyLogic las testea en momentos discretos, y uno garantizado es al entrar al estado de origen. Síntoma que costó una sesión: `Parked --[!main.siembraCompleta]--> GoingToField` disparaba en t=0 (porque al entrar a `Parked` la condición ya era verdadera) y **nunca más**, aunque `siembraCompleta` volviera a `false` 120 días después. La cosechadora quedaba estacionada para siempre. Solución: `Statechart.onChange()` (verificado con `javap`, es público) desde donde se modifica la variable. En el modelo hay dos: `combine.moveControl.onChange()` en la acción de `Maduro → SinSembrar`, y `cicloCultivo.onChange()` al final de `onCompleted()`. **Regla: toda condición que dependa de una variable de otro agente necesita su `onChange()` explícito.**
+14. **`SelectionModeForSimultaneousEvents` está en LIFO**, y eso rompe handshakes de dos mensajes emitidos en el mismo instante: el segundo enviado se procesa primero. Si el receptor todavía no está en el estado que escucha ese mensaje, **el mensaje se descarta en silencio** (una transición por mensaje no encola: si el estado no está activo, se pierde). Ver sección 8 para el caso concreto que fabricó 150 t de grano. **No cambiar a FIFO como arreglo**: sirve para confirmar un diagnóstico, pero tapa el handshake perdido y mueve el comportamiento de todo lo demás.
+15. **Validar que el XML parsea no alcanza** (complemento del aprendizaje 11). Un script previo insertó variables dentro de `<Variables>` con indentación disparatada: el archivo parseaba, AnyLogic lo aceptaba y lo normalizaba al re-serializar. Es inofensivo pero produce diffs de git ilegibles y confunde el próximo diagnóstico. Verificar además el **padre** en el que se inserta y la indentación.
+16. **`<Guard>` existe y es fácil pasarlo por alto.** `Cart.trImmedGotoUnloading` tiene `Trigger="timeout"` con timeout 0 **y** `<Guard>main.truck.atField()</Guard>`. Al auditar una transición hay que leer el `<Guard>` además del trigger, si no se razona sobre lógica que no es la real. Ojo: si la guarda es falsa al expirar el timeout, la transición no dispara y **no se reprograma** — por eso no conviene endurecer guardas sin verificar que exista otro camino de salida del estado (acá lo hay: `trTruckArrived` por mensaje).
 
 ---
 
@@ -165,26 +182,103 @@ totalCosechado == combine.nivel + cart.nivel + truck.nivel + nivelSilo + masaDes
 - La cosechadora seguía cosechando con la tolva llena y la máquina detenida → `FullWaitCart` pone las tasas en cero.
 - El acople cosechadora–carro no conservaba: se resolvió con **volcado por lote** (al acoplarse se mueve `min(tolva, espacio en el carro)` de una variable a la otra en el mismo instante) más **régimen de goteo** (mientras siguen acoplados el carro recibe exactamente `tasaCosecha`).
 
-**Pendiente conocido:** queda una fuga **constante** de −2500, que era exactamente la capacidad vieja del camión. Aparece desde la primera campaña y no crece. Hipótesis a verificar: si tras el cambio a 50 t pasa a −50.000, el artefacto está atado a una carga de camión.
+### La FUGA: diagnosticada 2026-08-07
+
+**La hipótesis de "una carga de camión" era incorrecta.** Tras corregir los overrides, la fuga pasó a **−150.000** (no a −50.000), idéntica en las dos campañas. Son **tres** cargas de camión, y el signo importa: `enSistema` > `cosechado`, así que la masa se **fabrica**, no se pierde.
+
+**Cómo se identificó.** Por los intervalos entre viajes de la campaña 1. A 4,1 kg/s de tasa de cosecha, juntar 50.000 kg lleva 3,4 h. Los viajes 3, 6 y 9 llegaron **39 minutos** después del anterior con carga al 100%: imposible. La campaña 2 no tiene ningún gap de 39 min (todos entre 2,9 y 4,5 h) y por eso la fuga no creció. Reconciliación: campaña 1 = 6 viajes reales × 50.000 + ~13.200 en tolvas = 313.200 = `totalCosechado`, más 3 viajes fantasma × 50.000 = 150.000 fabricados.
+
+**Mecanismo (carrera perdida por LIFO, ver aprendizaje 14).** Con el carro vacío en `WaitTruck` y el camión en `WaitCart`:
+
+1. `trImmedGotoUnloading` (timeout 0, guarda `main.truck.atField()` verdadera) mete al carro en `Unloading`.
+2. El entry de `Cart.Unloading` envía `START_LOADING`, fija `tasaActual = -150 kg/s` y rearma `trBecameEmpty` con timeout `nivel / 150` = **0**, porque el carro está vacío.
+3. `trBecameEmpty` dispara en el mismo instante: el carro sale de `AtUnloading` y envía `FINISHED_LOADING`.
+4. **LIFO:** `FINISHED_LOADING` se procesa primero, llega al camión todavía en `WaitCart`, no hay transición que lo escuche → se descarta.
+5. Después llega `START_LOADING` → el camión entra a `Loading` con `tasaActual = +150 kg/s` y `transition5` rearmada a `(50.000 − nivel)/150 ≈ 333 s`.
+6. Nadie está descargando. El camión se llena **de la nada** en 333 s y se va al silo con 50.000 kg inexistentes.
+
+Cronómetro: 333 s de llenado + 500 s de descarga (50.000 ÷ 100 kg/s) + los dos viajes ≈ 39 min. Coincide.
+
+`masaInventada` no lo detectó porque ese contador solo salta cuando un nivel se iría a **negativo**; acá la masa se crea en positivo sin tocar ningún clamp.
+
+**Mitigación aplicada** (`backups/2026-08-07-pre-conservacion-camion.alp`): el entry de `Truck.Loading` ya no latchea la tasa, la deriva del estado real del carro:
+
+```java
+tasaActual = main.cart.inState( Cart.Unloading ) ? main.cart.UnloadingRate / second() : 0;
+```
+
+Un `FINISHED_LOADING` perdido ya no puede dejar al camión acumulando de la nada.
+
+**Esa mitigación cortó la fabricación pero abrió el bug espejo**, confirmado en la corrida siguiente: la fuga cambió de signo a **+20.000**, exactamente la capacidad del carro. Una carga completa de carro drenando contra un camión que quedó en `Loading` con tasa 0.
+
+> **Corrección importante para no confiarse:** se había predicho que esa pérdida quedaría registrada en `masaInventada`. **No queda.** Ese contador solo salta cuando un nivel se iría por debajo de cero, y acá el carro baja de 20.000 a 0 legítimamente. `masaInventada` y `masaDescartada` **detectan** el desbalance por agregado pero **no lo localizan**, y hay pérdidas que no tocan ningún clamp. Para localizar haría falta un libro mayor por recipiente (entró / salió).
+
+**Arreglo aplicado** (`backups/2026-08-07-pre-tasas-apareadas.alp`). La causa de fondo era que **las tasas se latchean al entrar al estado y nadie las re-evalúa cuando el otro agente cambia de estado**. El eslabón cosechadora→carro nunca tuvo el problema porque la cosechadora fija **las dos** tasas (ver entry/exit de `Combine.WithCart`). Se portó ese patrón: ahora `Cart.Unloading` fija también la del camión, al entrar y al salir.
+
+Dos detalles del arreglo, ambos deliberados:
+- **`main.truck.transition5` se rearma solo desde el entry, nunca desde el exit.** Si el carro sale *porque* el camión se llenó (`transition5` → `TRUCK_DEPARTED` → `trTruckDeparted`), rearmar en el exit cancelaría la transición que está disparando → `RuntimeException` del aprendizaje 2.
+- Como consecuencia, `transition5` puede disparar con el camión parcialmente cargado. **No viola conservación**, pero puede generar viajes con carga parcial. Si aparecen cargas al 60-80% en el log, es esto y no un bug de masa.
+
+La guarda de `Truck.Loading` se dejó puesta como respaldo: es consistente con el nuevo esquema y cubre el caso de que el camión entre a `Loading` sin que el carro esté descargando.
+
+### ✅ VERIFICADO — la cadena conserva masa (corrida 3, 2026-08-07)
+
+```
+Campaña 1: cosechado=313.199,9999999996  enSistema=313.200,00000000186  FUGA=-8,4e-11  (-2,7e-14 %)
+Campaña 2: cosechado=626.400,000000174   enSistema=626.400,00000014     FUGA=+2,7e-10  (+4,2e-14 %)
+```
+
+Catorce órdenes de magnitud por debajo de lo relevante: es ruido de punto flotante, no un desbalance. **La cadena campo → cosechadora → carro → camión → silo conserva masa en las dos campañas.**
+
+El efecto lateral que se temía (viajes con carga parcial por no rearmar `transition5` en el exit) **no se materializó**: los 12 viajes salieron al 100%. Si en calibraciones futuras aparecen cargas parciales, revisar esto antes de sospechar de la masa.
+
+**No se aplicó el cambio a `trImmedGotoUnloading`** que se había propuesto (timeout `nivel > 0 ? 0 : 1e12`): al descubrir que la transición ya tiene `<Guard>`, endurecerla arriesga dejar al carro varado en `WaitTruck`, porque una guarda falsa al expirar el timeout no se reprograma (aprendizaje 16).
 
 **Contadores adicionales:** `horasCosechando`, `horasDetenida`, `viajesCamion` en Main, más un `traceln` por viaje del camión con su carga y un resumen por campaña.
 
 ---
 
-## 9. Última medición y qué falta verificar
+## 9. Última medición (2026-08-07, tras corregir overrides)
 
-Con el bug del camión de 2.500 kg todavía presente:
+Corrida de dos campañas. **Los overrides de instancia eran el cuello de botella y quedó demostrado:**
+
+| Métrica | Antes | Después |
+|---|---|---|
+| Viajes de camión (campaña 1) | 120 × 2.500 kg | **9** × 50.000 kg |
+| Uso de la cosechadora | 25% | **91%** |
+| Labor efectiva | 21,09 h | 21,09 h (sin cambios, como se esperaba) |
+| Detenida | 61,44 h | **1,89 h** |
 
 ```
-120 viajes × 2.500 kg = 300.000 kg
-cosechando = 21,09 h | detenida = 61,44 h | uso = 25%
+Corrida 1 (solo overrides corregidos):
+  Campaña 1: cosechando=21,09 h | detenida=1,89 h  | uso=91% | viajes=9
+             FUGA = -150.000  <- 3 viajes fantasma, ver seccion 8
+  Campaña 2: detenida=2631,60 h | uso=1%           <- bug de la metrica
+
+Corrida 2 (+ guarda de Truck.Loading, + reinicio de tUltimoEstado):
+  Campaña 1: cosechando=21,09 h | detenida=1,82 h  | uso=92% | viajes=5
+  Campaña 2: cosechando=42,18 h | detenida=3,57 h  | uso=92% | viajes=11
+             FUGA = +20.000  <- cambio de signo: bug espejo, ver seccion 8
+  Gaps entre viajes: 2,89 / 5,75 / 4,40 / 3,02 h -> NINGUNO de ~39 min. Fantasmas eliminados.
+
+Corrida 3 (+ tasas apareadas en Cart.Unloading):   <-- ESTADO ACTUAL, todo verde
+  Campaña 1: cosechando=21,09 h | detenida=1,89 h | uso=91% | viajes=6
+  Campaña 2: cosechando=42,18 h | detenida=3,73 h | uso=91% | viajes=12 (6 en la campaña)
+             FUGA = -8,4e-11 y +2,7e-10  -> ruido de punto flotante. CONSERVA.
+  Las dos campañas idénticas: 21,09 h de labor, 91% de uso, 6 viajes cada una.
 ```
 
-La campaña tardaba 82,5 h porque el camión hacía 120 viajes de ~41 min. **Ya se corrigieron los overrides de instancia (camión 50 t, carro 15 km/h) pero el modelo NO se volvió a correr.** Lo primero que hay que hacer es correr y mirar:
+**Heurística de diagnóstico que funcionó tres veces:** cuando la `FUGA` no es ruido, su magnitud es un **múltiplo exacto de la capacidad de un recipiente**, y eso identifica el eslabón roto sin buscar a ciegas. −150.000 fueron 3 camiones (50.000); +20.000 fue 1 carro (20.000). Capacidades: 9.000 cosechadora / 20.000 carro / 50.000 camión.
 
-- `viajes camion` debería bajar a ~6-7.
-- `uso` debería subir bien por encima del 25%.
-- La `FUGA`: si pasa a −50.000, el artefacto es una carga de camión.
+### Segundo bug encontrado en esta corrida: la métrica de uso está mal
+
+`detenida = 2631,6 h` en la campaña 2 son **109,65 días**: el período de maduración. `horasDetenida` acumula en el entry de `MoveHarvesting` todo el tiempo desde `tUltimoEstado`, así que los meses con la máquina en `Parked` se le imputan como tiempo parado. De ahí el `uso = 1%`.
+
+Además los dos contadores son **acumulados de por vida**: `cosechando = 42,18 h` de la campaña 2 es 2 × 21,09. El bloque rotulado `CAMPANIA` reporta totales históricos, no la campaña.
+
+**Corregido:** el entry de `Combine.GoingToField` ahora hace `tUltimoEstado = time();`, así la ventana de maduración deja de imputarse a la máquina. Verificado: `detenida` en la campaña 2 bajó de **2631,60 h a 3,57 h** y el uso quedó estable en 92% en ambas campañas.
+
+**Pendiente:** reportar por campaña en vez de acumulado. Requiere variables nuevas en `Main` para la foto de los contadores al inicio de cada campaña, e imprimir el delta en `auditarMasa()`. Los números confiables hoy son los de la campaña 1.
 
 ---
 
@@ -192,7 +286,10 @@ La campaña tardaba 82,5 h porque el camión hacía 120 viajes de ~41 min. **Ya 
 
 En orden de valor recomendado:
 
-1. **Verificar la corrida** tras la corrección de overrides (punto 9).
+1. ~~Verificar la corrida tras la corrección de overrides~~ — **hecho 2026-08-07**, ver sección 9. Dejó dos pendientes concretos:
+   - ~~Cerrar el eslabón carro→camión~~ — **aplicado y verificado 2026-08-07** (tasas apareadas en `Cart.Unloading`, sección 8).
+   - ~~Verificar la `FUGA`~~ — **cerrada**: ruido de punto flotante en las dos campañas. **La base de logística ya es confiable**, se puede calibrar y medir sobre ella.
+   - Queda abierto, menor: reportar los contadores **por campaña** en vez de acumulado (sección 9). Requiere variables nuevas en `Main` para la foto al inicio de cada campaña.
 2. **Fallas de máquina.** Diseño listo, sin implementar. Tercer statechart paralelo en `Combine` (junto a `tankControl` y `moveControl`): `Operativa ──[timeout horasHastaFalla]──> Reparando ──[timeout duracionReparacion]──> Operativa`. El reloj de desgaste se consume **solo mientras la máquina trabaja**, acoplado a `MoveHarvesting` con el mismo patrón que los niveles, y el timeout se expresa `inState( MoveHarvesting ) ? horasHastaFalla : 1e12`. **Detalle de orden importante:** el `STOP` lo manda `Reparando` al entrar, no la transición de falla, para que el rearmado guardado de `MoveHarvesting` se saltee solo y no haya `cancel()` sobre una transición que está disparando.
    - **Distribución:** exponencial con MTBF en **horas de operación** (justificable por superposición de procesos de falla, teorema de Drenick). Weibull con β>1 solo si se declara explícitamente el supuesto de reparación perfecta; para desgaste acumulado real el modelo correcto sería un proceso de Poisson no homogéneo con ley de potencia.
    - **Parámetros:** MTBF del orden de 20-40 h de operación (estudios de cosechadoras reportan MTBF por subsistema de 15 a 72 h; referencia oficial: ASABE D497.7). Reparación asimétrica a derecha, ej. `triangular(0.5, 8, 2)` horas. Costo = fijo + horario.

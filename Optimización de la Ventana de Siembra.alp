@@ -293,11 +293,23 @@
 // hay que avisarle para que entre en Loading y acumule
 send( "START_LOADING", main.truck );
 actualizarNivel();
+main.truck.actualizarNivel();
+// El carro fija LAS DOS tasas. Si solo fijara la propia, un START_LOADING perdido
+// (camion ya en Loading) lo haria drenar contra un camion que no acumula:
+// -20.000 kg por carga, y ningun clamp lo registra porque el nivel no cruza cero.
 tasaActual = -UnloadingRate / second();
+main.truck.tasaActual = UnloadingRate / second();
 tUltimo = time();
-if ( inState( AtUnloading ) ) { trBecameEmpty.cancel(); trBecameEmpty.start(); }]]></EntryAction>
+main.truck.tUltimo = time();
+if ( inState( AtUnloading ) ) { trBecameEmpty.cancel(); trBecameEmpty.start(); }
+if ( main.truck.inState( Truck.Loading ) ) { main.truck.transition5.cancel(); main.truck.transition5.start(); }]]></EntryAction>
 						<ExitAction><![CDATA[actualizarNivel();
-tasaActual = 0;]]></ExitAction>
+tasaActual = 0;
+// corta el acople en los dos lados. transition5 NO se rearma aca a proposito:
+// si el carro sale porque el camion se lleno, transition5 es la que esta disparando
+// y cancelarla tira RuntimeException (aprendizaje 2 del contexto).
+main.truck.actualizarNivel();
+main.truck.tasaActual = 0;]]></ExitAction>
 						<FillColor>-10496</FillColor>
 					</Properties>
 				</StatechartElement>
@@ -1768,6 +1780,9 @@ send( "CHANGED_DIRECTION", main.cart );]]></EntryAction>
 double x = Field.getX() + RowWidth / 2; //half width of combine
 double y = Field.getY() + Field.getHeight();
 moveTo( x, y );
+// arranca la campania: los meses de maduracion con la maquina en Parked
+// no son tiempo detenido, no se le imputan al uso
+tUltimoEstado = time();
 ]]></EntryAction>
 						<FillColor>-10496</FillColor>
 					</Properties>
@@ -5538,7 +5553,9 @@ main.tasaSilo = 0;]]></ExitAction>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="110" Height="30">
 						<EntryAction><![CDATA[actualizarNivel();
-tasaActual = main.cart.UnloadingRate / second();
+// la tasa solo vale si el carro esta realmente descargando: sin esta guarda,
+// un FINISHED_LOADING perdido por LIFO deja al camion acumulando de la nada
+tasaActual = main.cart.inState( Cart.Unloading ) ? main.cart.UnloadingRate / second() : 0;
 tUltimo = time();
 if ( inState( AtField ) ) { transition5.cancel(); transition5.start(); }]]></EntryAction>
 						<ExitAction><![CDATA[actualizarNivel();

@@ -1424,21 +1424,6 @@ final static CellDirection NOTSTARTED = null;
 						</InitialValue>
 					</Properties>
 				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1786000000504</Id>
-					<Name><![CDATA[tUltimoEstado]]></Name>
-					<X>950</X><Y>420</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[0]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
 				<Variable Class="Parameter">
 					<Id>1169735952567</Id>
 					<Name><![CDATA[Capacity]]></Name>
@@ -1591,6 +1576,21 @@ final static CellDirection NOTSTARTED = null;
 							<DelimeterType>NO_DELIMETER</DelimeterType>
 						</ParameterEditor>
 					</Properties>                 
+				</Variable>
+							<Variable Class="PlainVariable">
+					<Id>1786000000504</Id>
+					<Name><![CDATA[tUltimoEstado]]></Name>
+					<X>950</X><Y>420</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
 				</Variable>
 			</Variables>
 			<StatechartElements>
@@ -1768,9 +1768,6 @@ send( "CHANGED_DIRECTION", main.cart );]]></EntryAction>
 double x = Field.getX() + RowWidth / 2; //half width of combine
 double y = Field.getY() + Field.getHeight();
 moveTo( x, y );
-// arranca la campania: los meses de maduracion con la maquina en Parked
-// no son tiempo detenido, no se le imputan al uso
-tUltimoEstado = time();
 ]]></EntryAction>
 						<FillColor>-10496</FillColor>
 					</Properties>
@@ -3032,51 +3029,6 @@ for( int i=0; i<Xunits.length; i++ ) {
 						</InitialValue>
 					</Properties>
 				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1786000000501</Id>
-					<Name><![CDATA[horasCosechando]]></Name>
-					<X>950</X><Y>-160</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[0]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1786000000502</Id>
-					<Name><![CDATA[horasDetenida]]></Name>
-					<X>950</X><Y>-120</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[0]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1786000000503</Id>
-					<Name><![CDATA[viajesCamion]]></Name>
-					<X>950</X><Y>-80</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[0]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
 				<Variable Class="Parameter">
 					<Id>1169735952668</Id>
 					<Name><![CDATA[HarvestDensity]]></Name>
@@ -3206,6 +3158,51 @@ for( int i=0; i<Xunits.length; i++ ) {
 							<DelimeterType>NO_DELIMETER</DelimeterType>
 						</ParameterEditor>
 					</Properties>                 
+				</Variable>
+							<Variable Class="PlainVariable">
+					<Id>1786000000501</Id>
+					<Name><![CDATA[horasCosechando]]></Name>
+					<X>950</X><Y>-160</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1786000000502</Id>
+					<Name><![CDATA[horasDetenida]]></Name>
+					<X>950</X><Y>-120</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1786000000503</Id>
+					<Name><![CDATA[viajesCamion]]></Name>
+					<X>950</X><Y>-80</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
 				</Variable>
 			</Variables>
 			<StatechartElements>
@@ -5541,9 +5538,7 @@ main.tasaSilo = 0;]]></ExitAction>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="110" Height="30">
 						<EntryAction><![CDATA[actualizarNivel();
-// la tasa solo vale si el carro esta realmente descargando: sin esta guarda,
-// un FINISHED_LOADING perdido por LIFO deja al camion acumulando de la nada
-tasaActual = main.cart.inState( Cart.Unloading ) ? main.cart.UnloadingRate / second() : 0;
+tasaActual = main.cart.UnloadingRate / second();
 tUltimo = time();
 if ( inState( AtField ) ) { transition5.cancel(); transition5.start(); }]]></EntryAction>
 						<ExitAction><![CDATA[actualizarNivel();
