@@ -1,0 +1,1514 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Explicacion integral del modelo de simulacion Optimizacion de la Ventana de Siembra: reglas de negocio, agentes, statecharts, variables, metricas y decisiones de modelado.">
+<meta name="color-scheme" content="light dark">
+<title>Anatomía de la Ventana de Siembra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+
+<style>
+:root{
+  --paper:#fbfbf9;
+  --surface:#f1f4ef;
+  --surface-2:#e7ebe3;
+  --ink:#16211c;
+  --muted:#69756c;
+  --rule:#d7ddd3;
+  --accent:#2f6b47;
+  --accent-soft:#e2ede5;
+  --signal:#9d6413;
+  --signal-soft:#f6ecd9;
+  --alert:#a63a2b;
+  --alert-soft:#f7e6e2;
+
+  --f-display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --f-body:"Spectral",Georgia,"Times New Roman",serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+
+  --measure:68ch;
+  --pad:clamp(1.1rem,4vw,2.75rem);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#111614; --surface:#19201c; --surface-2:#212a25;
+    --ink:#e4eae3; --muted:#94a29a; --rule:#2b3630;
+    --accent:#74c091; --accent-soft:#1b2b21;
+    --signal:#dca34c; --signal-soft:#2b2317;
+    --alert:#e28173; --alert-soft:#2e1c19;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#111614; --surface:#19201c; --surface-2:#212a25;
+  --ink:#e4eae3; --muted:#94a29a; --rule:#2b3630;
+  --accent:#74c091; --accent-soft:#1b2b21;
+  --signal:#dca34c; --signal-soft:#2b2317;
+  --alert:#e28173; --alert-soft:#2e1c19;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:var(--f-body); font-size:17px; line-height:1.66;
+  margin:0; -webkit-font-smoothing:antialiased;
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.shell{max-width:1220px;margin:0 auto;padding:0 var(--pad) 6rem;display:grid;grid-template-columns:1fr;gap:0}
+@media(min-width:1080px){
+  .shell{grid-template-columns:240px minmax(0,1fr);gap:3.5rem;align-items:start}
+  .toc{position:sticky;top:2rem;align-self:start;max-height:calc(100vh - 4rem);overflow-y:auto}
+}
+
+.mast{grid-column:1/-1;border-bottom:2px solid var(--ink);padding:3.2rem 0 1.6rem;margin-bottom:2.6rem}
+.eyebrow{font-family:var(--f-mono);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600;margin:0 0 1rem}
+.mast h1{font-family:var(--f-display);font-weight:700;letter-spacing:-.022em;font-size:clamp(2.1rem,6vw,3.6rem);line-height:1.02;margin:0;text-wrap:balance}
+.mast .dek{font-size:1.12rem;color:var(--muted);max-width:62ch;margin:1.1rem 0 1.6rem;font-style:italic}
+.chips{display:flex;flex-wrap:wrap;gap:.45rem}
+.chip{font-family:var(--f-mono);font-size:.7rem;border:1px solid var(--rule);background:var(--surface);color:var(--muted);padding:.3rem .6rem;border-radius:2px}
+.chip b{color:var(--ink);font-weight:600}
+
+.toc nav{border-left:2px solid var(--rule);padding-left:1rem}
+.toc-h{font-family:var(--f-mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:0 0 .8rem}
+.toc a{display:block;font-family:var(--f-display);font-size:.82rem;font-weight:500;line-height:1.3;color:var(--muted);text-decoration:none;padding:.32rem 0}
+.toc a:hover,.toc a:focus-visible{color:var(--accent)}
+.toc a span{font-family:var(--f-mono);font-size:.68rem;color:var(--accent);margin-right:.45rem}
+
+main{min-width:0;display:flex;flex-direction:column;gap:4.2rem}
+section{scroll-margin-top:1.5rem}
+.part-no{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600;display:block;margin-bottom:.5rem}
+h2{font-family:var(--f-display);font-weight:700;letter-spacing:-.018em;font-size:clamp(1.55rem,3.4vw,2.15rem);line-height:1.12;margin:0 0 1.1rem;padding-bottom:.7rem;border-bottom:1px solid var(--rule);text-wrap:balance}
+h3{font-family:var(--f-display);font-weight:600;letter-spacing:-.01em;font-size:1.16rem;line-height:1.25;margin:2.4rem 0 .7rem;text-wrap:balance}
+h4{font-family:var(--f-mono);font-weight:600;font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:1.9rem 0 .55rem}
+p{margin:0 0 1.05rem;max-width:var(--measure)}
+ul,ol{max-width:var(--measure);margin:0 0 1.15rem;padding-left:1.3rem}
+li{margin-bottom:.42rem}
+li::marker{color:var(--accent)}
+strong{font-weight:600}
+a{color:var(--accent)}
+code{font-family:var(--f-mono);font-size:.855em;background:var(--surface-2);padding:.1em .34em;border-radius:2px;overflow-wrap:anywhere}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+.lede{font-size:1.1rem;line-height:1.6}
+.lede::first-letter{font-family:var(--f-display);font-weight:700;font-size:3.1rem;line-height:.82;float:left;margin:.16rem .55rem 0 0;color:var(--accent)}
+
+.note{border-left:3px solid var(--accent);background:var(--accent-soft);padding:.95rem 1.15rem;margin:1.5rem 0;max-width:var(--measure);border-radius:0 3px 3px 0}
+.note.warn{border-color:var(--signal);background:var(--signal-soft)}
+.note.bad{border-color:var(--alert);background:var(--alert-soft)}
+.note p:last-child{margin-bottom:0}
+.note .tag{font-family:var(--f-mono);font-size:.66rem;letter-spacing:.13em;text-transform:uppercase;font-weight:600;color:var(--accent);display:block;margin-bottom:.35rem}
+.note.warn .tag{color:var(--signal)}
+.note.bad .tag{color:var(--alert)}
+
+pre{font-family:var(--f-mono);font-size:.79rem;line-height:1.62;background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:1rem 1.15rem;overflow-x:auto;margin:1.3rem 0}
+pre code{background:none;padding:0;font-size:1em}
+.cm{color:var(--muted);font-style:italic}
+.kw{color:var(--accent);font-weight:500}
+
+.tw{overflow-x:auto;margin:1.4rem 0;border:1px solid var(--rule);border-radius:3px}
+table{border-collapse:collapse;width:100%;font-size:.87rem;font-family:var(--f-display);font-weight:500}
+caption{font-family:var(--f-mono);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:left;padding:.75rem 1rem .1rem}
+th{font-family:var(--f-mono);font-size:.68rem;letter-spacing:.09em;text-transform:uppercase;text-align:left;font-weight:600;color:var(--muted);padding:.65rem .85rem;border-bottom:1.5px solid var(--rule);background:var(--surface);white-space:nowrap}
+td{padding:.6rem .85rem;border-bottom:1px solid var(--rule);vertical-align:top;line-height:1.45}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:nth-child(even){background:var(--surface)}
+td code{font-size:.8rem;background:none;padding:0;color:var(--ink);font-weight:500}
+.num{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--f-mono);white-space:nowrap}
+.ok{color:var(--accent);font-weight:600}
+.no{color:var(--alert);font-weight:600}
+.mid{color:var(--signal);font-weight:600}
+
+figure{margin:2.2rem 0;padding:0}
+figure .fbox{background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:1.2rem;overflow-x:auto}
+figure svg{display:block;max-width:100%;height:auto;min-width:560px;color:var(--ink)}
+figcaption{font-size:.85rem;color:var(--muted);margin-top:.7rem;max-width:var(--measure);line-height:1.5}
+figcaption b{color:var(--ink);font-weight:600}
+
+/* anotaciones lado a lado: código o log a la izquierda, explicación a la derecha */
+.ann{display:flex;flex-direction:column;margin:1.5rem 0;border:1px solid var(--rule);border-radius:3px;overflow:hidden}
+.ann-h{font-family:var(--f-mono);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:.6rem .85rem;background:var(--surface-2);border-bottom:1px solid var(--rule)}
+.ann-row{display:grid;grid-template-columns:1fr;border-bottom:1px solid var(--rule)}
+@media(min-width:820px){.ann-row{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}}
+.ann-row:last-child{border-bottom:none}
+.ann-code{font-family:var(--f-mono);font-size:.735rem;line-height:1.55;padding:.7rem .85rem;background:var(--surface);overflow-x:auto;white-space:pre;color:var(--ink)}
+.ann-note{padding:.7rem .85rem;font-size:.845rem;line-height:1.48;color:var(--muted)}
+.ann-note b{color:var(--ink);font-weight:600}
+.ann-note code{font-size:.8em}
+
+/* glosario */
+dl.defs{margin:1.3rem 0;display:grid;gap:0;border:1px solid var(--rule);border-radius:3px;overflow:hidden}
+dl.defs > div{display:grid;grid-template-columns:1fr;border-bottom:1px solid var(--rule)}
+@media(min-width:700px){dl.defs > div{grid-template-columns:200px minmax(0,1fr)}}
+dl.defs > div:last-child{border-bottom:none}
+dl.defs > div:nth-child(even){background:var(--surface)}
+dl.defs dt{font-family:var(--f-mono);font-size:.78rem;font-weight:600;color:var(--ink);padding:.7rem .85rem .1rem;line-height:1.4}
+@media(min-width:700px){dl.defs dt{padding:.7rem .85rem;border-right:1px solid var(--rule)}}
+dl.defs dd{margin:0;padding:.1rem .85rem .7rem;font-size:.89rem;line-height:1.5;color:var(--muted)}
+@media(min-width:700px){dl.defs dd{padding:.7rem .85rem}}
+dl.defs dd b{color:var(--ink);font-weight:600}
+dl.defs dd code{font-size:.85em}
+
+.kv{display:grid;gap:.9rem;margin:1.5rem 0;grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+.kv div{border:1px solid var(--rule);border-radius:3px;padding:.85rem .95rem;background:var(--surface)}
+.kv .k{font-family:var(--f-mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 .3rem}
+.kv .v{font-family:var(--f-display);font-weight:700;font-size:1.45rem;letter-spacing:-.02em;line-height:1.1;font-variant-numeric:tabular-nums;margin:0}
+.kv .s{font-size:.8rem;color:var(--muted);margin:.25rem 0 0;line-height:1.4}
+
+.foot{grid-column:1/-1;margin-top:4rem;padding-top:1.4rem;border-top:2px solid var(--ink);font-family:var(--f-mono);font-size:.72rem;color:var(--muted);line-height:1.7}
+</style>
+
+<style>
+/* --- reset minimo (el runtime de Artifacts lo aportaba; en standalone va aca) --- */
+html{-webkit-text-size-adjust:100%}
+img,svg{max-width:100%}
+button{font:inherit;color:inherit}
+
+/* --- boton de tema, solo existe en la version standalone --- */
+#themeToggle{
+  position:fixed;top:.9rem;right:.9rem;z-index:50;
+  font-family:var(--f-mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--surface);color:var(--muted);border:1px solid var(--rule);
+  border-radius:3px;padding:.42rem .7rem;cursor:pointer;line-height:1;
+}
+#themeToggle:hover{color:var(--accent);border-color:var(--accent)}
+
+/* --- impresion / exportar a PDF --- */
+@media print{
+  #themeToggle{display:none}
+  .toc{display:none}
+  .shell{display:block;max-width:none;padding:0}
+  body{font-size:11pt;background:#fff;color:#000}
+  main{gap:2.2rem}
+  section{break-inside:auto}
+  h2,h3{break-after:avoid}
+  figure,.ann,.tw,.note,.kv{break-inside:avoid}
+  figure svg{min-width:0}
+  a{color:#000;text-decoration:none}
+}
+</style>
+</head>
+<body>
+
+<button id="themeToggle" type="button" aria-label="Cambiar entre tema claro y oscuro">Tema</button>
+<script>
+(function () {
+  var root = document.documentElement;
+  var btn = document.getElementById('themeToggle');
+  var saved = null;
+  try { saved = localStorage.getItem('vs-theme'); } catch (e) {}
+  if (saved === 'dark' || saved === 'light') root.setAttribute('data-theme', saved);
+  btn.addEventListener('click', function () {
+    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var current = root.getAttribute('data-theme') || (prefersDark ? 'dark' : 'light');
+    var next = current === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('vs-theme', next); } catch (e) {}
+  });
+})();
+</script>
+<div class="shell">
+
+  <header class="mast">
+    <p class="eyebrow">Modelo híbrido · AnyLogic 8.9.9 PLE · UTN Rosario</p>
+    <h1>Anatomía de la Ventana de Siembra</h1>
+    <p class="dek">Qué simula el modelo, con qué reglas, cómo está construido por dentro y por qué cada decisión se tomó así. Empieza por el vocabulario: no se usa ningún término antes de definirlo.</p>
+    <div class="chips">
+      <span class="chip"><b>4</b> agentes</span>
+      <span class="chip"><b>4</b> statecharts</span>
+      <span class="chip">unidad de tiempo <b>Week</b></span>
+      <span class="chip"><b>20</b> campañas reales NASA POWER</span>
+      <span class="chip"><b>104 ha</b> por lote</span>
+    </div>
+  </header>
+
+  <aside class="toc">
+    <nav aria-label="Contenido">
+      <p class="toc-h">Contenido</p>
+      <a href="#p1"><span>1</span>La pregunta</a>
+      <a href="#p2"><span>2</span>Vocabulario</a>
+      <a href="#p3"><span>3</span>Reglas de negocio</a>
+      <a href="#p4"><span>4</span>Cómo se guarda el grano</a>
+      <a href="#p5"><span>5</span>La cadena y el acople</a>
+      <a href="#p6"><span>6</span>Los statecharts</a>
+      <a href="#p7"><span>7</span>Clima y piso</a>
+      <a href="#p8"><span>8</span>La jornada legal</a>
+      <a href="#p9"><span>9</span>Catálogo de variables</a>
+      <a href="#p10"><span>10</span>Cómo leer el log</a>
+      <a href="#p11"><span>11</span>Los experimentos</a>
+      <a href="#p12"><span>12</span>Decisiones y descartes</a>
+      <a href="#p13"><span>13</span>Lo que falta</a>
+      <a href="#p14"><span>14</span>Trampas de AnyLogic</a>
+    </nav>
+  </aside>
+
+  <main>
+
+    <!-- ============ 1 ============ -->
+    <section id="p1">
+      <span class="part-no">Parte 1</span>
+      <h2>La pregunta que el modelo responde</h2>
+
+      <p class="lede">En la pampa húmeda la ventana de siembra dura pocas semanas. Sembrar tarde no es un problema de agenda: es un problema de plata, porque el rinde cae con la fecha. La pregunta del trabajo es de dimensionamiento — <strong>cuánta máquina y cuánta logística hay que contratar para cerrar la siembra dentro de la ventana</strong>, sin pagar de más por equipos que van a estar parados.</p>
+
+      <h3>Por qué no alcanza con una cuenta</h3>
+
+      <p>Uno podría dividir hectáreas sobre capacidad horaria y listo. El problema es que hay <strong>tres fuentes de variabilidad que interactúan</strong>, y ninguna se deja promediar:</p>
+
+      <ul>
+        <li><strong>El clima.</strong> Llueve cuando llueve. Una campaña pierde 4 días de terreno intransitable y otra 24. No es una constante que se pueda restar del total.</li>
+        <li><strong>Las colas logísticas.</strong> La máquina llena su tanque de grano cada ~36 min y tiene que parar si el acoplado no llegó. Ese tiempo perdido depende de dónde estaba el acoplado, de si el camión estaba en el lote, y del azar de la secuencia.</li>
+        <li><strong>La jornada legal.</strong> El día laboral corta la pasada por la mitad; la máquina retoma al día siguiente desde donde quedó.</li>
+      </ul>
+
+      <p>Las tres se acoplan: un día perdido por lluvia empuja el trabajo a un día donde la cola logística puede ser peor. Eso es exactamente lo que una simulación resuelve y una planilla no.</p>
+
+      <h3>Los tres resultados que la presentación tiene que sostener</h3>
+
+      <div class="tw">
+        <table>
+          <caption>Entregables del trabajo práctico</caption>
+          <thead><tr><th>#</th><th>Resultado</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td class="num">1</td><td>Curva de probabilidad de cerrar la siembra dentro de la ventana (antes del 15/nov) bajo los escenarios climáticos históricos</td><td><span class="ok">Cerrado</span> — 300 corridas, tabla en la Parte&nbsp;11</td></tr>
+            <tr><td class="num">2</td><td>Cuantificación de los cuellos de botella logísticos: tiempo de máquina parada esperando recarga</td><td><span class="mid">Parcial</span> — se mide, falta desglosar por causa</td></tr>
+            <tr><td class="num">3</td><td>Trade-off financiero: alquilar máquina extra vs. perder rinde por sembrar tarde</td><td><span class="no">Pendiente</span> — necesita las roturas y el acople de rinde</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note">
+        <span class="tag">Alcance real</span>
+        <p>El modelo cubre el <strong>proceso productivo integrado</strong>: siembra → crecimiento → cosecha. No es solo siembra. Hoy la máquina que recorre el lote es una <em>cosechadora</em> (el modelo parte del ejemplo oficial «Harvest Simulator» de AnyLogic) y la etapa de siembra propiamente dicha todavía no está — figura en la hoja de ruta. Lo que sí está completo es la mecánica: una máquina que recorre un lote, se llena, descarga en una cadena logística y para cuando no puede trabajar.</p>
+      </div>
+    </section>
+
+    <!-- ============ 2 ============ -->
+    <section id="p2">
+      <span class="part-no">Parte 2</span>
+      <h2>Vocabulario: todo lo que hay que saber antes de seguir</h2>
+
+      <p>Este modelo tiene un idioma propio, mitad de AnyLogic y mitad del proyecto. Nada de lo que viene después usa una palabra que no esté acá.</p>
+
+      <h3>A · Las piezas de un modelo AnyLogic</h3>
+
+      <dl class="defs">
+        <div><dt>Agente</dt><dd>Un <b>tipo</b> de cosa que existe en el modelo y tiene comportamiento propio. Acá hay cuatro: <code>Main</code>, <code>Combine</code>, <code>Cart</code> y <code>Truck</code>. Un agente es como una clase: define cómo son todas las máquinas de ese tipo.</dd></div>
+        <div><dt>Main</dt><dd>El agente <b>raíz</b>, el que contiene a todos los demás. Acá <code>Main</code> es «el mundo»: el lote dibujado, el reloj, el clima, el silo y el estado del cultivo. Cuando desde otro agente ves <code>main.algo</code>, es una variable del mundo.</dd></div>
+        <div><dt>Instancia embebida</dt><dd>La <b>copia concreta</b> de un agente que vive adentro de <code>Main</code>. Hay tres: <code>combine</code>, <code>cart</code> y <code>truck</code>, en minúscula. La distinción importa: <b>la instancia puede pisar los valores del tipo</b>, y eso ya causó un diagnóstico equivocado de horas.</dd></div>
+        <div><dt>Parámetro</dt><dd>Un valor que <b>se fija antes de correr y no cambia durante la corrida</b>. Ej.: <code>cantidadLotes = 40</code>. Es lo que un experimento puede variar de corrida en corrida.</dd></div>
+        <div><dt>Variable</dt><dd>Un valor que <b>cambia mientras el modelo corre</b>. Ej.: <code>humedadSuperficie</code>. Tiene un valor inicial y después el modelo la escribe.</dd></div>
+        <div><dt>Función</dt><dd>Un bloque de código con nombre que se puede llamar desde cualquier lado. Ej.: <code>puedeTrabajar()</code>, <code>actualizarNivel()</code>. Se escriben con paréntesis para distinguirlas de las variables.</dd></div>
+      </dl>
+
+      <h3>B · Las piezas de un statechart</h3>
+
+      <p>Un <strong>statechart</strong> (diagrama de estados) es la forma en que este modelo describe comportamiento: cajas unidas por flechas. En todo momento el agente está en <em>exactamente una</em> caja de cada statechart, y solo puede moverse por las flechas que salen de ahí.</p>
+
+      <dl class="defs">
+        <div><dt>Estado</dt><dd>Una caja. Ej.: <code>Parked</code> (la máquina estacionada). Un agente «está en» un estado.</dd></div>
+        <div><dt>Estado compuesto</dt><dd>Una caja que <b>contiene otras cajas</b>. Estar en una caja de adentro implica estar también en la de afuera. Ej.: estar en <code>Loading</code> es también estar en <code>WithoutCart</code> y en <code>Harvesting</code>.</dd></div>
+        <div><dt>Transición</dt><dd>Una flecha entre dos estados. Cuando se dispara, el agente cambia de caja.</dd></div>
+        <div><dt>Trigger</dt><dd><b>El motivo por el que una flecha se dispara.</b> Es lo primero que hay que mirar al leer cualquier transición. Hay cuatro tipos — ver la tabla de abajo.</dd></div>
+        <div><dt>Guarda (<code>Guard</code>)</dt><dd>Una condición extra que <b>además</b> del trigger tiene que dar verdadera. Es fácil pasarla por alto: una transición por timeout puede tener también una guarda escondida.</dd></div>
+        <div><dt>Entry action</dt><dd>Código que corre <b>al entrar</b> a un estado. Es donde el modelo fija tasas, manda mensajes y arma temporizadores.</dd></div>
+        <div><dt>Exit action</dt><dd>Código que corre <b>al salir</b> de un estado. Suele ser el espejo del entry: apaga lo que el entry prendió.</dd></div>
+        <div><dt>Action (de transición)</dt><dd>Código que corre <b>al disparar la flecha</b>. Orden garantizado: primero el <code>exit</code> del origen, después el <code>action</code> de la flecha, y recién al final el <code>entry</code> del destino.</dd></div>
+        <div><dt><code>inState( X )</code></dt><dd>Pregunta «¿el agente está en el estado <code>X</code>?». Devuelve verdadero o falso. Funciona a través de statecharts distintos del mismo agente.</dd></div>
+        <div><dt><code>onChange()</code></dt><dd>Le dice a un statechart <b>«volvé a revisar tus condiciones ahora»</b>. Es imprescindible, y el porqué está tres párrafos más abajo.</dd></div>
+        <div><dt>Mensaje</dt><dd>Un texto que un agente le manda a otro con <code>send("TEXTO", destino)</code>. Es la única forma en que dos agentes se coordinan. <b>No se encola</b>: si el destinatario no está en un estado que lo escuche, el mensaje se pierde en silencio.</dd></div>
+      </dl>
+
+      <div class="tw">
+        <table>
+          <caption>Los cuatro tipos de trigger</caption>
+          <thead><tr><th>Trigger</th><th>La flecha se dispara cuando…</th><th>Ejemplo en el modelo</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Timeout</strong></td><td>pasa un tiempo, calculado en el momento de entrar al estado de origen</td><td><code>Creciendo → Maduro</code> tras <code>diasHastaMadurez</code> días</td></tr>
+            <tr><td><strong>Message</strong></td><td>llega un mensaje concreto de otro agente</td><td><code>WithoutCart → WithCart</code> con <code>"STARTED_UNLOADING"</code></td></tr>
+            <tr><td><strong>Condition</strong></td><td>una expresión booleana da verdadero — pero <em>solo se revisa en momentos discretos</em></td><td><code>MoveHarvesting → MoveWaitCart</code> con <code>!puedeTrabajar()</code></td></tr>
+            <tr><td><strong>Rate</strong></td><td>proceso de Poisson</td><td>no se usa en este modelo</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note bad">
+        <span class="tag">La trampa que hay que entender sí o sí</span>
+        <p><strong>Las transiciones por condición NO se revisan solas cuando la variable la cambia otro agente.</strong> AnyLogic las evalúa en momentos discretos: al entrar al estado de origen, y cuando alguien llama <code>onChange()</code> a propósito.</p>
+        <p>Síntoma real que costó una sesión entera: la flecha <code>Parked → GoingToField</code> tiene la condición <code>!main.siembraCompleta</code>. Se disparó en el instante 0 y <strong>nunca más</strong>, aunque la variable volviera a <code>false</code> 120 días después. La máquina quedó estacionada para siempre.</p>
+        <p><strong>Regla del proyecto:</strong> toda condición que dependa de una variable de otro agente necesita su <code>onChange()</code> explícito desde donde se modifica esa variable. Por eso el reloj del clima llama <code>combine.moveControl.onChange()</code> <em>cada hora</em>: sin eso, la máquina no se enteraría nunca de que terminó la jornada.</p>
+      </div>
+
+      <h3>C · El tiempo</h3>
+
+      <p>Esta es la fuente de confusión número uno al leer el modelo. AnyLogic tiene una <strong>unidad de tiempo del modelo</strong>, elegida al crearlo. <strong>Acá es la semana.</strong> Todo número de tiempo que no diga otra cosa está en semanas.</p>
+
+      <div class="tw">
+        <table>
+          <caption>Cómo se lee y se convierte el tiempo</caption>
+          <thead><tr><th>Escribís</th><th>Devuelve</th><th>Con unidad Week</th></tr></thead>
+          <tbody>
+            <tr><td><code>time()</code></td><td>el momento actual, en unidades del modelo</td><td><code>0.25</code> = un cuarto de semana = 1,75 días</td></tr>
+            <tr><td><code>time(DAY)</code></td><td>el momento actual, en días</td><td><code>3.5</code> = tres días y medio</td></tr>
+            <tr><td><code>second()</code></td><td>cuántas unidades del modelo hay <em>en un segundo</em></td><td>1 ÷ 604.800 ≈ 0,00000165</td></tr>
+            <tr><td><code>day()</code>, <code>week()</code>, <code>hour()</code></td><td>lo mismo para un día, una semana, una hora</td><td><code>day()</code> = 1/7</td></tr>
+            <tr><td><code>x / second()</code></td><td>convierte «x por segundo» a «x por unidad del modelo»</td><td>multiplica por 604.800</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note warn">
+        <span class="tag">Por eso el log muestra números raros</span>
+        <p>Cuando en la consola leés <code>tasa=2494800.0</code>, no son kg por segundo: son <strong>kg por semana</strong>. Dividido por 604.800 da los <strong>4,125 kg/s</strong> reales. Y cuando leés <code>AUDITORIA t=0.4994</code>, ese <code>t</code> son <strong>semanas</strong>: 3,5 días.</p>
+      </div>
+
+      <h3>D · Convenciones de este modelo</h3>
+
+      <dl class="defs">
+        <div><dt>Español sin tildes</dt><dd>Todo el código embebido en el modelo (variables, comentarios, mensajes de consola) está en español <b>sin acentos</b>, para evitar problemas de codificación entre las tres máquinas del equipo. Solo los documentos llevan tildes.</dd></div>
+        <div><dt><code>transition5</code>, <code>transition8</code>…</dt><dd>Nombres <b>autogenerados por AnyLogic</b> cuando se dibuja una flecha sin bautizarla. No significan nada. Las que sí tienen nombre propio (<code>StartedUnloading</code>, <code>tickDiario</code>, <code>Full</code>) fueron renombradas a mano porque importan.</dd></div>
+        <div><dt><code>traceln("...")</code></dt><dd>Imprime una línea en la consola de AnyLogic. Es la <b>única salida</b> del modelo: no hay gráficos. Todo lo que se mide se lee ahí.</dd></div>
+        <div><dt>Recipiente</dt><dd>Palabra del proyecto, no de AnyLogic. Es cualquiera de los cuatro lugares donde se acumula grano: el <b>tanque de la máquina</b>, el <b>acoplado</b>, el <b>camión</b> y el <b>silo</b>. Todos funcionan igual — Parte 4.</dd></div>
+      </dl>
+    </section>
+
+    <!-- ============ 3 ============ -->
+    <section id="p3">
+      <span class="part-no">Parte 3</span>
+      <h2>Las reglas de negocio</h2>
+
+      <p>Todo lo que el modelo simula sale de una de estas reglas. Cada una tiene un origen real —agronómico, legal o de catálogo de maquinaria— y una traducción concreta a código. Los nombres de la columna derecha se explican en las partes siguientes.</p>
+
+      <div class="tw">
+        <table>
+          <caption>Reglas de negocio y su traducción al modelo</caption>
+          <thead><tr><th>Regla</th><th>De dónde sale</th><th>Cómo vive en el modelo</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Un lote son 104 ha</strong></td>
+              <td>Tamaño típico de un lote de la zona</td>
+              <td>El rectángulo verde del dibujo mide 520×320 píxeles, y la escala del modelo es de 2,5 m por píxel: 1300 × 800 m</td>
+            </tr>
+            <tr>
+              <td><strong>La soja rinde ~3 t/ha</strong></td>
+              <td>Rinde típico de la región</td>
+              <td>Parámetro <code>HarvestDensity = 0,3</code> kg por metro cuadrado → 312 toneladas por lote</td>
+            </tr>
+            <tr>
+              <td><strong>La máquina avanza a 5,5 km/h con 9 m de plataforma</strong></td>
+              <td>Catálogo de cosechadora clase 7-8</td>
+              <td>La velocidad del agente <code>combine</code> y el parámetro <code>RowWidth</code>. Multiplicados por el rinde dan 4,1 kg/s ≈ 15 t/h</td>
+            </tr>
+            <tr>
+              <td><strong>Un lote son 21 h de labor efectiva</strong></td>
+              <td>Consecuencia aritmética de las dos reglas anteriores</td>
+              <td>145 pasadas de 800 m = 116 km a 1,53 m/s. <strong>El modelo mide 21,09 h</strong> — la coincidencia valida la calibración</td>
+            </tr>
+            <tr>
+              <td><strong>No se entra al lote con el suelo mojado</strong></td>
+              <td>Práctica agronómica: la máquina no «da piso», compacta el suelo y se empantana</td>
+              <td>Un balance de agua diario que termina en una bandera de sí/no llamada <code>daPiso</code> — Parte 7</td>
+            </tr>
+            <tr>
+              <td><strong>44 h semanales por operario</strong></td>
+              <td>Ley 26.727, Régimen de Trabajo Agrario</td>
+              <td>La función <code>dentroDeJornada()</code>. Los turnos multiplican horas-máquina, no horas-persona — Parte 8</td>
+            </tr>
+            <tr>
+              <td><strong>La ventana cierra el 15 de noviembre</strong></td>
+              <td>Fecha agronómica de referencia para soja de primera</td>
+              <td>La corrida arranca el 01/10, así que terminar «dentro» significa <code>diaFinSiembra ≤ 45</code></td>
+            </tr>
+            <tr>
+              <td><strong>El grano va tanque → acoplado → camión → silo</strong></td>
+              <td>Logística estándar de cosecha</td>
+              <td>Cuatro recipientes en cadena: 9 t / 20 t / 50 t / 312 t — Partes 4 y 5</td>
+            </tr>
+            <tr>
+              <td><strong>El cultivo tarda 90–150 días en madurar</strong></td>
+              <td>Ciclo de soja</td>
+              <td>Un sorteo <code>triangular(90, 150, 120)</code> — <em>con una salvedad importante en la Parte 13</em></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note warn">
+        <span class="tag">El número que hay que tener en la cabeza</span>
+        <p>Todo el trabajo se reduce a comparar dos cantidades: las <strong>21 h de labor por lote</strong> contra las <strong>horas disponibles por día</strong>. Con un turno son 6,29 h/día, o sea 3,3 días por lote. La ventana tiene 45 días. Ese cociente <em>es</em> la respuesta de dimensionamiento; todo el resto del modelo existe para descontarle correctamente el clima, las colas y (cuando entren) las roturas.</p>
+      </div>
+    </section>
+
+    <!-- ============ 4 ============ -->
+    <section id="p4">
+      <span class="part-no">Parte 4</span>
+      <h2>Cómo el modelo guarda el grano</h2>
+
+      <p>Esta parte construye desde cero las cuatro variables que aparecen en todos lados del modelo. Empecemos por el problema que resuelven.</p>
+
+      <h3>El problema</h3>
+
+      <p>La máquina cosecha a 4,125 kg por segundo. Querés poder preguntar, en cualquier instante, <strong>cuántos kilos hay en el tanque</strong>. ¿Cómo se guarda eso?</p>
+
+      <p><strong>La forma ingenua</strong> sería tener una variable <code>kilos</code> y sumarle 4,125 cada segundo simulado. No sirve: una campaña son 212 días, o sea 18,3 millones de segundos, y habría que programar 18,3 millones de eventos por recipiente. AnyLogic no está hecho para eso y la corrida tardaría horas.</p>
+
+      <p><strong>La forma del modelo</strong> es no calcular nada hasta que alguien pregunte. Para poder reconstruir el valor en cualquier momento alcanza con guardar tres números:</p>
+
+      <dl class="defs">
+        <div><dt>nivel</dt><dd>Cuántos kilos había en el recipiente <b>la última vez que alguien miró</b>. <b>No es el nivel actual.</b></dd></div>
+        <div><dt>tasaActual</dt><dd>A qué ritmo está entrando (o saliendo) grano <b>desde entonces</b>. Positiva = se llena. Negativa = se vacía. Cero = quieto.</dd></div>
+        <div><dt>tUltimo</dt><dd><b>Cuándo</b> fue esa última vez que alguien miró. Es un instante de tiempo del modelo.</dd></div>
+      </dl>
+
+      <p>Con esos tres, el nivel de <em>ahora</em> es una multiplicación: <code>nivel + tasaActual × (ahora − tUltimo)</code>. A eso se le llama <strong>integración analítica</strong>: en vez de sumar de a pedacitos, se calcula el área de un rectángulo de una sola vez. Y como no hay pasos intermedios, <strong>no hay error acumulado</strong>: el resultado es exacto.</p>
+
+      <p>Esas tres variables existen, con esos mismos nombres, en <code>Combine</code>, <code>Cart</code> y <code>Truck</code>. El silo tiene su copia en <code>Main</code> con otros nombres (<code>nivelSilo</code>, <code>tasaSilo</code>, <code>tUltimoSilo</code>) porque <code>Main</code> no es un recipiente, solo lo contiene.</p>
+
+      <h3>El ejemplo que ya viste en tu log</h3>
+
+      <p>Seguí el tanque de la máquina a lo largo de una noche. Es literalmente lo que imprimió la última corrida.</p>
+
+      <div class="tw">
+        <table>
+          <caption>Una noche en la vida de tres variables</caption>
+          <thead><tr><th>Momento</th><th>Qué pasó</th><th class="num">nivel</th><th class="num">tasaActual</th><th class="num">tUltimo</th></tr></thead>
+          <tbody>
+            <tr><td>12:17 día 0</td><td>Fin de jornada. Alguien llama <code>actualizarNivel()</code>, que pone el nivel al día, y después baja la tasa a cero</td><td class="num">8.560</td><td class="num">0</td><td class="num">12:17</td></tr>
+            <tr><td>12:17 → 06:00</td><td><em>No pasa absolutamente nada. Cero eventos, cero cálculos.</em></td><td class="num">8.560</td><td class="num">0</td><td class="num">12:17</td></tr>
+            <tr><td>06:00 día 1</td><td>Reanuda. <code>actualizarNivel()</code> calcula <code>8.560 + 0 × 63.720 s = 8.560</code>. Después sube la tasa</td><td class="num">8.560</td><td class="num">4,125</td><td class="num">06:00</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>En el log eso se ve como dos líneas con el mismo número:</p>
+
+      <pre><code>### MAQUINA PARA    | ... | nivelTolva=8560 | t=0.5119 d
+### MAQUINA REANUDA | ... | nivelTolva=8560 | t=1.2500 d</code></pre>
+
+      <div class="note bad">
+        <span class="tag">Y así se rompe</span>
+        <p>Si al parar <strong>no</strong> se hubiera bajado <code>tasaActual</code> a cero, la misma fórmula habría dado <code>8.560 + 4,125 × 63.720 = 271.405 kg</code> en un tanque de 9.000. La máquina «cosecha» toda la noche estando quieta.</p>
+        <p>Ese fue exactamente el bug que apareció al agregar la lluvia, y es la razón de ser de la regla de acople de la Parte 5.</p>
+      </div>
+
+      <h3>La cuarta variable: <code>tasaCosecha</code></h3>
+
+      <p>La máquina es un caso especial porque es <strong>la puerta de entrada del grano al sistema</strong>. En los otros recipientes el grano viene de otro recipiente; en la máquina viene <em>del campo</em>, o sea de afuera.</p>
+
+      <p>Para poder auditar que no se fabrique ni se pierda masa hay que llevar la cuenta de cuánto entró en total. Eso obliga a distinguir dos cosas que <em>no siempre coinciden</em>:</p>
+
+      <div class="tw">
+        <table>
+          <thead><tr><th>Variable</th><th>Qué mide</th><th>Cuándo difieren</th></tr></thead>
+          <tbody>
+            <tr><td><code>tasaCosecha</code></td><td>A qué ritmo entra grano <strong>al sistema</strong>, desde el campo</td><td rowspan="2">Cuando la máquina va acoplada al carro: el grano entra al sistema (<code>tasaCosecha</code> = 4,125) pero <strong>no se queda en el tanque</strong>, pasa derecho al carro (<code>tasaActual</code> = 0)</td></tr>
+            <tr><td><code>tasaActual</code></td><td>A qué ritmo cambia <strong>este tanque</strong> en particular</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Y hay una quinta variable, <code>trabajando</code>, que es simplemente una bandera de sí/no: <em>¿la máquina está efectivamente laburando en este momento?</em> De ella se deriva <code>tasaCosecha</code>. Existe porque el tanque y el movimiento son dos statecharts distintos que no se enteran solos de lo que hace el otro — se explica en la Parte 6.</p>
+
+      <h3>Ahora sí, el código</h3>
+
+      <p>Esta función vive en <code>Combine</code>, <code>Cart</code> y <code>Truck</code> (en los dos últimos, sin la línea de <code>tasaCosecha</code>). Se llama antes de cambiar cualquier tasa, y antes de auditar.</p>
+
+      <div class="ann">
+        <p class="ann-h">actualizarNivel() — línea por línea</p>
+        <div class="ann-row">
+          <div class="ann-code">double dt = time() - tUltimo;</div>
+          <div class="ann-note"><b>Cuánto tiempo pasó</b> desde la última actualización. <code>time()</code> es el momento actual; <code>tUltimo</code> el de la foto anterior. <code>dt</code> queda en semanas, la unidad del modelo.</div>
+        </div>
+        <div class="ann-row">
+          <div class="ann-code">main.totalCosechado
+    += tasaCosecha * dt;</div>
+          <div class="ann-note"><b>Solo en la máquina.</b> Acumula en una variable del mundo cuánto grano entró al sistema en ese tramo. Es el lado izquierdo de la auditoría de masa. <code>main.</code> significa «la variable del agente raíz».</div>
+        </div>
+        <div class="ann-row">
+          <div class="ann-code">double bruto
+    = nivel + tasaActual * dt;</div>
+          <div class="ann-note"><b>El cálculo central.</b> Se llama <code>bruto</code> porque todavía no está recortado a los límites del recipiente: podría dar más que la capacidad o menos que cero. <code>bruto</code> es una variable temporal, existe solo dentro de esta función.</div>
+        </div>
+        <div class="ann-row">
+          <div class="ann-code">if ( bruto &gt; Capacity ) {
+    main.masaDescartada
+        += bruto - Capacity;
+    bruto = Capacity;
+}</div>
+          <div class="ann-note"><b>Tope superior.</b> Si desbordó, el sobrante se recorta — pero <b>antes se anota</b> en <code>masaDescartada</code>. Sin esa anotación el grano desaparecería sin dejar rastro y la auditoría no podría reclamarlo.</div>
+        </div>
+        <div class="ann-row">
+          <div class="ann-code">if ( bruto &lt; 0 ) {
+    main.masaInventada
+        += -bruto;
+    bruto = 0;
+}</div>
+          <div class="ann-note"><b>Tope inferior.</b> Un recipiente no puede tener kilos negativos. Si la cuenta dio negativo es porque alguien descargó más de lo que había: eso es masa que el modelo <em>inventó</em>, y queda anotada.</div>
+        </div>
+        <div class="ann-row">
+          <div class="ann-code">nivel = bruto;
+tUltimo = time();</div>
+          <div class="ann-note"><b>Foto nueva.</b> Se guarda el resultado y se mueve el reloj. A partir de acá <code>nivel</code> vuelve a ser exacto — hasta que pase tiempo otra vez.</div>
+        </div>
+      </div>
+
+      <h3>Cómo se detecta que un recipiente se llenó</h3>
+
+      <p>Con este esquema nadie vigila el nivel: no hay quien avise «me llené». Así que el modelo <strong>calcula por adelantado cuándo va a pasar</strong> y programa una alarma. En términos de statechart, es una transición por timeout cuyo tiempo se calcula al entrar al estado:</p>
+
+      <div class="ann">
+        <p class="ann-h">El timeout de «tanque lleno»</p>
+        <div class="ann-row">
+          <div class="ann-code">tasaActual &gt; 0
+  ? ( ( Capacity - nivel )
+      / tasaActual ) / second()
+  : 1e12</div>
+          <div class="ann-note"><b>Si está entrando grano</b> (<code>tasaActual &gt; 0</code>), el tiempo que falta es «lo que cabe» dividido «el ritmo». El <code>/ second()</code> del final convierte el resultado a segundos, que es la unidad en la que está declarada esta transición.<br><br><b>Si no está entrando nada</b>, la alarma se pone en <code>1e12</code> — un billón de segundos, o sea «nunca». Se usa ese número porque en esta versión de AnyLogic <b>no existe <code>infinity()</code></b>.</div>
+        </div>
+      </div>
+
+      <p>Hay cinco alarmas de este tipo en el modelo: dos en el carro, una en la máquina y dos en el camión. Y una consecuencia importante: <strong>la alarma se calcula al armarse, no se recalcula sola.</strong> Si la tasa cambia después, hay que rearmarla a mano con <code>cancel()</code> y <code>start()</code>.</p>
+
+      <h3>Por qué no se usa la Fluid Library</h3>
+
+      <p>AnyLogic trae una librería de fluidos hecha exactamente para esto: tanques, caños y tasas, sin escribir nada de lo anterior. <strong>El modelo la usaba y hubo que borrarla entera.</strong></p>
+
+      <p>La razón es de licencia: la <strong>Personal Learning Edition topea el tiempo simulado en 5 horas</strong> para toda librería que no sea Process Modeling. Una campaña son meses, así que el modelo se cortaba solo a las 5 h simuladas. Se borraron los 12 bloques <em>y</em> la referencia a la librería en el archivo del modelo — borrar los bloques del diagrama no levanta el tope.</p>
+
+      <p>Todo lo de esta parte es el reemplazo artesanal de esa librería. Es más código, pero corre sin límite de tiempo.</p>
+    </section>
+
+    <!-- ============ 5 ============ -->
+    <section id="p5">
+      <span class="part-no">Parte 5</span>
+      <h2>La cadena de masa y la regla de acople</h2>
+
+      <p>Los cuatro recipientes de la Parte 4 están en fila. El grano entra por la izquierda y termina en el silo.</p>
+
+      <figure>
+        <div class="fbox">
+          <svg viewBox="0 0 920 300" role="img" aria-label="Cadena de masa: el campo alimenta el tanque de la cosechadora a 4,1 kilos por segundo, y de ahí pasa al acoplado, al camión y al silo, cada eslabón abierto por un mensaje explícito">
+            <defs>
+              <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,1 L9,5 L0,9 z" fill="currentColor"/>
+              </marker>
+            </defs>
+            <g fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="1" y="120" width="150" height="80" rx="3" stroke-dasharray="5 4" opacity=".65"/>
+              <rect x="193" y="120" width="150" height="80" rx="3"/>
+              <rect x="385" y="120" width="150" height="80" rx="3"/>
+              <rect x="577" y="120" width="150" height="80" rx="3"/>
+              <rect x="769" y="120" width="150" height="80" rx="3"/>
+            </g>
+            <g font-family="Archivo, sans-serif" font-size="13" font-weight="600" text-anchor="middle" fill="currentColor">
+              <text x="76" y="152">CAMPO</text>
+              <text x="268" y="152">Máquina</text>
+              <text x="460" y="152">Acoplado</text>
+              <text x="652" y="152">Camión</text>
+              <text x="844" y="152">Silo</text>
+            </g>
+            <g font-family="IBM Plex Mono, monospace" font-size="11" text-anchor="middle" fill="currentColor" opacity=".62">
+              <text x="76" y="172">104 ha</text>
+              <text x="268" y="172">9.000 kg</text>
+              <text x="460" y="172">20.000 kg</text>
+              <text x="652" y="172">50.000 kg</text>
+              <text x="844" y="172">312.000 kg</text>
+              <text x="76" y="188">0,3 kg/m²</text>
+              <text x="268" y="188">agente Combine</text>
+              <text x="460" y="188">agente Cart</text>
+              <text x="652" y="188">agente Truck</text>
+              <text x="844" y="188">vive en Main</text>
+            </g>
+            <g stroke="currentColor" stroke-width="1.5" marker-end="url(#ar)">
+              <line x1="153" y1="160" x2="189" y2="160"/>
+              <line x1="345" y1="160" x2="381" y2="160"/>
+              <line x1="537" y1="160" x2="573" y2="160"/>
+              <line x1="729" y1="160" x2="765" y2="160"/>
+            </g>
+            <line x1="171" y1="150" x2="171" y2="170" stroke="currentColor" stroke-width="2.4"/>
+            <g font-family="IBM Plex Mono, monospace" font-size="10.5" text-anchor="middle" fill="currentColor">
+              <text x="171" y="110">4,1 kg/s</text>
+              <text x="363" y="110">acople</text>
+              <text x="555" y="110">150 kg/s</text>
+              <text x="747" y="110">100 kg/s</text>
+            </g>
+            <g font-family="IBM Plex Mono, monospace" font-size="9.5" text-anchor="middle" fill="currentColor" opacity=".62">
+              <text x="171" y="222">válvula:</text>
+              <text x="171" y="234">puedeTrabajar()</text>
+              <text x="363" y="222">mensaje:</text>
+              <text x="363" y="234">STARTED_UNLOADING</text>
+              <text x="555" y="222">mensaje:</text>
+              <text x="555" y="234">START_LOADING</text>
+              <text x="747" y="222">mensaje:</text>
+              <text x="747" y="234">ARRIVED</text>
+            </g>
+            <line x1="1" y1="256" x2="919" y2="256" stroke="currentColor" stroke-width="1" opacity=".3"/>
+            <text x="1" y="278" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity=".75">auditarMasa():  totalCosechado  ==  Σ niveles + nivelSilo + masaDescartada − masaInventada</text>
+            <text x="1" y="293" font-family="IBM Plex Mono, monospace" font-size="10" fill="currentColor" opacity=".5">medido hoy: FUGA = −2,7e−11 kg  (ruido de coma flotante)</text>
+          </svg>
+        </div>
+        <figcaption><b>La cadena de masa.</b> Cada flecha se abre con un mensaje explícito entre agentes. La barra vertical sobre la primera flecha es <code>puedeTrabajar()</code>: la única válvula que corta la entrada de grano al sistema.</figcaption>
+      </figure>
+
+      <h3>Por qué cada acople es un mensaje</h3>
+
+      <p>La Fluid Library conectaba tanques con caños, y el grano fluía <strong>estuviera el agente en el estado que estuviera</strong>. Al reemplazarla por variables, ese acople automático desaparece: ahora hay que reponerlo a mano, y la única forma de que dos agentes se coordinen es mandándose mensajes.</p>
+
+      <p>De ahí sale la regla más importante del modelo:</p>
+
+      <div class="note bad">
+        <span class="tag">La regla de acople</span>
+        <p><strong>El estado que abre un flujo fija LAS DOS tasas —la del que da y la del que recibe— al entrar y al salir.</strong></p>
+        <p>Latchear una sola punta fabrica o destruye masa. Si el que da baja su tasa pero el que recibe queda con la suya, el receptor sigue «llenándose» de la nada. Si pasa al revés, el grano que sale del primero no llega a ningún lado.</p>
+      </div>
+
+      <p>Ese error, en distintas variantes, <strong>fabricó 150 toneladas de grano en una corrida y destruyó 20 en otra</strong>. La regla se ve aplicada en el <code>entry</code> y el <code>exit</code> del estado <code>WithCart</code> de la máquina, y en los de <code>Unloading</code> del acoplado.</p>
+
+      <h3>La auditoría de masa</h3>
+
+      <p>Para poder confiar en cualquier resultado, el modelo se controla a sí mismo. Al cerrar cada campaña, la función <code>auditarMasa()</code> verifica que se cumpla:</p>
+
+      <pre><code>totalCosechado  ==  nivel de los 4 recipientes  +  masaDescartada  −  masaInventada</code></pre>
+
+      <p>La diferencia entre los dos lados se llama <strong><code>FUGA</code></strong> y se imprime en el log. Hoy da <strong>−2,7 × 10⁻¹¹ kg</strong>, catorce órdenes de magnitud por debajo de lo relevante: es ruido de coma flotante, no un desbalance. <strong>La cadena conserva masa.</strong></p>
+
+      <p>Detalle que importa: <code>auditarMasa()</code> empieza llamando <code>actualizarNivel()</code> en los cuatro recipientes. Sin eso compararía fotos de momentos distintos —recordá que <code>nivel</code> es el valor de la última vez que alguien miró— y la <code>FUGA</code> daría cualquier cosa.</p>
+
+      <h4>La heurística de diagnóstico que funcionó tres veces</h4>
+      <p>Cuando la <code>FUGA</code> no es ruido, su magnitud es un <strong>múltiplo exacto de la capacidad de un recipiente</strong>, y eso identifica el eslabón roto sin buscar a ciegas: −150.000 fueron 3 camiones de 50.000; +20.000 fue 1 acoplado.</p>
+
+      <p>El límite: <code>masaDescartada</code> y <code>masaInventada</code> <strong>detectan</strong> el desbalance pero <strong>no lo localizan</strong>, porque solo saltan cuando algo toca un tope. Un acoplado que baja de 20.000 a 0 legítimamente, contra un camión que no acumula, no dispara ninguno de los dos.</p>
+    </section>
+
+    <!-- ============ 6 ============ -->
+    <section id="p6">
+      <span class="part-no">Parte 6</span>
+      <h2>Los statecharts: dónde vive el comportamiento</h2>
+
+      <p>El modelo tiene <strong>cuatro statecharts</strong>: dos en la máquina y dos en el mundo. Todo lo que pasa, pasa porque alguno de los cuatro cambió de estado.</p>
+
+      <h3>La máquina: dos statecharts en paralelo</h3>
+
+      <p>Esta es la pieza que más confunde. La cosechadora tiene <strong>dos statecharts corriendo al mismo tiempo</strong>. No son alternativas: son dos preguntas simultáneas sobre la misma máquina.</p>
+
+      <ul>
+        <li><code>moveControl</code> — <strong>¿dónde está y qué hace la máquina?</strong> Estacionada, yendo al lote, recorriendo hileras, parada.</li>
+        <li><code>tankControl</code> — <strong>¿qué pasa con el grano?</strong> Tanque llenándose, tanque lleno esperando, descargando en el acoplado.</li>
+      </ul>
+
+      <p>Puede estar en <code>MoveHarvesting</code> <em>y</em> en <code>WithCart</code> a la vez: recorriendo la hilera mientras descarga en el acoplado que va al lado. Los dos statecharts se hablan por variables compartidas y por <code>onChange()</code>.</p>
+
+      <p><strong>Y ahí está el origen de varios bugs:</strong> si uno de los dos cambia de estado, el otro no se entera solo. Cuando <code>moveControl</code> para la máquina, <code>tankControl</code> sigue creyendo que se está cosechando — a menos que alguien se lo diga. De eso se ocupa la bandera <code>trabajando</code> que apareció en la Parte 4.</p>
+
+      <figure>
+        <div class="fbox">
+          <svg viewBox="0 0 900 375" role="img" aria-label="Los dos statecharts paralelos de la cosechadora: moveControl decide dónde está la máquina, tankControl qué pasa con el grano, y la función puedeTrabajar combina tres entradas para decidir si la máquina se detiene">
+            <defs>
+              <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,1 L9,5 L0,9 z" fill="currentColor"/>
+              </marker>
+            </defs>
+
+            <text x="0" y="18" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="currentColor" opacity=".6">moveControl — ¿dónde está la máquina?</text>
+
+            <g fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="4"   y="46" width="86"  height="38" rx="3"/>
+              <rect x="132" y="46" width="112" height="38" rx="3"/>
+              <rect x="300" y="46" width="130" height="38" rx="3"/>
+              <rect x="486" y="46" width="122" height="38" rx="3"/>
+              <rect x="676" y="46" width="112" height="38" rx="3"/>
+            </g>
+            <g font-family="Archivo, sans-serif" font-size="11.5" font-weight="600" text-anchor="middle" fill="currentColor">
+              <text x="47"  y="70">Parked</text>
+              <text x="188" y="70">GoingToField</text>
+              <text x="365" y="70">MoveHarvesting</text>
+              <text x="547" y="70">MoveWaitCart</text>
+              <text x="732" y="70">GoingToPark</text>
+            </g>
+
+            <g stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#ar2)">
+              <line x1="92"  y1="65" x2="128" y2="65"/>
+              <line x1="246" y1="65" x2="296" y2="65"/>
+              <line x1="432" y1="57" x2="482" y2="57"/>
+              <line x1="606" y1="74" x2="434" y2="74"/>
+              <path d="M365,86 L365,116 L732,116 L732,88"/>
+              <path d="M788,58 L830,58 L830,26 L47,26 L47,42"/>
+            </g>
+
+            <g font-family="IBM Plex Mono, monospace" font-size="9.5" text-anchor="middle" fill="currentColor" opacity=".72">
+              <text x="110" y="38">!siembraCompleta</text>
+              <text x="271" y="38">ARRIVED</text>
+              <text x="457" y="46">!puedeTrabajar()</text>
+              <text x="520" y="92">puedeTrabajar()</text>
+              <text x="548" y="130">llegó al borde este del lote → main.onCompleted()</text>
+              <text x="440" y="20">ARRIVED</text>
+            </g>
+
+            <g fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="352" y="168" width="196" height="34" rx="17"/>
+            </g>
+            <text x="450" y="190" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600" text-anchor="middle" fill="currentColor">puedeTrabajar()</text>
+
+            <g stroke="currentColor" stroke-width="1.3" stroke-dasharray="4 3" fill="none" marker-end="url(#ar2)" opacity=".8">
+              <path d="M120,185 L348,185"/>
+              <path d="M120,152 L240,152 L240,176 L348,176"/>
+              <path d="M430,240 L430,206"/>
+              <path d="M470,166 L470,84"/>
+            </g>
+            <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="currentColor" opacity=".72">
+              <text x="0" y="156">main.daPiso</text>
+              <text x="0" y="189">main.dentroDeJornada()</text>
+              <text x="444" y="256">!inState(FullWaitCart)</text>
+            </g>
+
+            <text x="0" y="290" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="currentColor" opacity=".6">tankControl — ¿qué pasa con el grano?</text>
+
+            <rect x="126" y="300" width="626" height="66" rx="4" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3" opacity=".45"/>
+            <text x="132" y="312" font-family="IBM Plex Mono, monospace" font-size="9" fill="currentColor" opacity=".55">Harvesting</text>
+            <rect x="150" y="316" width="330" height="42" rx="3" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3" opacity=".45"/>
+            <text x="156" y="326" font-family="IBM Plex Mono, monospace" font-size="9" fill="currentColor" opacity=".55">WithoutCart</text>
+
+            <g fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="4"   y="322" width="74"  height="30" rx="3"/>
+              <rect x="164" y="330" width="90"  height="24" rx="3"/>
+              <rect x="330" y="330" width="130" height="24" rx="3"/>
+              <rect x="600" y="330" width="130" height="24" rx="3"/>
+            </g>
+            <g font-family="Archivo, sans-serif" font-size="11" font-weight="600" text-anchor="middle" fill="currentColor">
+              <text x="41"  y="341">Start</text>
+              <text x="209" y="346">Loading</text>
+              <text x="395" y="346">FullWaitCart</text>
+              <text x="665" y="346">WithCart</text>
+            </g>
+
+            <g stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#ar2)">
+              <line x1="80"  y1="340" x2="160" y2="340"/>
+              <line x1="256" y1="342" x2="326" y2="342"/>
+              <path d="M460,336 L596,336"/>
+              <path d="M600,348 L520,348 L520,372 L209,372 L209,358"/>
+            </g>
+            <g font-family="IBM Plex Mono, monospace" font-size="9.5" text-anchor="middle" fill="currentColor" opacity=".72">
+              <text x="120" y="334">STARTED_HARVESTING</text>
+              <text x="291" y="336">tanque lleno</text>
+              <text x="528" y="330">STARTED_UNLOADING</text>
+              <text x="360" y="368">FINISHED_UNLOADING</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption><b>Los dos statecharts de la máquina y el punto único de parada.</b> <code>puedeTrabajar()</code> combina tres entradas —dos del mundo, una del propio tanque— y su resultado gobierna un solo par de flechas: <code>MoveHarvesting ⇄ MoveWaitCart</code>. Las cajas punteadas de abajo son estados compuestos: estar en <code>Loading</code> es también estar en <code>WithoutCart</code> y en <code>Harvesting</code>.</figcaption>
+      </figure>
+
+      <h3>El punto único de parada</h3>
+
+      <p>Esta es la decisión de diseño más importante del modelo. La máquina puede tener que parar por varios motivos distintos, y todos se resuelven en <strong>una sola función</strong>:</p>
+
+      <div class="ann">
+        <p class="ann-h">Combine.puedeTrabajar()</p>
+        <div class="ann-row">
+          <div class="ann-code">return main.daPiso
+    &amp;&amp; main.dentroDeJornada()
+    &amp;&amp; !inState( FullWaitCart );</div>
+          <div class="ann-note">Devuelve verdadero solo si se cumplen las tres a la vez:<br>· <b>el terreno está transitable</b> (variable del mundo, la escribe el reloj del clima);<br>· <b>estamos en horario de trabajo</b> (función del mundo, pura aritmética sobre la hora);<br>· <b>el tanque no está lleno esperando al acoplado</b> (estado del <em>otro</em> statechart de la propia máquina).</div>
+        </div>
+      </div>
+
+      <p>La alternativa habría sido que cada motivo mandara su propio mensaje <code>STOP</code> / <code>RESUME</code>. Con tres motivos son seis mensajes y ocho combinaciones de estado; con cuatro —cuando entren las roturas— es inmanejable. Y peor: dos motivos que se levantan en distinto orden dejarían a la máquina parada o andando según el azar del despacho.</p>
+
+      <p><strong>Con la condición única eso no puede pasar.</strong> Cuando se agregó la jornada legal no hizo falta ningún mecanismo nuevo: fue un término más en el <code>&amp;&amp;</code>. Las roturas van a entrar igual.</p>
+
+      <div class="note warn">
+        <span class="tag">La contracara</span>
+        <p>Que haya un solo punto de decisión no significa que haya un solo <em>motivo</em>. Hoy los tres comparten el mismo estado <code>MoveWaitCart</code>, así que el modelo sabe <em>que</em> paró pero no lleva la cuenta de <em>por qué</em>. Para el entregable #2 —cuantificar el cuello de botella logístico— hace falta imputar cada parada a su causa.</p>
+      </div>
+
+      <h3>El acoplado y el camión</h3>
+
+      <p>Son máquinas de estados más simples, pero su interacción es donde se rompió la conservación de masa tres veces. El ciclo completo:</p>
+
+      <div class="tw">
+        <table>
+          <caption>Ciclo del acoplado y del camión</caption>
+          <thead><tr><th>Agente</th><th>Estado</th><th>Qué está pasando</th></tr></thead>
+          <tbody>
+            <tr><td rowspan="5"><strong>Cart</strong><br>acoplado</td><td><code>WaitCommand</code></td><td>Estacionado, esperando que lo llamen</td></tr>
+            <tr><td><code>GoingToCombine</code></td><td>Yendo a buscar a la máquina</td></tr>
+            <tr><td><code>Loading</code></td><td>Acoplado, viajando al lado de la máquina y recibiendo grano</td></tr>
+            <tr><td><code>WaitTruck</code></td><td>En la cabecera del lote, esperando al camión</td></tr>
+            <tr><td><code>Unloading</code></td><td>Descargando en el camión a 150 kg/s</td></tr>
+            <tr><td rowspan="4"><strong>Truck</strong><br>camión</td><td><code>WaitCart</code></td><td>En el lote, esperando que el acoplado descargue</td></tr>
+            <tr><td><code>Loading</code></td><td>Recibiendo del acoplado</td></tr>
+            <tr><td><code>GoingToBin</code></td><td>Viajando al acopio. Sale cuando se llena</td></tr>
+            <tr><td><code>Unloading</code></td><td>Descargando en el silo a 100 kg/s. Acá se cuenta el viaje</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Los mensajes que sincronizan las dos máquinas son <code>GO_TO_COMBINE</code>, <code>STARTED_UNLOADING</code>, <code>FINISHED_UNLOADING</code>, <code>TRUCK_ARRIVED</code>, <code>TRUCK_DEPARTED</code>, <code>START_LOADING</code> y <code>FINISHED_LOADING</code>. Cada uno abre o cierra un flujo — y por eso <strong>perder uno fabrica o destruye grano</strong>.</p>
+
+      <h3>El mundo: cicloCultivo y climaControl</h3>
+
+      <figure>
+        <div class="fbox">
+          <svg viewBox="0 0 880 300" role="img" aria-label="Los dos statecharts de Main: cicloCultivo alterna entre sin sembrar, creciendo y maduro; climaControl corre un tick horario que actualiza el balance hídrico y despierta a los otros statecharts">
+            <defs>
+              <marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,1 L9,5 L0,9 z" fill="currentColor"/>
+              </marker>
+            </defs>
+
+            <text x="0" y="16" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="currentColor" opacity=".6">cicloCultivo — el estado del cultivo</text>
+
+            <g fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="60"  y="46" width="130" height="40" rx="3"/>
+              <rect x="320" y="46" width="130" height="40" rx="3"/>
+              <rect x="580" y="46" width="130" height="40" rx="3"/>
+            </g>
+            <g font-family="Archivo, sans-serif" font-size="12.5" font-weight="600" text-anchor="middle" fill="currentColor">
+              <text x="125" y="71">SinSembrar</text>
+              <text x="385" y="71">Creciendo</text>
+              <text x="645" y="71">Maduro</text>
+            </g>
+
+            <g stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#ar3)">
+              <line x1="192" y1="66" x2="316" y2="66"/>
+              <line x1="452" y1="66" x2="576" y2="66"/>
+              <path d="M645,88 L645,116 L125,116 L125,90"/>
+            </g>
+            <g font-family="IBM Plex Mono, monospace" font-size="9.5" text-anchor="middle" fill="currentColor" opacity=".75">
+              <text x="254" y="38">condición:</text>
+              <text x="254" y="50">siembraCompleta</text>
+              <text x="514" y="38">timeout:</text>
+              <text x="514" y="50">diasHastaMadurez</text>
+              <text x="385" y="131">timeout 0 · siembraCompleta = false · reset de campaña</text>
+            </g>
+
+            <line x1="0" y1="160" x2="880" y2="160" stroke="currentColor" stroke-width="1" opacity=".25"/>
+
+            <text x="0" y="184" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="currentColor" opacity=".6">climaControl — el reloj del mundo</text>
+
+            <rect x="60" y="212" width="120" height="44" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <text x="120" y="239" font-family="Archivo, sans-serif" font-size="12.5" font-weight="600" text-anchor="middle" fill="currentColor">Dia</text>
+
+            <path d="M120,212 C 90,178 150,178 128,208" fill="none" stroke="currentColor" stroke-width="1.4" marker-end="url(#ar3)"/>
+            <text x="120" y="172" font-family="IBM Plex Mono, monospace" font-size="9.5" text-anchor="middle" fill="currentColor" opacity=".75">tickDiario · timeout 1 h</text>
+
+            <g stroke="currentColor" stroke-width="1.3" stroke-dasharray="4 3" fill="none" marker-end="url(#ar3)" opacity=".8">
+              <path d="M184,224 L300,224"/>
+              <path d="M184,244 L300,244"/>
+              <path d="M184,264 L300,264"/>
+            </g>
+            <g font-family="IBM Plex Mono, monospace" font-size="10" fill="currentColor" opacity=".8">
+              <text x="308" y="228">cada hora  →  combine.moveControl.onChange()</text>
+              <text x="308" y="248">cada 24 h  →  diaCampania++ · humedadSuperficie · daPiso · gdd</text>
+              <text x="308" y="268">cada 24 h  →  cicloCultivo.onChange()</text>
+            </g>
+            <text x="308" y="288" font-family="IBM Plex Mono, monospace" font-size="9" fill="currentColor" opacity=".55">el tick horario existe porque las condiciones no se revisan solas</text>
+          </svg>
+        </div>
+        <figcaption><b>Los dos statecharts de Main.</b> <code>cicloCultivo</code> es el ciclo agronómico completo. <code>climaControl</code> es el motor del mundo: un tick horario que avanza el balance de agua una vez por día y —crucial— despierta las condiciones de los otros statecharts cada hora.</figcaption>
+      </figure>
+
+      <h4>Cómo cierra el ciclo del cultivo</h4>
+      <p>Cada vez que la máquina termina de recorrer un lote entero, llama a <code>main.onCompleted()</code>. Esa función incrementa <code>lotesCompletados</code>; cuando llega a <code>cantidadLotes</code>, pone la bandera <code>siembraCompleta = true</code>. Eso hace dos cosas a la vez: manda al cultivo de <code>SinSembrar</code> a <code>Creciendo</code>, y deja a la máquina estacionada (porque su condición de salida es <code>!siembraCompleta</code>). Meses después, <code>Maduro → SinSembrar</code> baja la bandera y todo vuelve a empezar.</p>
+
+      <h4>Por qué el tick es horario si el clima es diario</h4>
+      <p>Porque hace dos trabajos a dos ritmos distintos. El balance de agua avanza <strong>una vez por día</strong>. Pero la condición de jornada cambia dos veces por día a horas que no caen en el cambio de fecha, y —como vimos— las condiciones no se revisan solas. De ahí el <code>combine.moveControl.onChange()</code> <strong>cada hora</strong>, fuera del <code>if</code> diario.</p>
+
+      <p>Efecto lateral a declarar en el informe: la parada por fin de jornada tiene <strong>granularidad de 1 hora</strong>. Con un turno la jornada termina a las 12:17 pero la máquina no se entera hasta las 13:00. Son ~45 min de más por día, un sesgo sistemático de ~12%.</p>
+    </section>
+
+    <!-- ============ 7 ============ -->
+    <section id="p7">
+      <span class="part-no">Parte 7</span>
+      <h2>El clima y la bandera de piso</h2>
+
+      <p>«Dar piso» es la expresión de campo para <em>el suelo está lo bastante firme como para que entre la máquina</em>. Si no da piso, la máquina se empantana y compacta el suelo, así que no se trabaja. Traducir eso a una bandera de sí/no es lo que hace esta parte del modelo.</p>
+
+      <h3>De dónde salen los datos</h3>
+
+      <p>No hay clima inventado. El modelo lleva embebida una <strong>serie diaria real de NASA POWER</strong> (reanálisis satelital MERRA-2), del punto −33,0 / −61,0 en la zona de Rosario: <strong>20 campañas de 2005/06 a 2024/25</strong>, 212 días cada una (del 1/10 al 30/4), sin valores faltantes.</p>
+
+      <p>Tres series por campaña: <strong>lluvia</strong>, <strong>temperatura media</strong> y <strong>ET0</strong>. Esta última es la <em>evapotranspiración de referencia</em>: cuántos milímetros de agua se evaporan por día en condiciones estándar. Viene precalculada con el método Hargreaves (FAO-56) a partir de las temperaturas y la latitud. Va como dato y no como cálculo del modelo porque es una cantidad física, no una decisión de modelado.</p>
+
+      <div class="note">
+        <span class="tag">Por qué los datos son un texto y no un arreglo</span>
+        <p>Las tres series están guardadas en variables de tipo texto (campañas separadas por <code>;</code>, días por <code>,</code>) y las convierte a números la función <code>cargarClima()</code> al arrancar la corrida.</p>
+        <p>La razón es un límite de la máquina virtual de Java: <strong>65.535 bytes de código por método</strong>. AnyLogic mete la inicialización de <em>todas</em> las variables de un agente en un único método generado, y tres listas de 4.240 números cada una lo desbordan. Un texto, en cambio, es una sola instrucción, y ahí el límite es de 64 KB — el mayor de los tres mide 20 KB.</p>
+        <p>Beneficio colateral: el archivo del modelo queda autocontenido y corre igual en las tres máquinas del equipo, sin rutas externas que se rompan al cambiar de sistema operativo.</p>
+      </div>
+
+      <h3>El balance de agua</h3>
+
+      <p>Una vez por día, el reloj del mundo hace esta cuenta:</p>
+
+      <div class="ann">
+        <p class="ann-h">El balance diario, en el tick del clima</p>
+        <div class="ann-row">
+          <div class="ann-code">humedadSuperficie = clamp(
+    humedadSuperficie
+      + lluvia
+      − kc * ET0,
+    0, capacidadSuperficie );</div>
+          <div class="ann-note"><b>Cuánta agua queda en la capa de arriba del suelo, en milímetros.</b> Le sumás lo que llovió hoy y le restás lo que se evaporó (<code>ET0</code> ajustada por el coeficiente de cultivo <code>kc</code>). <code>clamp</code> recorta el resultado entre 0 y la capacidad de la capa: no puede haber agua negativa ni más de lo que entra.</div>
+        </div>
+        <div class="ann-row">
+          <div class="ann-code">daPiso =
+    humedadSuperficie &lt;= umbralPiso
+    &amp;&amp; lluvia &lt; lluviaBloqueante;</div>
+          <div class="ann-note"><b>La bandera.</b> Hay piso si el suelo está lo bastante seco <em>y</em> además hoy no llovió fuerte. El segundo término hace falta aparte: un chaparrón grande impide trabajar ese mismo día, aunque el balance todavía no lo refleje.</div>
+        </div>
+      </div>
+
+      <p>Con <code>capacidadSuperficie</code> = 35 mm, <code>umbralPiso</code> = 25 mm y <code>lluviaBloqueante</code> = 5 mm.</p>
+
+      <div class="note warn">
+        <span class="tag">La decisión de modelado más delicada</span>
+        <p><strong>Modelar el perfil completo del suelo (150 mm) no sirve.</strong> Con una evapotranspiración de 5 a 7 mm/día en primavera, el perfil se seca y da <strong>0 días sin piso en casi todas las campañas</strong>: la lluvia nunca detendría la máquina y el entregable quedaría degenerado.</p>
+        <p>El fenómeno real no es el perfil cargado sino la <strong>superficie mojada justo después de la lluvia</strong>. Con la capa superficial: media de <strong>11,2 días no trabajables de 46</strong>, mínimo 4, máximo 24. Eso sí se parece a una campaña real.</p>
+      </div>
+
+      <p>Así se ve un episodio real del modelo, tomado de una corrida (campaña 0, días 21 a 31):</p>
+
+      <figure>
+        <div class="fbox">
+          <svg viewBox="0 0 860 300" role="img" aria-label="Gráfico del balance de agua entre los días 21 y 31: una lluvia de 22 milímetros el día 22 y otra de 35 el día 23 saturan la capa superficial, y recién el día 26 la humedad baja del umbral y la máquina puede volver a trabajar">
+            <rect x="107" y="40" width="300" height="210" fill="currentColor" opacity=".085"/>
+            <text x="257" y="34" font-family="IBM Plex Mono, monospace" font-size="10" font-weight="600" text-anchor="middle" fill="currentColor" opacity=".8">4 días sin piso</text>
+
+            <line x1="60" y1="250" x2="836" y2="250" stroke="currentColor" stroke-width="1.2"/>
+            <line x1="60" y1="40" x2="60" y2="250" stroke="currentColor" stroke-width="1.2"/>
+
+            <g stroke="currentColor" stroke-width=".8" opacity=".18">
+              <line x1="60" y1="45.8" x2="836" y2="45.8"/>
+            </g>
+            <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="currentColor" opacity=".65" text-anchor="end">
+              <text x="54" y="49">35 mm</text>
+              <text x="54" y="107">25 mm</text>
+              <text x="54" y="253">0</text>
+            </g>
+
+            <line x1="60" y1="104.2" x2="836" y2="104.2" stroke="currentColor" stroke-width="1.6" stroke-dasharray="7 5"/>
+            <text x="836" y="99" font-family="IBM Plex Mono, monospace" font-size="10" font-weight="600" text-anchor="end" fill="currentColor">umbralPiso</text>
+
+            <g fill="currentColor" opacity=".3">
+              <rect x="61"  y="246" width="18" height="4"/>
+              <rect x="136" y="120.5" width="18" height="129.5"/>
+              <rect x="211" y="44.7" width="18" height="205.3"/>
+              <rect x="361" y="247.7" width="18" height="2.3"/>
+              <rect x="436" y="240.7" width="18" height="9.3"/>
+              <rect x="511" y="249.4" width="18" height=".6"/>
+            </g>
+
+            <polyline points="70,250 145,146.4 220,45.8 295,73.4 370,98.8 445,114.3 520,140.5 595,165.5 670,191.4 745,222.5 820,250"
+                      fill="none" stroke="currentColor" stroke-width="2.4"/>
+            <g fill="currentColor">
+              <circle cx="70" cy="250" r="3"/><circle cx="145" cy="146.4" r="3"/><circle cx="220" cy="45.8" r="3"/>
+              <circle cx="295" cy="73.4" r="3"/><circle cx="370" cy="98.8" r="3"/><circle cx="445" cy="114.3" r="4.5"/>
+              <circle cx="520" cy="140.5" r="3"/><circle cx="595" cy="165.5" r="3"/><circle cx="670" cy="191.4" r="3"/>
+              <circle cx="745" cy="222.5" r="3"/><circle cx="820" cy="250" r="3"/>
+            </g>
+
+            <text x="145" y="112" font-family="IBM Plex Mono, monospace" font-size="9.5" text-anchor="middle" fill="currentColor" opacity=".8">22,2 mm</text>
+            <text x="220" y="36" font-family="IBM Plex Mono, monospace" font-size="9.5" text-anchor="middle" fill="currentColor" opacity=".8">35,2 mm · tope</text>
+            <text x="452" y="134" font-family="IBM Plex Mono, monospace" font-size="10" font-weight="600" fill="currentColor">← piso recuperado</text>
+
+            <g font-family="IBM Plex Mono, monospace" font-size="9.5" text-anchor="middle" fill="currentColor" opacity=".65">
+              <text x="70" y="268">21</text><text x="145" y="268">22</text><text x="220" y="268">23</text>
+              <text x="295" y="268">24</text><text x="370" y="268">25</text><text x="445" y="268">26</text>
+              <text x="520" y="268">27</text><text x="595" y="268">28</text><text x="670" y="268">29</text>
+              <text x="745" y="268">30</text><text x="820" y="268">31</text>
+            </g>
+            <text x="448" y="288" font-family="IBM Plex Mono, monospace" font-size="10" text-anchor="middle" fill="currentColor" opacity=".65">día de campaña</text>
+
+            <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="currentColor" opacity=".7">
+              <rect x="600" y="228" width="12" height="10" fill="currentColor" opacity=".3"/>
+              <text x="618" y="237">lluvia diaria</text>
+              <line x1="700" y1="233" x2="716" y2="233" stroke="currentColor" stroke-width="2.4"/>
+              <text x="722" y="237">humedadSuperficie</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption><b>Un episodio real: cuatro días de máquina parada.</b> El día 22 llueven 22,2 mm —por encima de <code>lluviaBloqueante</code>— así que la máquina para <em>ese mismo día</em>. El día 23 llueven 35,2 más y la capa satura en su tope de 35 mm. Después solo la evaporación la baja, a ~4,5 mm/día. Recién el día 26 la humedad cruza el umbral hacia abajo y la máquina vuelve. Los datos son del <code>traceln</code> del modelo, sin retocar.</figcaption>
+      </figure>
+
+      <div class="note bad">
+        <span class="tag">Para el informe</span>
+        <p><code>umbralPiso</code> es <strong>el parámetro más influyente del modelo</strong> y no tiene un valor publicado único. Amerita un análisis de sensibilidad explícito: mover ese solo número corre toda la tabla de probabilidades.</p>
+        <p>Salvedad a declarar: MERRA-2 es reanálisis satelital, no serie de estación meteorológica. Promedia sobre una celda de ~50×60 km, suaviza los extremos de lluvia y por lo tanto <strong>subestima levemente los días perdidos</strong>. Es de uso estándar en modelado de cultivos.</p>
+      </div>
+    </section>
+
+    <!-- ============ 8 ============ -->
+    <section id="p8">
+      <span class="part-no">Parte 8</span>
+      <h2>La jornada legal como variable de decisión</h2>
+
+      <p>El marco no es el régimen general de 48 h. Es la <strong>Ley 26.727, Régimen de Trabajo Agrario: 8 h diarias y 44 h semanales</strong>. Conviene citar el específico en el informe.</p>
+
+      <div class="note">
+        <span class="tag">La distinción que hace toda la diferencia</span>
+        <p><strong>Las 44 h son por operario, no por máquina.</strong> Con turnos la máquina trabaja más horas sin violar la jornada de nadie. Por eso las horas-máquina por día no son un supuesto escondido: son una <strong>variable de decisión</strong> del problema, al mismo nivel que cuántas máquinas alquilar.</p>
+      </div>
+
+      <div class="ann">
+        <p class="ann-h">Main.dentroDeJornada()</p>
+        <div class="ann-row">
+          <div class="ann-code">double horasDia = min( 24.0,
+    horasSemanales * turnos / 7.0 );</div>
+          <div class="ann-note"><b>Cuántas horas por día puede trabajar la máquina.</b> Las 44 h semanales de cada operario, multiplicadas por la cantidad de turnos, repartidas en 7 días. El <code>min</code> con 24 evita pasarse del largo del día.</div>
+        </div>
+        <div class="ann-row">
+          <div class="ann-code">if ( horasDia &gt;= 24.0 ) return true;</div>
+          <div class="ann-note">Si la cobertura llega a las 24 h, la jornada deja de ser una restricción: siempre se puede trabajar.</div>
+        </div>
+        <div class="ann-row">
+          <div class="ann-code">double h = ( time( HOUR )
+    - horaInicio ) % 24;
+if ( h &lt; 0 ) h += 24;
+return h &lt; horasDia;</div>
+          <div class="ann-note"><b>Qué hora del día es, contada desde el arranque de la jornada.</b> El <code>% 24</code> la lleva al rango de un día. Si esa hora todavía no superó <code>horasDia</code>, se está dentro del horario de trabajo.</div>
+        </div>
+      </div>
+
+      <div class="kv">
+        <div><p class="k">1 turno</p><p class="v">6,29 h</p><p class="s">por día · de 06:00 a 12:17</p></div>
+        <div><p class="k">2 turnos</p><p class="v">12,57 h</p><p class="s">por día · de 06:00 a 18:34</p></div>
+        <div><p class="k">3 turnos</p><p class="v">18,86 h</p><p class="s">por día · techo físico de una máquina</p></div>
+      </div>
+
+      <p>Con 4 turnos se excederían las 24 h del día, así que <strong>3 turnos es el techo físico</strong> de una sola máquina. Por encima de eso hay que sumar máquinas — y ese es justamente el resultado del trabajo.</p>
+
+      <h4>Simplificación declarada</h4>
+      <p>La jornada semanal se reparte <strong>uniforme sobre los 7 días</strong>, porque en la ventana de siembra se trabaja también fin de semana (tarea estacional). Si se exigiera domingo libre, la capacidad cae ~14%. Es una simplificación consciente que hay que declarar, no un descuido.</p>
+
+      <p>Y el punto de arquitectura: la jornada entró como <strong>un término más de <code>puedeTrabajar()</code></strong>, sin mecanismos nuevos. Ese fue el rédito concreto de haber unificado la parada en una sola condición.</p>
+    </section>
+
+    <!-- ============ 9 ============ -->
+    <section id="p9">
+      <span class="part-no">Parte 9</span>
+      <h2>Catálogo de variables</h2>
+
+      <p>Referencia rápida. Todo lo de acá ya apareció explicado en las partes anteriores; esta es la tabla para consultar mientras leés el modelo.</p>
+
+      <h3>1 · Parámetros de decisión — los que se barren</h3>
+      <p>Son las palancas del problema. El experimento Monte Carlo los varía; el resultado del trabajo es una función de estos tres.</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Variable</th><th>Default</th><th>Rango barrido</th><th>Qué representa</th></tr></thead>
+          <tbody>
+            <tr><td><code>cantidadLotes</code></td><td class="num">40</td><td class="num">6 → 30 paso 6</td><td>Superficie a trabajar, en lotes de 104 ha</td></tr>
+            <tr><td><code>turnos</code></td><td class="num">1</td><td class="num">1 → 3</td><td>Cuántos turnos de operario cubren la máquina</td></tr>
+            <tr><td><code>campania</code></td><td class="num">0</td><td class="num">0 → 19</td><td>Cuál de las 20 campañas históricas se usa</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>2 · Parámetros de calibración — fijos, pero justificables</h3>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Variable</th><th>Valor</th><th>Origen</th></tr></thead>
+          <tbody>
+            <tr><td><code>HarvestDensity</code></td><td class="num">0,3 kg/m²</td><td>Rinde de soja, 3 t/ha</td></tr>
+            <tr><td><code>capacidadSuperficie</code></td><td class="num">35 mm</td><td>Agua útil de la capa superficial del suelo</td></tr>
+            <tr><td><code>umbralPiso</code></td><td class="num">25 mm</td><td><strong>El más influyente.</strong> Sin valor publicado único</td></tr>
+            <tr><td><code>lluviaBloqueante</code></td><td class="num">5 mm</td><td>Lluvia del día que impide entrar al lote</td></tr>
+            <tr><td><code>kc</code></td><td class="num">1,0</td><td>Coeficiente de cultivo: ETc = kc × ET0</td></tr>
+            <tr><td><code>horasSemanales</code></td><td class="num">44</td><td>Ley 26.727</td></tr>
+            <tr><td><code>horaInicio</code></td><td class="num">6</td><td>Hora de arranque de la jornada</td></tr>
+            <tr><td><code>diasMaduracionMin/Max/Moda</code></td><td class="num">90 / 150 / 120</td><td>Ciclo de soja — <em>ver Parte 13</em></td></tr>
+            <tr><td><code>tBase</code> · <code>gddObjetivo</code></td><td class="num">10 °C · 1680</td><td>Grados-día base 10. Calibrados pero <strong>todavía sin usar</strong></td></tr>
+            <tr><td><code>terminarAlCerrarCampania</code></td><td class="num">true</td><td>Interruptor de experimento — <em>ver Parte 11</em></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>3 · Estado del clima</h3>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Variable</th><th>Tipo</th><th>Qué guarda</th></tr></thead>
+          <tbody>
+            <tr><td><code>climaLluvia</code> · <code>climaTmedia</code> · <code>climaEt0</code></td><td>texto</td><td>Las series NASA POWER crudas, embebidas como texto</td></tr>
+            <tr><td><code>lluviaDiaria</code> · <code>tmediaDiaria</code> · <code>et0Diaria</code></td><td>número [ ][ ]</td><td>Lo mismo ya convertido a números: <code>[campaña][día]</code>, 20 × 212</td></tr>
+            <tr><td><code>diaCampania</code></td><td>entero</td><td>Día actual dentro de la campaña. <strong>Se reinicia en cada campaña</strong></td></tr>
+            <tr><td><code>humedadSuperficie</code></td><td>número</td><td>Milímetros de agua en la capa superficial</td></tr>
+            <tr><td><code>daPiso</code></td><td>sí/no</td><td>La bandera. Lo único que el resto del modelo mira</td></tr>
+            <tr><td><code>gdd</code></td><td>número</td><td>Grados-día acumulados. Se calcula pero <strong>no se usa</strong></td></tr>
+            <tr><td><code>horaTick</code></td><td>entero</td><td>Contador de horas, para saber cuándo cambia el día</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>4 · Estado de la cadena de masa</h3>
+      <p>El patrón se repite idéntico en <code>Combine</code>, <code>Cart</code> y <code>Truck</code>, más una copia en <code>Main</code> para el silo. Explicado en la Parte 4.</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Variable</th><th>Qué guarda</th></tr></thead>
+          <tbody>
+            <tr><td><code>nivel</code></td><td>Kilos en el recipiente <em>a la fecha de <code>tUltimo</code></em>, no ahora</td></tr>
+            <tr><td><code>tasaActual</code></td><td>Flujo neto de este recipiente, en kg por unidad de tiempo. Negativo = descargando</td></tr>
+            <tr><td><code>tUltimo</code></td><td>Cuándo se actualizó <code>nivel</code> por última vez</td></tr>
+            <tr><td><code>tasaCosecha</code></td><td>Solo en <code>Combine</code>: lo que entra al sistema desde el campo</td></tr>
+            <tr><td><code>trabajando</code></td><td>Solo en <code>Combine</code>: bandera de la que se deriva <code>tasaCosecha</code></td></tr>
+            <tr><td><code>nivelSilo</code> · <code>tasaSilo</code> · <code>tUltimoSilo</code></td><td>El silo, que vive en <code>Main</code></td></tr>
+            <tr><td><code>Capacity</code></td><td>Parámetro: el tope del recipiente</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>5 · Banderas de control</h3>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Variable</th><th>Quién la escribe</th><th>Quién la lee</th></tr></thead>
+          <tbody>
+            <tr><td><code>siembraCompleta</code></td><td><code>onCompleted()</code>, al terminar el último lote</td><td><code>SinSembrar → Creciendo</code> y <code>Parked → GoingToField</code></td></tr>
+            <tr><td><code>daPiso</code></td><td>El tick diario del clima</td><td><code>puedeTrabajar()</code></td></tr>
+            <tr><td><code>lotesCompletados</code></td><td><code>onCompleted()</code>, uno por lote</td><td><code>onCompleted()</code>, contra <code>cantidadLotes</code></td></tr>
+            <tr><td><code>trabajando</code></td><td>Las flechas de parar y reanudar</td><td>El cálculo de <code>tasaCosecha</code></td></tr>
+            <tr><td><code>autoControl</code></td><td>Fijo en <code>true</code></td><td>Habilita el despacho automático del acoplado</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>6 · Contadores y métricas</h3>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Variable</th><th>Qué mide</th></tr></thead>
+          <tbody>
+            <tr><td><code>diaFinSiembra</code></td><td><strong>La métrica del entregable.</strong> Día en que cerró la campaña. <code>−1</code> = no terminó</td></tr>
+            <tr><td><code>horasCosechando</code> · <code>horasDetenida</code></td><td>Se acumulan al entrar y salir de <code>MoveHarvesting</code></td></tr>
+            <tr><td><code>viajesCamion</code></td><td>Un incremento por llegada del camión al silo</td></tr>
+            <tr><td><code>diasSinPiso</code></td><td>Días en que <code>daPiso</code> fue falso</td></tr>
+            <tr><td><code>totalCosechado</code></td><td>Masa que entró al sistema. El lado izquierdo de la auditoría</td></tr>
+            <tr><td><code>masaDescartada</code> · <code>masaInventada</code></td><td>Lo que se recortó en los topes. Detectan el desbalance, no lo localizan</td></tr>
+            <tr><td><code>base…</code> (4 variables)</td><td>Foto de los contadores al empezar la campaña, para poder reportar el delta y no el acumulado histórico</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ 10 ============ -->
+    <section id="p10">
+      <span class="part-no">Parte 10</span>
+      <h2>Cómo leer el log de una corrida</h2>
+
+      <p>El modelo no tiene gráficos: se lee por consola. Este es un fragmento real anotado línea por línea.</p>
+
+      <div class="ann">
+        <p class="ann-h">Log real de una corrida, anotado</p>
+        <div class="ann-row">
+          <div class="ann-code">### MAQUINA PARA | dia 0 | piso=true
+    jornada=false tolvaLlena=false
+    | t=0.0025 d</div>
+          <div class="ann-note"><b>Arranque.</b> El modelo empieza el 01/10 a las 00:00 y la jornada va de 06:00 a 12:17, así que la máquina llega al lote y para casi enseguida. Están impresos los tres términos de <code>puedeTrabajar()</code>: acá el que manda es <code>jornada=false</code>.</div>
+        </div>
+        <div class="ann-row">
+          <div class="ann-code">### MAQUINA REANUDA | dia 0
+    | tasa=2494800.0 nivelTolva=0
+    | t=0.25 d</div>
+          <div class="ann-note"><b>06:00.</b> <code>t=0.25 d</code> es un cuarto de día. <code>tasa=2494800</code> kg/semana ÷ 604.800 = <b>4,125 kg/s</b>. Que la tasa no sea 0 al reanudar es la prueba de que el flujo se restauró bien.</div>
+        </div>
+        <div class="ann-row">
+          <div class="ann-code">### MAQUINA PARA | dia 0 | piso=true
+    jornada=true tolvaLlena=true
+    | nivelTolva=9000 | t=0.2753 d</div>
+          <div class="ann-note"><b>Tanque lleno.</b> 36 minutos después. 9.000 kg ÷ 4,125 kg/s = 36 min, exacto. Esta parada es <em>logística</em>: la máquina espera al acoplado. Es el tiempo que el entregable #2 tiene que cuantificar.</div>
+        </div>
+        <div class="ann-row">
+          <div class="ann-code">VIAJE 1 | dia 0.4398
+    | carga 50000.0 kg de 50000.0 (100%)</div>
+          <div class="ann-note"><b>Primer camión al silo.</b> Al 100% de carga. Si aparecen cargas parciales del 60–80%, es un efecto conocido del rearmado de la alarma de «camión lleno» y <strong>no</strong> un bug de masa — conviene descartarlo antes de sospechar.</div>
+        </div>
+        <div class="ann-row">
+          <div class="ann-code">### MAQUINA PARA | ... jornada=false
+    | nivelTolva=8560 | t=0.5119 d
+CLIMA dia 1 | lluvia=0.1 etc=4.62
+    humedad=12.98 piso=true
+### MAQUINA REANUDA | dia 1
+    | nivelTolva=8560 | t=1.25 d</div>
+          <div class="ann-note"><b>La noche.</b> Fin de jornada a las 12:17 con 8.560 kg en el tanque; reanuda al día siguiente a las 06:00 con <strong>los mismos 8.560 kg</strong>. Ese par de números idénticos es el chequeo de que la máquina no cosecha estando parada — la mecánica de la Parte 4.</div>
+        </div>
+        <div class="ann-row">
+          <div class="ann-code">=== CAMPANIA 1 CERRADA
+    | superficie=104 ha
+    | fin el dia 3 de la ventana
+    | DENTRO del 15/nov</div>
+          <div class="ann-note"><b>La observación del Monte Carlo.</b> Cada corrida del barrido produce exactamente esta línea, y de ella sale una fila del archivo de resultados. <code>DENTRO</code> significa <code>diaFinSiembra ≤ 45</code>.</div>
+        </div>
+        <div class="ann-row">
+          <div class="ann-code">AUDITORIA t=0.4994
+    | cosechado=313199.99
+    enSistema=313199.99
+    | FUGA=-2.7e-11 (-8.7e-15%)</div>
+          <div class="ann-note"><b>Conservación de masa.</b> 313.200 kg contra los 312.000 teóricos (104 ha × 3 t/ha): +0,38%, porque la máquina hace 145 pasadas de 9 m sobre un lote de 1.300 m y sobra media pasada. La <code>FUGA</code> en 10⁻¹¹ es ruido de coma flotante. <em>Ojo: ese <code>t</code> está en semanas.</em></div>
+        </div>
+        <div class="ann-row">
+          <div class="ann-code">CAMPANIA 1 | cosechando=21.09 h
+    | detenida=62.81 h | uso=25%
+    | viajes camion=5
+    | dias sin piso=0</div>
+          <div class="ann-note"><b>Las 21,09 h son el número de oro:</b> coinciden con el cálculo teórico de recorrido, lo que valida toda la calibración. <strong>El 25% de uso, en cambio, engaña</strong> — su denominador es reloj de pared, incluida la noche. Contra la jornada realmente disponible (22 h) el uso es del 96%.</div>
+        </div>
+        <div class="ann-row">
+          <div class="ann-code">&gt;&gt;&gt; PISO PERDIDO dia 22
+    | humedad=17.77 lluvia=22.2
+&gt;&gt;&gt; PISO RECUPERADO dia 26
+    | humedad=23.27 lluvia=1.6</div>
+          <div class="ann-note"><b>El episodio del gráfico de la Parte 7.</b> Cuatro días de lote intransitable. Con la campaña cerrada el día 3, esta lluvia cae durante la maduración y no cuesta nada — con una superficie realista caería en plena siembra.</div>
+        </div>
+        <div class="ann-row">
+          <div class="ann-code">Cultivo maduro el dia 112.99
+    — listo para cosecha</div>
+          <div class="ann-note"><b>El ciclo cerró.</b> 3,5 días de trabajo + 109,5 de maduración. Después de esto <code>Maduro → SinSembrar</code> reinicia todo y empieza una campaña nueva.</div>
+        </div>
+      </div>
+
+      <div class="note warn">
+        <span class="tag">La métrica que hay que arreglar</span>
+        <p><code>uso = cosechando / (cosechando + detenida)</code> mezcla tres cosas distintas en el denominador: la noche (que no es tiempo perdido, es tiempo que no existe), los días sin piso (pérdida climática) y la espera del acoplado (pérdida logística). Para el entregable #2 hay que <strong>imputar cada parada a su causa</strong> y reportar tres contadores separados.</p>
+      </div>
+    </section>
+
+    <!-- ============ 11 ============ -->
+    <section id="p11">
+      <span class="part-no">Parte 11</span>
+      <h2>Los dos experimentos</h2>
+
+      <p>Un <strong>experimento</strong> en AnyLogic es una forma de correr el modelo. El mismo modelo se puede correr de maneras distintas; acá hay dos, con propósitos opuestos.</p>
+
+      <div class="tw">
+        <table>
+          <caption>Configuración de los experimentos</caption>
+          <thead><tr><th></th><th><code>Simulation</code></th><th><code>ParametersVariation</code></th></tr></thead>
+          <tbody>
+            <tr><td><strong>Para qué</strong></td><td>Ver el modelo funcionando, depurar</td><td>Producir los resultados del entregable</td></tr>
+            <tr><td><strong>Corridas</strong></td><td>1</td><td>300 · 5 superficies × 3 turnos × 20 campañas</td></tr>
+            <tr><td><strong>Cuándo termina</strong></td><td>15/05/2026 (~421 semanas)</td><td>A las <strong>31 semanas</strong> (217 días)</td></tr>
+            <tr><td><strong><code>terminarAlCerrarCampania</code></strong></td><td><span class="ok">false</span> — deja correr el ciclo completo</td><td><span class="ok">true</span> — corta al cerrar la campaña</td></tr>
+            <tr><td><strong>Modo</strong></td><td>Con animación, a velocidad escalada</td><td>Sin animación, lo más rápido posible</td></tr>
+            <tr><td><strong>Salida</strong></td><td>La consola</td><td>Una fila por corrida en <code>resultados.csv</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note">
+        <span class="tag">Por qué existe terminarAlCerrarCampania</span>
+        <p>En el barrido, cada corrida tiene que ser <strong>una observación limpia</strong>: una campaña, un valor de <code>diaFinSiembra</code>. Con el interruptor en <code>true</code> el modelo se corta apenas cierra la campaña y no sigue simulando meses que nadie va a mirar. Si <em>no</em> cierra dentro de los 212 días de datos climáticos, <code>diaFinSiembra</code> queda en <strong>−1</strong>, que es la observación «no terminó» — no un error.</p>
+        <p>En la corrida única querés lo contrario: ver el ciclo agronómico completo. Con el interruptor en <code>true</code>, los estados <code>Creciendo</code> y <code>Maduro</code> son literalmente inalcanzables.</p>
+      </div>
+
+      <h4>La velocidad de la animación la maneja el propio modelo</h4>
+      <p>Un detalle práctico: los estados del ciclo del cultivo cambian la escala de tiempo de la animación. <code>SinSembrar</code> la pone en <code>0,05 × day()</code> —la máquina está trabajando y se mira al detalle— y <code>Creciendo</code> la pone en <code>1 × week()</code>, porque la maduración son meses sin nada que ver.</p>
+
+      <h3>El resultado: P(cerrar antes del 15 de noviembre)</h3>
+
+      <div class="tw">
+        <table>
+          <caption>Probabilidad sobre las 20 campañas históricas</caption>
+          <thead><tr><th>Superficie</th><th class="num">1 turno · 6,3 h/d</th><th class="num">2 turnos · 12,6 h/d</th><th class="num">3 turnos · 18,9 h/d</th></tr></thead>
+          <tbody>
+            <tr><td>624 ha</td><td class="num ok">100%</td><td class="num ok">100%</td><td class="num ok">100%</td></tr>
+            <tr><td>1.248 ha</td><td class="num no">0%</td><td class="num ok">100%</td><td class="num ok">100%</td></tr>
+            <tr><td>1.872 ha</td><td class="num no">0%</td><td class="num mid">65%</td><td class="num ok">100%</td></tr>
+            <tr><td>2.496 ha</td><td class="num no">0%</td><td class="num no">0%</td><td class="num ok">90%</td></tr>
+            <tr><td>3.120 ha</td><td class="num no">0%</td><td class="num no">0%</td><td class="num mid">35%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="kv">
+        <div><p class="k">Capacidad efectiva</p><p class="v">21,7 ha</p><p class="s">por día y por turno — constante en las 15 combinaciones (21,4 a 22,1)</p></div>
+        <div><p class="k">Eficiencia</p><p class="v">70%</p><p class="s">de la capacidad nominal (31 ha/día). El resto: viajes, esperas, pasadas cortadas</p></div>
+        <div><p class="k">Techo de una máquina</p><p class="v">~2.500 ha</p><p class="s">con los 3 turnos, al 90% de confianza</p></div>
+      </div>
+
+      <div class="note">
+        <span class="tag">La respuesta de dimensionamiento</span>
+        <p>Una máquina cubre <strong>~900 ha por turno de operario</strong> con 90% de confianza de cerrar la ventana. Con los 3 turnos posibles, <strong>una máquina topea en ~2.500 ha</strong>; por encima hace falta una segunda.</p>
+        <p>Un turno más y una máquina más aportan <strong>la misma capacidad</strong> (~900 ha), pero el turno solo cuesta un salario y la máquina cuesta alquiler más salario. <strong>Conviene sumar turnos hasta agotar los tres y recién después máquinas.</strong> El punto de quiebre está en las 2.500 ha.</p>
+      </div>
+
+      <p>Un resultado que vale reportar por sí mismo: <strong>que la capacidad por turno no se degrade al escalar</strong> significa que la logística acompaña, y que el cuello de botella sigue siendo la máquina, no el acoplado ni el camión.</p>
+
+      <div class="note warn">
+        <span class="tag">Límite de esta tabla</span>
+        <p>Es un <strong>límite optimista: todavía no hay roturas de máquina</strong>. Cuando entren, la capacidad efectiva baja y todos los umbrales se corren hacia abajo. Quedan además dos celdas de transición sin resolver (1.872 ha con 2 turnos, 65%; y 3.120 ha con 3 turnos, 35%) que un barrido más fino precisaría.</p>
+      </div>
+    </section>
+
+    <!-- ============ 12 ============ -->
+    <section id="p12">
+      <span class="part-no">Parte 12</span>
+      <h2>Decisiones de modelado y lo que se descartó</h2>
+
+      <p>Esta tabla es la que hay que poder defender en la presentación: cada fila es una alternativa razonable que se probó o se consideró, y la razón concreta por la que no quedó.</p>
+
+      <div class="tw">
+        <table>
+          <thead><tr><th>Se eligió</th><th>Se descartó</th><th>Por qué</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Recipientes como variables + integración analítica</td>
+              <td>Fluid Library de AnyLogic</td>
+              <td>La PLE topea el tiempo simulado en <strong>5 h</strong> para toda librería salvo Process Modeling. Una campaña son meses</td>
+            </tr>
+            <tr>
+              <td>Balance de agua de <strong>capa superficial</strong> (35 mm)</td>
+              <td>Perfil completo del suelo (150 mm)</td>
+              <td>El perfil da <strong>0 días sin piso</strong> en casi todas las campañas: la lluvia nunca detendría la máquina y el entregable queda degenerado</td>
+            </tr>
+            <tr>
+              <td>Serie histórica real de NASA POWER, 20 campañas</td>
+              <td>Distribución sintética de lluvia</td>
+              <td>Las 20 campañas <em>son</em> el espacio muestral del Monte Carlo, y traen la correlación temporal real (rachas secas y húmedas) que una distribución independiente destruiría</td>
+            </tr>
+            <tr>
+              <td>Series embebidas como <strong>texto</strong></td>
+              <td>Lista de números · archivo externo</td>
+              <td>La lista desborda el límite de 65.535 bytes de código por método de la JVM. El archivo externo se rompe al cambiar de máquina</td>
+            </tr>
+            <tr>
+              <td><strong>Una sola condición</strong> <code>puedeTrabajar()</code></td>
+              <td>Un mensaje <code>STOP</code>/<code>RESUME</code> por motivo</td>
+              <td>Con N motivos son 2N mensajes y 2<sup>N</sup> combinaciones, y el orden de despacho decide el resultado. La condición única no depende del orden</td>
+            </tr>
+            <tr>
+              <td>Jornada como <strong>horas por operario</strong> × turnos</td>
+              <td>Horas-máquina fijas por día</td>
+              <td>Convierte un supuesto escondido en una <strong>variable de decisión</strong>, que es justamente lo que el trabajo tiene que optimizar</td>
+            </tr>
+            <tr>
+              <td>Contadores de masa descartada e inventada</td>
+              <td>Recortar el nivel a secas</td>
+              <td>El recorte silencioso hacía desaparecer grano sin dejar rastro. Con los contadores, la auditoría puede reclamar cada kilo</td>
+            </tr>
+            <tr>
+              <td>Escala 2,5 m/píxel (lote de 104 ha)</td>
+              <td>La escala original del ejemplo (10 m/píxel)</td>
+              <td>Con la escala original el lote medía <strong>0,17 ha</strong>: el modelo simulaba una huerta</td>
+            </tr>
+            <tr>
+              <td>Cultivo dibujado como figura replicada</td>
+              <td>Un agente por planta</td>
+              <td>Desperdicio de cómputo, y consume el cupo de 10 tipos de agente de la PLE</td>
+            </tr>
+            <tr>
+              <td>Máquina parametrizada por modo (siembra/cosecha)</td>
+              <td>Un tipo de agente por máquina</td>
+              <td>Mismo límite de 10 tipos. Decisión tomada, todavía sin implementar</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ 13 ============ -->
+    <section id="p13">
+      <span class="part-no">Parte 13</span>
+      <h2>Lo que falta, en orden de valor</h2>
+
+      <h3>1 · Fallas de máquina — máxima prioridad</h3>
+      <p>Es lo único que falta para que los entregables #2 y #3 tengan base completa, y además hace que la tabla de probabilidades deje de ser un límite optimista. <strong>El diseño está listo, sin implementar.</strong></p>
+      <p>Sería un <strong>tercer statechart paralelo</strong> en la máquina, junto a <code>tankControl</code> y <code>moveControl</code>:</p>
+      <pre><code>Operativa ──[timeout horasHastaFalla]──&gt; Reparando ──[timeout duracionReparacion]──&gt; Operativa</code></pre>
+      <ul>
+        <li>El reloj de desgaste se consume <strong>solo mientras la máquina trabaja</strong>, con el mismo truco de los niveles: <code>inState( MoveHarvesting ) ? horasHastaFalla : 1e12</code>.</li>
+        <li><strong>Distribución:</strong> exponencial con MTBF en <em>horas de operación</em> (justificable por superposición de procesos de falla, teorema de Drenick). Weibull con β&gt;1 solo si se declara el supuesto de reparación perfecta.</li>
+        <li><strong>Parámetros:</strong> MTBF de 20–40 h de operación (la norma ASABE D497.7 reporta 15 a 72 h por subsistema). Reparación asimétrica, ej. <code>triangular(0.5, 8, 2)</code> horas.</li>
+        <li><strong>Calibración:</strong> apuntar a 0,5–3 fallas esperadas por campaña.</li>
+        <li><strong>Punto de arquitectura:</strong> la parada va como <em>término nuevo en <code>puedeTrabajar()</code></em>, no como mensaje. Exactamente el mismo camino que tomó la jornada legal.</li>
+      </ul>
+
+      <h3>2 · Acoplamiento térmico: gdd → Maduro</h3>
+      <p>Los <strong>grados-día</strong> (<code>gdd</code>) son la forma agronómica de medir el desarrollo de un cultivo: cada día suma la temperatura media menos una temperatura base, y el cultivo madura al llegar a un total. El modelo los acumula pero <strong>no los usa</strong>: la transición <code>Creciendo → Maduro</code> sigue siendo un sorteo <code>triangular(90, 150, 120)</code>. Para cerrarlo, pasarla a condición <code>gdd &gt;= gddObjetivo</code>.</p>
+      <div class="note warn">
+        <span class="tag">El dato que importa</span>
+        <p>El objetivo calibrado contra la serie real es <strong>1.680 grados-día base 10 °C</strong>, que da un ciclo medio de 119,7 días con dispersión de <strong>101 a 135</strong>. El <code>triangular(90,150,120)</code> actual abarca 60 días de rango cuando la variabilidad real es de <strong>34</strong>: la distribución inventada es casi el doble de ancha y sesga el riesgo hacia arriba.</p>
+      </div>
+
+      <h3>3 · Desglose de <code>horasDetenida</code> por causa</h3>
+      <p>Sin esto el entregable #2 no tiene su número. Tres contadores separados —clima, jornada, logística— imputados en la flecha de parada.</p>
+
+      <h3>4 · Campaña de siembra y acople de rinde</h3>
+      <p>La siembra reusa el patrón de recipientes con el flujo invertido: la semilla sale de la sembradora hacia el lote y los camiones la reponen. Y el acople que le da sentido a todo el trabajo:</p>
+      <pre><code>rindeEfectivo = rindePotencial * penalizacionPorFecha( fechaSiembra )</code></pre>
+      <p>con la curva armada como tabla de consulta a partir de datos de INTA de fecha de siembra contra rendimiento. <strong>Sin este acople, siembra y cosecha son dos simulaciones pegadas y el modelo no puede responder su propia pregunta</strong> — que es cuánto cuesta sembrar tarde.</p>
+
+      <h3>5 · Menores</h3>
+      <ul>
+        <li>Crecimiento visual: ligar la altura de la figura del cultivo a un <code>progresoCultivo()</code> calculado desde <code>tInicioCrecimiento</code>.</li>
+        <li>Contadores de ocio para el acoplado y el camión (solo está el de la máquina).</li>
+        <li>Avanzar <code>campania</code> entre campañas de una misma corrida, en vez de repetir la misma serie climática.</li>
+        <li>Corregir la ruta fija del código que escribe el CSV, que apunta a la máquina de otro integrante del equipo y falla en silencio.</li>
+      </ul>
+    </section>
+
+    <!-- ============ 14 ============ -->
+    <section id="p14">
+      <span class="part-no">Parte 14</span>
+      <h2>Trampas de AnyLogic que ya mordieron</h2>
+
+      <p>Cada una costó al menos una corrida fallida, y todas contradicen un supuesto razonable. Vale tenerlas a mano antes de tocar el modelo.</p>
+
+      <div class="tw">
+        <table>
+          <thead><tr><th>La trampa</th><th>El síntoma real</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Las condiciones no se revisan solas</strong> cuando la variable la cambia otro agente</td>
+              <td><code>Parked → GoingToField</code> disparó en el instante 0 y nunca más. La máquina quedó estacionada para siempre. Se arregla con <code>onChange()</code> explícito</td>
+            </tr>
+            <tr>
+              <td><strong>Prohibido <code>return</code></strong> en acciones de transición y de estado</td>
+              <td>AnyLogic las despacha desde un método compartido; el <code>return</code> sale del despachador y saltea el rearmado de la autotransición. Un tick horario corrió <strong>una sola vez</strong> y 400 corridas devolvieron 0</td>
+            </tr>
+            <tr>
+              <td><strong>Los mensajes no se encolan</strong>, y ante eventos simultáneos se procesa primero el último enviado</td>
+              <td>Un <code>FINISHED_LOADING</code> llegó antes de que el camión estuviera en el estado que lo escucha, se descartó en silencio y el camión se llenó de la nada: <strong>150 t fabricadas</strong></td>
+            </tr>
+            <tr>
+              <td><strong><code>Transition.restart()</code> no existe</strong></td>
+              <td>La API es <code>start()</code> / <code>cancel()</code>. Y <code>cancel()</code> sobre una transición que está disparando tira una excepción</td>
+            </tr>
+            <tr>
+              <td><strong>Las transiciones de salida se activan DESPUÉS del entry action</strong></td>
+              <td>Si el entry fija la tasa, la alarma ya la ve — no hay que reprogramarla. Y nunca reprogramar en un <em>exit</em> action: puede ser justo la que está disparando</td>
+            </tr>
+            <tr>
+              <td><strong>Las instancias embebidas pisan los parámetros del tipo</strong></td>
+              <td>Cambiar el valor por defecto de <code>Truck</code> no hacía nada porque la instancia <code>truck</code> tenía su propio valor. El camión cargaba 2.500 kg en vez de 50.000: <strong>120 viajes por campaña</strong> y un diagnóstico equivocado durante horas</td>
+            </tr>
+            <tr>
+              <td><strong>La lista de parámetros de un Parameter Variation se congela al crearlo</strong></td>
+              <td>Los parámetros agregados después no aparecen y corren con su valor por defecto, en silencio. Costó un barrido de 400 corridas en el que <code>turnos</code> nunca se varió</td>
+            </tr>
+            <tr>
+              <td><strong>El archivo del modelo guarda los campos de todos los triggers</strong>, no solo el activo</td>
+              <td>Una transición por timeout conserva su condición vieja. Al auditar hay que filtrar por el trigger real y leer también la guarda</td>
+            </tr>
+            <tr>
+              <td><strong><code>infinity()</code> no existe</strong></td>
+              <td>Se usa el literal <code>1e12</code> para desactivar una alarma</td>
+            </tr>
+            <tr>
+              <td><strong>Límites de la PLE</strong></td>
+              <td>10 tipos de agente · 200 bloques por tipo · 50.000 agentes dinámicos · 5 h simuladas fuera de Process Modeling</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="foot">
+    Optimización de la Ventana de Siembra · Simulación · UTN Rosario<br>
+    Modelo AnyLogic 8.9.9 PLE · 4 agentes · 4 statecharts · unidad de tiempo Week · clima NASA POWER 2005–2025<br>
+    Documento derivado del archivo del modelo y de docs/CONTEXTO-TRASPASO.md, verificado contra corridas instrumentadas.
+  </footer>
+
+</div>
+</body>
+</html>
