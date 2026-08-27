@@ -1451,6 +1451,21 @@ final static CellDirection NOTSTARTED = null;
 						</InitialValue>
 					</Properties>
 				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1787776607996</Id>
+					<Name><![CDATA[trabajando]]></Name>
+					<X>850</X><Y>570</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[boolean]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[false]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
 				<Variable Class="Parameter">
 					<Id>1169735952567</Id>
 					<Name><![CDATA[Capacity]]></Name>
@@ -1616,7 +1631,7 @@ final static CellDirection NOTSTARTED = null;
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="420" Height="260">
 						<EntryAction><![CDATA[actualizarNivel();
-tasaCosecha = harvestRate() / second();
+tasaCosecha = tasaCosechaActual();
 tasaActual = tasaCosecha;
 tUltimo = time();]]></EntryAction>
 						<ExitAction><![CDATA[actualizarNivel();
@@ -1650,6 +1665,10 @@ tasaActual = 0;]]></ExitAction>
 actualizarNivel();
 tasaCosecha = 0;
 tasaActual = 0;
+// el carro se llama desde aca y no desde MoveWaitCart.Entry: si la maquina
+// ya estaba parada por jornada/piso, no se reentra a MoveWaitCart y el
+// send de su entry no vuelve a correr.
+if ( main.autoControl ) send( "GO_TO_COMBINE", main.cart );
 moveControl.onChange();]]></EntryAction>
 						<FillColor>-29696</FillColor>
 					</Properties>
@@ -1687,7 +1706,9 @@ moveControl.onChange();]]></EntryAction>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="110" Height="30">
-						<EntryAction><![CDATA[if( main.autoControl )
+						<EntryAction><![CDATA[// solo llamar al carro si la parada es porque falta el carro.
+// Si la maquina paro por piso o por jornada, el carro no tiene nada que hacer aca.
+if ( main.autoControl && inState( FullWaitCart ) )
 	send( "GO_TO_COMBINE", main.cart );]]></EntryAction>
 						<FillColor>-29696</FillColor>
 					</Properties>
@@ -1819,15 +1840,18 @@ nivel -= lote;
 main.cart.nivel += lote;
 // 2) mientras siguen acoplados el carro recibe exactamente lo que se cosecha,
 //    no la tasa nominal de descarga: la tolva ya esta vacia
-tasaCosecha = harvestRate() / second();
+tasaCosecha = tasaCosechaActual();
 tasaActual = 0;
 tUltimo = time();
 main.cart.tasaActual = tasaCosecha;
 main.cart.tUltimo = time();
-if ( main.cart.inState( Cart.Loading ) ) { main.cart.Full.cancel(); main.cart.Full.start(); }]]></EntryAction>
+if ( main.cart.inState( Cart.Loading ) ) { main.cart.Full.cancel(); main.cart.Full.start(); }
+// el onChange se movio aca desde StartedUnloading.Action: la Action corre ANTES
+// del entry del destino, y transition8 necesita ver WithCart ya activo
+moveControl.onChange();]]></EntryAction>
 						<ExitAction><![CDATA[send( "COMPLETED", main.cart );
 actualizarNivel();
-tasaCosecha = harvestRate() / second();
+tasaCosecha = tasaCosechaActual();
 tasaActual = tasaCosecha;
 // se corta el acople: el carro deja de recibir aunque siga en Loading
 main.cart.actualizarNivel();
@@ -1946,7 +1970,7 @@ moveControl.onChange();]]></Action>
 				<StatechartElement Class="Transition" ParentState="Harvesting" ParentStateId="1169735952546">
 					<Id>1169735952536</Id>
 					<Name><![CDATA[StartedUnloading]]></Name>
-					<X>450</X><Y>190</Y>
+					<X>451</X><Y>190</Y>
 					<Label><X>-130</X><Y>-20</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1957,7 +1981,6 @@ moveControl.onChange();]]></Action>
 					</Points>
 					<IconOffset>40.0</IconOffset>
 					<Properties Source="1169735952545" Target="1169735952544" Trigger="message">
-						<Action><![CDATA[moveControl.onChange();]]></Action>
 						<Timeout Class="CodeUnitValue">
 							<Code><![CDATA[1]]></Code>
 							<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
@@ -2037,7 +2060,26 @@ moveControl.onChange();]]></Action>
 					</Points>
 					<IconOffset>75.0</IconOffset>
 					<Properties Source="1169735952561" Target="1169735952549" Trigger="condition">
-						<Action><![CDATA[traceln( "### MAQUINA REANUDA | dia " + main.diaCampania + " | t=" + time( DAY ) + " d" );]]></Action>
+						<Action><![CDATA[// REANUDA: la tasa se recalcula, no se restaura de un snapshot.
+// El snapshot fallaba si la parada ocurria antes de que tankControl entrara
+// en Harvesting: guardaba 0 y la maquina despues recorria las hileras sin cosechar.
+actualizarNivel();
+trabajando = true;
+tasaCosecha = tasaCosechaActual();
+if ( inState( WithCart ) ) {
+	main.cart.actualizarNivel();
+	tasaActual = 0;
+	main.cart.tasaActual = tasaCosecha;
+	main.cart.tUltimo = time();
+	if ( main.cart.inState( Cart.Loading ) ) { main.cart.Full.cancel(); main.cart.Full.start(); }
+} else {
+	tasaActual = tasaCosecha;
+	tUltimo = time();
+	if ( inState( Loading ) ) { Full.cancel(); Full.start(); }
+}
+traceln( "### MAQUINA REANUDA | dia " + main.diaCampania
+         + " | tasa=" + tasaCosecha + " nivelTolva=" + (int) nivel
+         + " | t=" + time( DAY ) + " d" );]]></Action>
 						<Timeout Class="CodeUnitValue">
 							<Code><![CDATA[1]]></Code>
 							<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
@@ -2069,8 +2111,26 @@ moveControl.onChange();]]></Action>
 					<IconOffset>19.0</IconOffset>
 					<Properties Source="1169735952562" Target="1169735952561" Trigger="condition">
 						<Action><![CDATA[stop();
-traceln( "### MAQUINA PARA | dia " + main.diaCampania + " | daPiso=" + main.daPiso
-         + " tolvaLlena=" + inState( FullWaitCart ) + " | t=" + time( DAY ) + " d" );]]></Action>
+// PARA: hay que congelar la cadena de masa, no solo el movimiento.
+// MoveWaitCart no es substate de Harvesting, asi que Harvesting.Exit NO corre.
+actualizarNivel();                    // integra con la tasa VIEJA antes de pisarla
+trabajando = false;
+tasaCosecha = 0;
+if ( inState( WithCart ) ) {
+	main.cart.actualizarNivel();
+	main.cart.tasaActual = 0;
+	if ( main.cart.inState( Cart.Loading ) ) { main.cart.Full.cancel(); main.cart.Full.start(); }
+} else {
+	tasaActual = 0;
+	if ( inState( Loading ) ) { Full.cancel(); Full.start(); }
+}
+traceln( "### MAQUINA PARA | dia " + main.diaCampania
+         + " | piso=" + main.daPiso
+         + " jornada=" + main.dentroDeJornada()
+         + " tolvaLlena=" + inState( FullWaitCart )
+         + " | humedad=" + main.humedadSuperficie
+         + " nivelTolva=" + (int) nivel
+         + " | t=" + time( DAY ) + " d" );]]></Action>
 						<Timeout Class="CodeUnitValue">
 							<Code><![CDATA[1]]></Code>
 							<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
@@ -2132,7 +2192,8 @@ traceln( "### MAQUINA PARA | dia " + main.diaCampania + " | daPiso=" + main.daPi
 					</Points>
 					<IconOffset>14.0</IconOffset>
 					<Properties Source="1169735952562" Target="1169735952563" Trigger="condition">
-						<Action><![CDATA[stop();
+						<Action><![CDATA[trabajando = false;
+stop();
 //notify tank controller
 send( "FINISHED_HARVESTING", this );
 //completed
@@ -2197,7 +2258,9 @@ main.onCompleted();]]></Action>
 					</Points>
 					<IconOffset>14.0</IconOffset>
 					<Properties Source="1169735952564" Target="1169735952560" Trigger="message">
-						<Action><![CDATA[//starting harvesiting field
+						<Action><![CDATA[// arranca el lote: el flag decide si tankControl va a acumular o no
+trabajando = puedeTrabajar();
+//starting harvesiting field
 XCompleted = 0; //no rows completed
 YCompleted = Field.getHeight(); //starting from South
 YDirection = NORTH; //and going North
@@ -2377,6 +2440,22 @@ tUltimo = time();]]></Body>
 					<Body><![CDATA[// unico lugar donde se decide si la maquina puede trabajar.
 // agregar aca los motivos nuevos de parada (ej. rotura) en vez de mensajes nuevos.
 return main.daPiso && main.dentroDeJornada() && !inState( FullWaitCart );]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1787832068265</Id>
+					<Name><![CDATA[tasaCosechaActual]]></Name>
+					<X>390</X><Y>390</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[// Tasa de cosecha efectiva. Es DERIVADA, no latcheada.
+// tankControl entra y sale de Harvesting/WithCart por mensajes que no saben
+// nada de puedeTrabajar(): si cada Entry recalcula harvestRate() a secas,
+// el tanque se llena con la maquina parada. getSpeed() NO se va a 0 con stop().
+return trabajando ? harvestRate() / second() : 0;]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -3227,7 +3306,7 @@ for( int i=0; i<Xunits.length; i++ ) {
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
 						<Type><![CDATA[double]]></Type>        
 						<InitialValue Class="CodeValue">
-							<Code><![CDATA[17.5]]></Code>
+							<Code><![CDATA[capacidadSuperficie * 0.5]]></Code>
 						</InitialValue>
 					</Properties>
 				</Variable>
@@ -3865,17 +3944,7 @@ for( int i=0; i<Xunits.length; i++ ) {
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="100" Height="30">
 						<EntryAction><![CDATA[// ritmo de presentacion: la maquina esta por trabajar, se mira al detalle
-getEngine().setRealTimeScale( 0.05 * day() );
-// arranca una campania nueva: reinicio del estado climatico
-diaCampania = 0;
-humedadSuperficie = capacidadSuperficie * 0.5;
-gdd = 0;
-// foto de los contadores para poder reportar el delta
-lotesCompletados = 0;
-baseCosechando = horasCosechando;
-baseDetenida   = horasDetenida;
-baseViajes     = viajesCamion;
-baseSinPiso    = diasSinPiso;]]></EntryAction>
+getEngine().setRealTimeScale( 0.05 * day() );]]></EntryAction>
 						<FillColor>-10496</FillColor>
 					</Properties>
 				</StatechartElement>
@@ -4010,7 +4079,19 @@ getEngine().setRealTimeScale( 1 * week() );]]></EntryAction>
 					</Points>
 					<IconOffset>20.0</IconOffset>
 					<Properties Source="1785872303710" Target="1785872291055" Trigger="timeout">
-						<Action><![CDATA[siembraCompleta = false;
+						<Action><![CDATA[// arranca campania nueva. El reset va ACA y no en el EntryAction de SinSembrar:
+// la Action de la transicion corre ANTES del entry del destino, asi que si
+// despachamos la maquina desde el entry, sale con los contadores viejos.
+siembraCompleta = false;
+diaCampania = 0;
+humedadSuperficie = capacidadSuperficie * 0.5;
+gdd = 0;
+// foto de los contadores para poder reportar el delta
+lotesCompletados = 0;
+baseCosechando = horasCosechando;
+baseDetenida   = horasDetenida;
+baseViajes     = viajesCamion;
+baseSinPiso    = diasSinPiso;
 combine.moveControl.onChange();]]></Action>
 						<Timeout Class="CodeUnitValue">
 							<Code><![CDATA[0]]></Code>
@@ -4063,26 +4144,35 @@ combine.moveControl.onChange();]]></Action>
 // las condiciones no se reevaluan solas, asi que hay que forzarlo cada hora
 horaTick++;
 combine.moveControl.onChange();
-// el balance hidrico se actualiza una vez por dia.
 // OJO: nada de 'return' en una accion de transicion. AnyLogic las despacha desde
 // un metodo compartido (executeActionOf) y el return saltea el rearmado de la
 // autotransicion: el tick corria una sola vez y diaCampania quedaba clavado en 0.
-if ( horaTick % 24 == 0 && diaCampania < lluviaDiaria[ campania ].length - 1 ) {
-	diaCampania++;
-	double lluvia = lluviaDiaria[ campania ][ diaCampania ];
-	double etc    = kc * et0Diaria[ campania ][ diaCampania ];
-	humedadSuperficie = max( 0, min( capacidadSuperficie, humedadSuperficie + lluvia - etc ) );
-	if ( inState( Creciendo ) ) gdd += max( 0, tmediaDiaria[ campania ][ diaCampania ] - tBase );
-	// piso: superficie seca Y que no haya llovido fuerte hoy
-	boolean piso = humedadSuperficie <= umbralPiso && lluvia < lluviaBloqueante;
-	if ( !piso ) diasSinPiso++;
-	if ( diaCampania <= diasLogClima )
-		traceln( "CLIMA dia " + diaCampania + " | lluvia=" + lluvia + " etc=" + etc
-		         + " humedad=" + humedadSuperficie + " piso=" + piso );
-	if ( piso != daPiso ) {
-		daPiso = piso;
-		traceln( ( piso ? ">>> PISO RECUPERADO" : ">>> PISO PERDIDO" ) + " dia " + diaCampania
-		         + " | humedad=" + humedadSuperficie + " lluvia=" + lluvia );
+if ( horaTick % 24 == 0 ) {
+	// el balance hidrico solo avanza mientras haya serie; el resto del dia
+	// (onChange del ciclo de cultivo) tiene que seguir corriendo igual, si no
+	// la campania se congela al agotarse los 212 dias de la serie.
+	if ( diaCampania < lluviaDiaria[ campania ].length - 1 ) {
+		diaCampania++;
+		double lluvia = lluviaDiaria[ campania ][ diaCampania ];
+		double etc    = kc * et0Diaria[ campania ][ diaCampania ];
+		humedadSuperficie = max( 0, min( capacidadSuperficie, humedadSuperficie + lluvia - etc ) );
+		if ( inState( Creciendo ) ) gdd += max( 0, tmediaDiaria[ campania ][ diaCampania ] - tBase );
+		// piso: superficie seca Y que no haya llovido fuerte hoy
+		boolean piso = humedadSuperficie <= umbralPiso && lluvia < lluviaBloqueante;
+		if ( !piso ) diasSinPiso++;
+		if ( diaCampania <= diasLogClima )
+			traceln( "CLIMA dia " + diaCampania + " | lluvia=" + lluvia + " etc=" + etc
+			         + " humedad=" + humedadSuperficie + " piso=" + piso );
+		if ( piso != daPiso ) {
+			daPiso = piso;
+			traceln( ( piso ? ">>> PISO RECUPERADO" : ">>> PISO PERDIDO" ) + " dia " + diaCampania
+			         + " | humedad=" + humedadSuperficie + " lluvia=" + lluvia );
+			combine.moveControl.onChange();
+		}
+	} else if ( daPiso == false ) {
+		// serie agotada: no dejar la maquina clavada por un piso congelado
+		daPiso = true;
+		traceln( ">>> SERIE CLIMATICA AGOTADA dia " + diaCampania + " — se libera el piso" );
 		combine.moveControl.onChange();
 	}
 	cicloCultivo.onChange();
@@ -7400,6 +7490,9 @@ de Operaciones Agricolas]]></Text>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[terminarAlCerrarCampania]]></ParameterName>
+					<ParameterValue Class="CodeValue">
+						<Code><![CDATA[false]]></Code>
+					</ParameterValue>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[horasSemanales]]></ParameterName>
@@ -7436,12 +7529,28 @@ de Operaciones Agricolas]]></Text>
 			<MaximumMemory>512</MaximumMemory>
 			<RandomNumberGenerationType>fixedSeed</RandomNumberGenerationType>
 			<CustomGeneratorCode>new Random()</CustomGeneratorCode>
+			<BeforeEachExperimentRunCode><![CDATA[// el FileWriter de After simulation run abre en modo append, asi que sin esto
+// las filas nuevas se apilan sobre las viejas y quedan 600 sin forma de separarlas
+java.io.File f = new java.io.File( "resultados.csv" );
+if ( f.exists() ) f.delete();
+try {
+    java.io.PrintWriter w = new java.io.PrintWriter( f );
+    w.println( "lotes;turnos;campania;diaFinSiembra" );
+    w.close();
+} catch ( Exception e ) {
+    traceln( "!!! NO SE PUDO INICIAR resultados.csv: " + e );
+}]]></BeforeEachExperimentRunCode>
 			<AfterSimulationRunCode><![CDATA[try {
     java.io.PrintWriter w = new java.io.PrintWriter(
-        new java.io.FileWriter( "/home/renaiss/Models/Harvest Simulator/resultados.csv", true ) );
-    w.println( root.cantidadLotes + ";" + root.turnos + ";" + root.campania + ";" + root.diaFinSiembra );
+        new java.io.FileWriter( "resultados.csv", true ) );
+    w.println( root.cantidadLotes + ";" + root.turnos + ";"
+             + root.campania + ";" + root.diaFinSiembra );
     w.close();
-} catch ( Exception e ) { e.printStackTrace(); }]]></AfterSimulationRunCode>
+} catch ( Exception e ) {
+    // el catch mudo era el problema: el barrido corria, no escribia nada
+    // y no habia forma de enterarse hasta ir a buscar el archivo
+    traceln( "!!! NO SE PUDO ESCRIBIR resultados.csv: " + e );
+}]]></AfterSimulationRunCode>
 			<SeedValue>1</SeedValue>
 			<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
 			<VmArgs><![CDATA[]]></VmArgs>
