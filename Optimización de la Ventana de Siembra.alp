@@ -4,7 +4,7 @@
 	         AnyLogic Project File
 *************************************************
 -->
-<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.9.9.202607020720" AlpVersion="8.9.9">
+<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.9.9.202606170507" AlpVersion="8.9.9">
 <Model>
 	<Id>1169735952464</Id>
 	<Name><![CDATA[Optimización de la Ventana de Siembra]]></Name>
@@ -5109,6 +5109,53 @@ return h < horasDia;]]></Body>
 					<FillColor/>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle>
+				<Figure3D>
+					<Id>1788882116900</Id>
+					<Name><![CDATA[crop3D]]></Name>
+					<X>310</X><Y>100</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<X>310</X><Y>100</Y><Z>-1</Z>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<ResourceReference>
+						<PackageName><![CDATA[harvest_simulator]]></PackageName>
+						<ClassName><![CDATA[3d/tree_3.dae]]></ClassName>
+					</ResourceReference>
+					<ColorTable>
+						<ColorMapping>
+							<Name><![CDATA[MA_Color_C18]]></Name>
+							<OriginalColor>-10074584</OriginalColor>
+						</ColorMapping>
+						<ColorMapping>
+							<Name><![CDATA[MA_Color_F16]]></Name>
+							<OriginalColor>-13408768</OriginalColor>
+						</ColorMapping>
+					</ColorTable>
+					<AutoScale>false</AutoScale>
+					<Scale>0.15</Scale>
+					<Rotation>0.0</Rotation>
+					<AxisOrder>XYZ_AXIS_ORDER</AxisOrder>
+					<SelectedAnimationPose></SelectedAnimationPose>
+					<ApplyShading>true</ApplyShading>
+					<InternalLighting>OFF</InternalLighting>
+					<IgnoreSceneLights>false</IgnoreSceneLights>
+					<XCode><![CDATA[Xunits[index]]]></XCode>
+					<YCode><![CDATA[Yunits[index]]]></YCode>
+					<VisibleCode><![CDATA[combine.YDirection == null || 
+Xunits[index] >= combine.XCompleted + combine.RowWidth || 
+(Xunits[index] >= combine.XCompleted && 
+    (combine.YDirection == CellDirection.NORTH ? 
+        Yunits[index] <= combine.YCompletedNow() : 
+        Yunits[index] >= combine.YCompletedNow()
+    )
+)]]></VisibleCode>
+					<ReplicationCode Class="CodeValue">
+						<Code><![CDATA[Xunits.length]]></Code>
+					</ReplicationCode>
+</Figure3D>
 			</Presentation>
 
 				</Group>
@@ -8629,6 +8676,12 @@ try {
 		<Resource>
 			<Id>1169735939997</Id>
 			<Path><![CDATA[image.jpg]]></Path>
+			<ReferencedFromUserCode>false</ReferencedFromUserCode>
+			<Location>FILE_SYSTEM</Location>
+		</Resource>
+		<Resource>
+			<Id>1788882050474</Id>
+			<Path><![CDATA[3d/tree_3.dae]]></Path>
 			<ReferencedFromUserCode>false</ReferencedFromUserCode>
 			<Location>FILE_SYSTEM</Location>
 		</Resource>

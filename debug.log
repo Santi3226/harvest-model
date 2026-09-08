@@ -1,0 +1,78 @@
+[0908/114553.821:INFO:CONSOLE(34)] "initializing world", source: http://127.0.0.1:64535/preview.bundle.js (34)
+[0908/114553.823:INFO:CONSOLE(34)] "world initialized", source: http://127.0.0.1:64535/preview.bundle.js (34)
+[0908/114554.089:ERROR:gl_utils.cc(398)] [.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.
+[0908/114554.091:ERROR:gl_utils.cc(398)] [.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.
+[0908/114554.091:ERROR:gl_utils.cc(398)] [.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.
+[0908/114554.091:ERROR:gl_utils.cc(398)] [.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.
+[0908/114554.091:ERROR:gl_utils.cc(398)] [.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.
+[0908/114554.092:ERROR:gl_utils.cc(398)] [.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.
+[0908/114554.092:ERROR:gl_utils.cc(398)] [.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.
+[0908/114554.092:ERROR:gl_utils.cc(398)] [.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.
+[0908/114554.092:ERROR:gl_utils.cc(398)] [.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.
+[0908/114554.092:ERROR:gl_utils.cc(398)] [.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.
+[0908/114554.092:ERROR:gl_utils.cc(398)] [.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.
+[0908/114554.092:ERROR:gl_utils.cc(398)] [.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.
+[0908/114554.287:INFO:CONSOLE(350)] "scene rendered", source: http://127.0.0.1:64535/preview.bundle.js (350)
+[0908/114554.301:INFO:CONSOLE(0)] "[.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.", source: http://127.0.0.1:64535/preview.html (0)
+[0908/114554.301:INFO:CONSOLE(0)] "[.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.", source: http://127.0.0.1:64535/preview.html (0)
+[0908/114554.301:INFO:CONSOLE(0)] "[.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.", source: http://127.0.0.1:64535/preview.html (0)
+[0908/114554.301:INFO:CONSOLE(0)] "[.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.", source: http://127.0.0.1:64535/preview.html (0)
+[0908/114554.301:INFO:CONSOLE(0)] "[.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.", source: http://127.0.0.1:64535/preview.html (0)
+[0908/114554.302:INFO:CONSOLE(0)] "[.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.", source: http://127.0.0.1:64535/preview.html (0)
+[0908/114554.302:INFO:CONSOLE(0)] "[.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.", source: http://127.0.0.1:64535/preview.html (0)
+[0908/114554.302:INFO:CONSOLE(0)] "[.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.", source: http://127.0.0.1:64535/preview.html (0)
+[0908/114554.302:INFO:CONSOLE(0)] "[.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.", source: http://127.0.0.1:64535/preview.html (0)
+[0908/114554.302:INFO:CONSOLE(0)] "[.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.", source: http://127.0.0.1:64535/preview.html (0)
+[0908/114554.302:INFO:CONSOLE(0)] "[.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.", source: http://127.0.0.1:64535/preview.html (0)
+[0908/114554.302:INFO:CONSOLE(0)] "[.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.", source: http://127.0.0.1:64535/preview.html (0)
+[0908/114555.023:INFO:CONSOLE(34)] "AnimationClient: Root group to remove: 1", source: http://127.0.0.1:64535/preview.bundle.js (34)
+[0908/114555.023:INFO:CONSOLE(34)] "AnimationClient: Root group to remove: 2", source: http://127.0.0.1:64535/preview.bundle.js (34)
+[0908/114555.046:INFO:CONSOLE(7)] "WebGL: INVALID_OPERATION: texImage3D: FLIP_Y or PREMULTIPLY_ALPHA isn't allowed for uploading 3D textures", source: http://127.0.0.1:64535/preview.bundle.js (7)
+[0908/114555.046:INFO:CONSOLE(7)] "WebGL: INVALID_OPERATION: texImage3D: FLIP_Y or PREMULTIPLY_ALPHA isn't allowed for uploading 3D textures", source: http://127.0.0.1:64535/preview.bundle.js (7)
+[0908/114555.049:ERROR:gl_utils.cc(398)] [.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.
+[0908/114555.049:ERROR:gl_utils.cc(398)] [.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.
+[0908/114555.049:ERROR:gl_utils.cc(398)] [.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.
+[0908/114555.049:ERROR:gl_utils.cc(398)] [.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.
+[0908/114555.049:ERROR:gl_utils.cc(398)] [.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.
+[0908/114555.049:ERROR:gl_utils.cc(398)] [.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.
+[0908/114555.049:ERROR:gl_utils.cc(398)] [.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.
+[0908/114555.049:ERROR:gl_utils.cc(398)] [.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.
+[0908/114555.049:ERROR:gl_utils.cc(398)] [.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.
+[0908/114555.049:ERROR:gl_utils.cc(398)] [.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.
+[0908/114555.049:ERROR:gl_utils.cc(398)] [.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.
+[0908/114555.049:ERROR:gl_utils.cc(398)] [.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.
+[0908/114555.188:INFO:CONSOLE(0)] "[.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.", source: http://127.0.0.1:64535/preview.html (0)
+[0908/114555.188:INFO:CONSOLE(0)] "[.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.", source: http://127.0.0.1:64535/preview.html (0)
+[0908/114555.188:INFO:CONSOLE(0)] "[.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.", source: http://127.0.0.1:64535/preview.html (0)
+[0908/114555.188:INFO:CONSOLE(0)] "[.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.", source: http://127.0.0.1:64535/preview.html (0)
+[0908/114555.189:INFO:CONSOLE(0)] "[.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.", source: http://127.0.0.1:64535/preview.html (0)
+[0908/114555.189:INFO:CONSOLE(0)] "[.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.", source: http://127.0.0.1:64535/preview.html (0)
+[0908/114555.189:INFO:CONSOLE(0)] "[.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.", source: http://127.0.0.1:64535/preview.html (0)
+[0908/114555.189:INFO:CONSOLE(0)] "[.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.", source: http://127.0.0.1:64535/preview.html (0)
+[0908/114555.189:INFO:CONSOLE(0)] "[.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.", source: http://127.0.0.1:64535/preview.html (0)
+[0908/114555.189:INFO:CONSOLE(0)] "[.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.", source: http://127.0.0.1:64535/preview.html (0)
+[0908/114555.190:INFO:CONSOLE(0)] "[.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.", source: http://127.0.0.1:64535/preview.html (0)
+[0908/114555.190:INFO:CONSOLE(0)] "[.WebGL-000020B800358000] GL_INVALID_VALUE: Program object expected.", source: http://127.0.0.1:64535/preview.html (0)
+[0908/114753.041:ERROR:gpu_init.cc(523)] Passthrough is not supported, GL is disabled, ANGLE is 
+[0908/122540.991:INFO:CONSOLE(7)] "THREE.ColladaLoader: File version 1.4.0", source: file:///C:/Program%20Files/AnyLogic%208.9%20Personal%20Learning%20Edition/plugins/com.anylogic.graphics3d_8.9.9.202606170507/static/init.js (7)
+[0908/122541.020:INFO:CONSOLE(13)] "Loaded: file:G:/UTN/4to año/Simulación/TPI/harvest-model/3d/tree_3.dae", source: file:///C:/Program%20Files/AnyLogic%208.9%20Personal%20Learning%20Edition/plugins/com.anylogic.graphics3d_8.9.9.202606170507/static/init.js (13)
+[0908/122541.027:INFO:CONSOLE(13)] "Loaded: file:G:/UTN/4to año/Simulación/TPI/harvest-model/3d/tree_3.dae", source: file:///C:/Program%20Files/AnyLogic%208.9%20Personal%20Learning%20Edition/plugins/com.anylogic.graphics3d_8.9.9.202606170507/static/init.js (13)
+[0908/122541.174:INFO:CONSOLE(13)] "Loaded: file:G:/UTN/4to año/Simulación/TPI/harvest-model/3d/tree_3.dae", source: file:///C:/Program%20Files/AnyLogic%208.9%20Personal%20Learning%20Edition/plugins/com.anylogic.graphics3d_8.9.9.202606170507/static/init.js (13)
+[0908/122541.185:INFO:CONSOLE(13)] "Loaded: file:G:/UTN/4to año/Simulación/TPI/harvest-model/3d/tree_3.dae", source: file:///C:/Program%20Files/AnyLogic%208.9%20Personal%20Learning%20Edition/plugins/com.anylogic.graphics3d_8.9.9.202606170507/static/init.js (13)
+[0908/122541.195:INFO:CONSOLE(13)] "Loaded: file:G:/UTN/4to año/Simulación/TPI/harvest-model/3d/tree_3.dae", source: file:///C:/Program%20Files/AnyLogic%208.9%20Personal%20Learning%20Edition/plugins/com.anylogic.graphics3d_8.9.9.202606170507/static/init.js (13)
+[0908/122543.951:INFO:CONSOLE(13)] "Loaded: file:G:/UTN/4to año/Simulación/TPI/harvest-model/3d/tree_3.dae", source: file:///C:/Program%20Files/AnyLogic%208.9%20Personal%20Learning%20Edition/plugins/com.anylogic.graphics3d_8.9.9.202606170507/static/init.js (13)
+[0908/122739.223:ERROR:gpu_init.cc(523)] Passthrough is not supported, GL is disabled, ANGLE is 
+[0908/122935.547:INFO:CONSOLE(13)] "Loaded: file:G:/UTN/4to año/Simulación/TPI/harvest-model/3d/tree_3.dae", source: file:///C:/Program%20Files/AnyLogic%208.9%20Personal%20Learning%20Edition/plugins/com.anylogic.graphics3d_8.9.9.202606170507/static/init.js (13)
+[0908/123042.728:INFO:CONSOLE(13)] "Loaded: file:G:/UTN/4to año/Simulación/TPI/harvest-model/3d/tree_3.dae", source: file:///C:/Program%20Files/AnyLogic%208.9%20Personal%20Learning%20Edition/plugins/com.anylogic.graphics3d_8.9.9.202606170507/static/init.js (13)
+[0908/123046.348:INFO:CONSOLE(13)] "Loaded: file:G:/UTN/4to año/Simulación/TPI/harvest-model/3d/tree_3.dae", source: file:///C:/Program%20Files/AnyLogic%208.9%20Personal%20Learning%20Edition/plugins/com.anylogic.graphics3d_8.9.9.202606170507/static/init.js (13)
+[0908/123132.776:INFO:CONSOLE(13)] "Loaded: file:G:/UTN/4to año/Simulación/TPI/harvest-model/3d/tree_3.dae", source: file:///C:/Program%20Files/AnyLogic%208.9%20Personal%20Learning%20Edition/plugins/com.anylogic.graphics3d_8.9.9.202606170507/static/init.js (13)
+[0908/124129.659:INFO:CONSOLE(7)] "THREE.ColladaLoader: File version 1.4.0", source: file:///C:/Program%20Files/AnyLogic%208.9%20Personal%20Learning%20Edition/plugins/com.anylogic.graphics3d_8.9.9.202606170507/static/init.js (7)
+[0908/124129.685:INFO:CONSOLE(13)] "Loaded: file:G:/UTN/4to año/Simulación/TPI/harvest-model/3d/tree_3.dae", source: file:///C:/Program%20Files/AnyLogic%208.9%20Personal%20Learning%20Edition/plugins/com.anylogic.graphics3d_8.9.9.202606170507/static/init.js (13)
+[0908/124129.689:INFO:CONSOLE(13)] "Loaded: file:G:/UTN/4to año/Simulación/TPI/harvest-model/3d/tree_3.dae", source: file:///C:/Program%20Files/AnyLogic%208.9%20Personal%20Learning%20Edition/plugins/com.anylogic.graphics3d_8.9.9.202606170507/static/init.js (13)
+[0908/124129.842:INFO:CONSOLE(13)] "Loaded: file:G:/UTN/4to año/Simulación/TPI/harvest-model/3d/tree_3.dae", source: file:///C:/Program%20Files/AnyLogic%208.9%20Personal%20Learning%20Edition/plugins/com.anylogic.graphics3d_8.9.9.202606170507/static/init.js (13)
+[0908/124129.852:INFO:CONSOLE(13)] "Loaded: file:G:/UTN/4to año/Simulación/TPI/harvest-model/3d/tree_3.dae", source: file:///C:/Program%20Files/AnyLogic%208.9%20Personal%20Learning%20Edition/plugins/com.anylogic.graphics3d_8.9.9.202606170507/static/init.js (13)
+[0908/124129.861:INFO:CONSOLE(13)] "Loaded: file:G:/UTN/4to año/Simulación/TPI/harvest-model/3d/tree_3.dae", source: file:///C:/Program%20Files/AnyLogic%208.9%20Personal%20Learning%20Edition/plugins/com.anylogic.graphics3d_8.9.9.202606170507/static/init.js (13)
+[0908/124205.503:INFO:CONSOLE(13)] "Loaded: file:G:/UTN/4to año/Simulación/TPI/harvest-model/3d/tree_3.dae", source: file:///C:/Program%20Files/AnyLogic%208.9%20Personal%20Learning%20Edition/plugins/com.anylogic.graphics3d_8.9.9.202606170507/static/init.js (13)
+[0908/124210.570:INFO:CONSOLE(13)] "Loaded: file:G:/UTN/4to año/Simulación/TPI/harvest-model/3d/tree_3.dae", source: file:///C:/Program%20Files/AnyLogic%208.9%20Personal%20Learning%20Edition/plugins/com.anylogic.graphics3d_8.9.9.202606170507/static/init.js (13)
+[0908/124214.124:INFO:CONSOLE(13)] "Loaded: file:G:/UTN/4to año/Simulación/TPI/harvest-model/3d/tree_3.dae", source: file:///C:/Program%20Files/AnyLogic%208.9%20Personal%20Learning%20Edition/plugins/com.anylogic.graphics3d_8.9.9.202606170507/static/init.js (13)
+[0908/124327.984:ERROR:gpu_init.cc(523)] Passthrough is not supported, GL is disabled, ANGLE is 
