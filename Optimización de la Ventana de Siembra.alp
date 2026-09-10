@@ -5104,7 +5104,7 @@ return h < horasDia;]]></Body>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<X>310</X><Y>100</Y><Z>-1.1</Z>
+					<X>310</X><Y>100</Y><Z>0.2</Z>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<ResourceReference>
 						<PackageName><![CDATA[harvest_simulator]]></PackageName>
@@ -5119,7 +5119,7 @@ return h < horasDia;]]></Body>
 						</ColorMapping>
 					</ColorTable>
 					<AutoScale>false</AutoScale>
-					<Scale>5.0</Scale>
+					<Scale>8.0</Scale>
 					<Rotation>0.0</Rotation>
 					<AxisOrder>YZX_AXIS_ORDER</AxisOrder>
 					<SelectedAnimationPose>idle</SelectedAnimationPose>
