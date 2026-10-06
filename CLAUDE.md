@@ -43,17 +43,17 @@ Se puede editar con AnyLogic abierto: detecta el cambio y ofrece recargar. Mirar
 
 ```bash
 AL=/home/lucaolivieri/Downloads/anylogic          # ver tabla de entornos más abajo
-$AL/jre/bin/javap -classpath $AL/plugins/com.anylogic.engine_*/com.anylogic.engine.jar \
+$AL/jre/bin/javap -classpath $AL/plugins/com.anylogic.engine_8.9.9.*/com.anylogic.engine.jar \
   com.anylogic.engine.TransitionTimeout
 ```
 
-Usar el glob `com.anylogic.engine_*`: la versión del plugin cambia entre máquinas. Algunas clases (`UtilitiesRandom`) no están en ese jar; para esas, armar el classpath desde el `.classpath` del proyecto del workspace.
+Usar el glob `com.anylogic.engine_8.9.9.*` y no `com.anylogic.engine_*`: en esta máquina conviven el plugin 8.9.8 y el 8.9.9 (la actualización se hizo encima de la instalación vieja), y el glob amplio expande a dos jars y rompe el `-classpath`. Algunas clases (`UtilitiesRandom`) no están en ese jar; para esas, armar el classpath desde el `.classpath` del proyecto del workspace.
 
 **Correr:** en el IDE. Dos experimentos:
-- `Simulation` — corrida única, modo *Real time with scale* (el statechart `cicloCultivo` cambia la escala de tiempo por estado).
-- `ParametersVariation` — Monte Carlo. Varía `campania` 0→19, `cantidadLotes` 6→30 paso 6, `turnos` 1→3. Stop at specified time = **31** (la unidad del modelo es **Week**), start date 01/10/2005. Appendea una fila a `resultados.csv` desde *After simulation run*.
+- `Simulation` — corrida única, modo *Real time with scale* (el statechart `cicloCultivo` cambia la escala de tiempo por estado: siembra 0,5 días/s, cosecha 0,05 días/s, crecimiento 1 semana/s). El dibujo del campo es **un lote**: la máquina lo repite `cantidadLotes` veces; el avance total se ve en `textAvance` y en la fila de cuadraditos `rectLote` (ver sección 6 bis de [docs/CAMBIOS-2026-10.md](docs/CAMBIOS-2026-10.md)).
+- `ParametersVariation` — Monte Carlo. Varía `campania` 0→19, `cantidadLotes` 6→30 paso 6, `turnos` 1→3. Stop at specified time = **31** (la unidad del modelo es **Week**), start date 01/10/2005. *Before each experiment run* borra `resultados.csv` y escribe el encabezado (`lotes;turnos;campania;diaFinSiembra`); *After simulation run* appendea una fila. La ruta es relativa (`"resultados.csv"`) y los `catch` hacen `traceln` visible. El `resultados.csv` versionado es el barrido de 300 corridas vigente.
 
-⚠️ El `AfterSimulationRunCode` tiene la ruta **hardcodeada** a `/home/renaiss/Models/Harvest Simulator/resultados.csv` — la máquina de otro integrante del equipo, no este checkout. El `catch` solo hace `printStackTrace()`, así que el barrido corre, no escribe nada y **falla en silencio**. Usar ruta relativa (`"resultados.csv"`, relativa al working dir) antes de barrer.
+⚠️ Si se agregan parámetros a `Main` (por ejemplo los de fallas), hay que **recrear** `ParametersVariation`: su lista de parámetros quedó congelada al crearlo.
 
 ## Entornos
 
@@ -61,12 +61,12 @@ El proyecto se comparte entre tres máquinas. **Verificar en cuál estás antes 
 
 | | Esta máquina (Luca) | Otro integrante (Ubuntu) | Santiago (Windows) |
 |---|---|---|---|
-| AnyLogic | `/home/lucaolivieri/Downloads/anylogic` (**8.9.8**) | `/home/renaiss/Descargas/anylogic` (8.9.9) | `C:\Program Files\AnyLogic 8.9 Personal Learning Edition\` (8.9.9) |
+| AnyLogic | `/home/lucaolivieri/Downloads/anylogic` (8.9.9) | `/home/renaiss/Descargas/anylogic` (8.9.9) | `C:\Program Files\AnyLogic 8.9 Personal Learning Edition\` (8.9.9) |
 | Modelo | `~/Desktop/facultad/simulacion/harvest-model` (este repo) | `/home/renaiss/Models/Harvest Simulator/` | `C:\Users\Santiago\Models\Optimización de la Ventana de Siembra\` |
 
 `~/Models` en esta máquina tiene otros modelos de la cursada, **no** este.
 
-⚠️ **Desajuste de versión en esta máquina:** el `.alp` está guardado con `AlpVersion="8.9.9"` y acá hay **8.9.8** instalado. AnyLogic no abre modelos de una versión mayor a la instalada. Hay que actualizar a 8.9.9 PLE para poder correrlo — la inspección y edición por script del XML funcionan igual.
+Las tres máquinas tienen 8.9.9 PLE (verificado en esta el 2026-10-05: `.eclipseproduct` dice `version=8.9.9.202607020720`). Queda el plugin 8.9.8 residual en `plugins/`, ver el `javap` de arriba.
 
 En Ubuntu, AnyLogic (SWT) sobre GNOME/Wayland **no permite arrastrar bloques de la paleta al canvas** y pierde caracteres al tipear (culpa de `ibus-daemon`). Solución verificada: sesión **Xfce**, o lanzar con `GTK_IM_MODULE=xim`.
 
@@ -115,16 +115,25 @@ Series **reales de NASA POWER** (20 campañas 2005/06–2024/25, 212 días c/u) 
 
 **Punto único de parada:** `Combine.puedeTrabajar()` = `main.daPiso && main.dentroDeJornada() && !inState(FullWaitCart)`. Todo motivo nuevo de parada (roturas, etc.) va **ahí**, no como mensaje nuevo.
 
-### Ciclo de cultivo
+### Ciclo de cultivo, siembra y cosecha
 
-`Main.cicloCultivo`: `SinSembrar ──[siembraCompleta]──> Creciendo ──[timeout diasHastaMadurez]──> Maduro ──[timeout 0]──> SinSembrar`.
+`Main.cicloCultivo` (desde 2026-10-05): `● ──> SinSembrar ──[siembraCompleta]──> Creciendo ──[timeout diasHastaMadurez]──> Maduro ──[cosechaCompleta]──> Cosechado`.
+
+**Una corrida = una campaña** (la serie de clima cubre 1/10 a 30/9, día 0 = 1/10). `Cosechado` es estado final: para otra campaña se cambia el parámetro `campania` (0–19), no se reinicia el ciclo.
+
+**Una sola máquina (`Combine`) con dos modos**, deducidos del estado del campo: `Main.sembrando()` = `inState( SinSembrar )`. Sembrando, `Combine.tasaCosechaActual()` da 0 (no entra grano, carro y camión quedan quietos) y la velocidad es `velocidadSiembra` (7 km/h); cosechando, `velocidadCosecha` (5,5 km/h). Sale del galpón con `Main.laborPendiente()` (hay campo por sembrar o maduro, y quedan lotes).
+
+`Main.onCompleted()` lo llama `Combine` por cada lote; al cerrar todos los lotes de la pasada fija `diaFinSiembra` (contra `diaLimiteSiembra` = 45, 15/11) o `diaFinCosecha`/`diaMadurez`, e imprime `reportarPasada()`.
+
 `gdd` se acumula en el tick pero **todavía no se usa**: la maduración sigue siendo `triangular(90,150,120)`. El objetivo calibrado es `gddObjetivo = 1680`.
 
-`siembraCompleta` hoy significa "la pasada terminó" — deuda semántica conocida.
+Explicación completa y decisiones: [docs/CAMBIOS-2026-10.md](docs/CAMBIOS-2026-10.md). Verificado con `Simulation` (12 lotes, 1 turno, campaña 0): siembra cierra el día 40 (198,9 h, 0 viajes), maduro día 168, cosecha cierra el día 236 (253,1 h, 75 viajes), `FUGA` = 5e-9.
+
+**Clima:** `herramientas/clima_nasa.py` baja NASA POWER a `datos/` y reescribe las tres series String del `.alp` (365/366 días por campaña). `--verificar` solo compara.
 
 ## Trampas verificadas (cada una costó una corrida fallida)
 
-Las 20 completas están en la sección 5 de [docs/CONTEXTO-TRASPASO.md](docs/CONTEXTO-TRASPASO.md). Las que más muerden:
+Las 22 completas están en la sección 5 de [docs/CONTEXTO-TRASPASO.md](docs/CONTEXTO-TRASPASO.md). Las que más muerden:
 
 - **`Transition.restart()` no existe** en 8.9.9. La API es `start()` / `cancel()`; `start()` reevalúa el timeout.
 - **Las transiciones de salida se activan DESPUÉS del entry action.** Si el entry fija la tasa, el timeout ya la ve → no reprogramar. Llamar `cancel()` en el entry del propio estado origen tira `RuntimeException: a statechart transition being deactivated is not active`. **Nunca reprogramar en un exit action.**
@@ -144,4 +153,6 @@ Las 20 completas están en la sección 5 de [docs/CONTEXTO-TRASPASO.md](docs/CON
 
 ## Estado y próximo paso
 
-Entregable #1 cerrado (curva de probabilidad y respuesta de dimensionamiento, sección 9 bis del contexto). **Lo que falta, en orden: fallas de máquina** (diseño listo, sin implementar — tercer statechart paralelo en `Combine`, exponencial con MTBF en horas de operación), acoplamiento térmico `gdd → Maduro`, campaña de siembra y acople de rinde.
+Entregable #1 con la **tabla vieja** (sección 9 bis del contexto): medía una pasada de cosechadora en octubre y hay que **rehacerlo** con el modelo nuevo (siembra real + clima anual). Hecho después: contadores por pasada (`reportarPasada()`), CSV con ruta relativa, cultivo 3D en grilla (`crop3D`, todavía sin crecer), clima anual y siembra v1 (sin semilla).
+
+**Lo que falta, en orden:** siembra v2 con reabastecimiento de semilla (el carro lleva semilla a la sembradora; la espera es dato del entregable #2), rehacer el barrido (`ParametersVariation` hay que **recrearlo** si se quieren barrer parámetros nuevos), fallas de máquina (diseño listo en la sección 10 del contexto), `gdd → Maduro`, contadores de espera de carro y camión, acople de rinde y costos, sensibilidad a `umbralPiso`.

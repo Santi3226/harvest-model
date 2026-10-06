@@ -4083,8 +4083,8 @@ for (int i = 0; i < n; i++) {
 					<Properties Width="100" Height="30">
 						<EntryAction><![CDATA[// arranca la campania: el campo esta sin sembrar y la maquina sale a sembrar
 // (Combine Parked -> GoingToField espera a Main.laborPendiente(); el tick horario la reevalua).
-// ritmo de presentacion: 0.5 dias por segundo real, la siembra (~40 dias) dura ~80 s
-getEngine().setRealTimeScale( 0.5 * day() );]]></EntryAction>
+// ritmo de presentacion: la maquina trabaja, se mira al detalle
+getEngine().setRealTimeScale( 0.05 * day() );]]></EntryAction>
 						<FillColor>-10496</FillColor>
 					</Properties>
 				</StatechartElement>
@@ -5329,19 +5329,14 @@ baseSinPiso    = diasSinPiso;]]></Body>
 					<IgnoreSceneLights>false</IgnoreSceneLights>
 					<XCode><![CDATA[Xunits[index]]]></XCode>
 					<YCode><![CDATA[Yunits[index]]]></YCode>
-					<VisibleCode><![CDATA[inState( Creciendo )
-|| ( inState( SinSembrar ) && !( combine.YDirection == null ||
-  Xunits[index] >= combine.XCompleted + combine.RowWidth ||
-  ( Xunits[index] >= combine.XCompleted &&
-    ( combine.YDirection == CellDirection.NORTH ?
-        Yunits[index] <= combine.YCompletedNow() :
-        Yunits[index] >= combine.YCompletedNow() ) ) ) )
-|| ( inState( Maduro ) && ( combine.YDirection == null ||
-  Xunits[index] >= combine.XCompleted + combine.RowWidth ||
-  ( Xunits[index] >= combine.XCompleted &&
-    ( combine.YDirection == CellDirection.NORTH ?
-        Yunits[index] <= combine.YCompletedNow() :
-        Yunits[index] >= combine.YCompletedNow() ) ) ) )]]></VisibleCode>
+					<VisibleCode><![CDATA[combine.YDirection == null || 
+Xunits[index] >= combine.XCompleted + combine.RowWidth || 
+(Xunits[index] >= combine.XCompleted && 
+    (combine.YDirection == CellDirection.NORTH ? 
+        Yunits[index] <= combine.YCompletedNow() : 
+        Yunits[index] >= combine.YCompletedNow()
+    )
+)]]></VisibleCode>
 					<ReplicationCode Class="CodeValue">
 						<Code><![CDATA[Xunits.length]]></Code>
 					</ReplicationCode>
@@ -5526,65 +5521,6 @@ de la Cosechadora]]></Text>
 					</Font>
 					<Alignment>CENTER</Alignment>
 				</Text>
-				<Text>
-					<Id>1790500000041</Id>
-					<Name><![CDATA[textAvance]]></Name>
-					<X>510</X><Y>412</Y>
-					<Label><X>0</X><Y>-10</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<Rotation>0.0</Rotation>
-					<Color>-16777216</Color>
-					<Text><![CDATA[Lote 1 de 12]]></Text>
-					<TextCode><![CDATA[( inState( SinSembrar ) ? "SIEMBRA: lote " + min( lotesCompletados + 1, cantidadLotes )
-  : inState( Creciendo ) ? "CRECIMIENTO"
-  : inState( Maduro ) ? "COSECHA: lote " + min( lotesCompletados + 1, cantidadLotes )
-  : "CAMPO COSECHADO" )
-+ ( inState( Creciendo ) || inState( Cosechado ) ? "" : " de " + cantidadLotes )
-+ "  |  dia " + diaCampania + " (" + (int) ( cantidadLotes * 104 ) + " ha)"]]></TextCode>
-					<Font>
-						<Name>SansSerif</Name>
-						<Size>11</Size>
-						<Style>1</Style>
-					</Font>
-					<Alignment>CENTER</Alignment>
-				</Text>
-				<Rectangle>
-					<Id>1790500000042</Id>
-					<Name><![CDATA[rectLote]]></Name>
-					<X>250</X><Y>362</Y>
-					<Label><X>10</X><Y>10</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<XCode><![CDATA[250 + ( index % 20 ) * 16]]></XCode>
-					<YCode><![CDATA[362 + ( index / 20 ) * 16]]></YCode>
-					<ReplicationCode Class="CodeValue">
-						<Code><![CDATA[cantidadLotes]]></Code>
-					</ReplicationCode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<ZHeight>0</ZHeight>
-					<LineWidth>2</LineWidth>
-					<LineColor>-16777216</LineColor>
-					<LineColorCode><![CDATA[( index == lotesCompletados && ( inState( SinSembrar ) || inState( Maduro ) ) ) ? new java.awt.Color( 0, 0, 0 ) : null]]></LineColorCode>
-					<LineMaterial>null</LineMaterial>
-					<LineStyle>SOLID</LineStyle>
-					<Width>14</Width>
-					<Height>14</Height>
-					<Rotation>0.0</Rotation>
-					<FillColor>-4342339</FillColor>
-					<FillColorCode><![CDATA[inState( Creciendo ) ? new java.awt.Color( 76, 175, 80 )
-: inState( Cosechado ) ? new java.awt.Color( 255, 193, 7 )
-: inState( Maduro ) ? ( index < lotesCompletados ? new java.awt.Color( 255, 193, 7 ) : new java.awt.Color( 205, 220, 57 ) )
-: ( index < lotesCompletados ? new java.awt.Color( 141, 110, 99 ) : new java.awt.Color( 189, 189, 189 ) )]]></FillColorCode>
-					<FillMaterial>null</FillMaterial>
-				</Rectangle>
 				<Group>
 					<Id>1256807869888</Id>
 					<Name><![CDATA[group]]></Name>
