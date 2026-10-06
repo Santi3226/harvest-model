@@ -4083,8 +4083,8 @@ for (int i = 0; i < n; i++) {
 					<Properties Width="100" Height="30">
 						<EntryAction><![CDATA[// arranca la campania: el campo esta sin sembrar y la maquina sale a sembrar
 // (Combine Parked -> GoingToField espera a Main.laborPendiente(); el tick horario la reevalua).
-// ritmo de presentacion: 0.5 dias por segundo real, la siembra (~40 dias) dura ~80 s
-getEngine().setRealTimeScale( 0.5 * day() );]]></EntryAction>
+// ritmo de presentacion: la maquina trabaja, se mira al detalle
+getEngine().setRealTimeScale( 0.05 * day() );]]></EntryAction>
 						<FillColor>-10496</FillColor>
 					</Properties>
 				</StatechartElement>

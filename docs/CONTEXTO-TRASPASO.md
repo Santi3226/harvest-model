@@ -1,8 +1,12 @@
 # Contexto del proyecto — traspaso a otra sesión
 
-Estado al 2026-08-11. Documento autocontenido: no hace falta el historial previo.
+Estado al 2026-10-05 (revisión contra el `.alp` de `main`, commit `7d49555`). Documento autocontenido: no hace falta el historial previo.
 
-> **Entregable #1 cerrado (2026-08-11).** Clima histórico real acoplado, jornada legal modelada y Monte Carlo de 300 corridas: la curva de probabilidad y la respuesta de dimensionamiento están en la **sección 9 bis**. Lo único que falta para completar los tres entregables son las **roturas de máquina**.
+> **Entregable #1 cerrado (2026-08-11, rehecho 2026-08-27).** Clima histórico real acoplado, jornada legal modelada y Monte Carlo de 300 corridas: la curva de probabilidad y la respuesta de dimensionamiento están en la **sección 9 bis**.
+>
+> **Cambios del 2026-10-05:** el modelo ahora siembra de verdad (misma máquina, dos modos), el cultivo crece y se cosecha, con clima anual. Está explicado en [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md) y verificado con una corrida. **La tabla de la sección 9 bis es del modelo anterior y hay que rehacerla.**
+>
+> **Lo que falta** (detalle en la sección 10): siembra v2 con reabastecimiento de semilla, rehacer el barrido, roturas de máquina, acople térmico `gdd → Maduro`, cuellos de botella de carro y camión, y el análisis financiero con acople de rinde.
 
 ---
 
@@ -28,7 +32,12 @@ Materia de Simulación, carrera de Ingeniería en Sistemas (UTN Rosario).
 
 ## 2. Entorno
 
-> **Hay dos máquinas.** Este documento se escribió en la de Ubuntu. Verificá en qué entorno estás antes de razonar sobre rutas: las de la sección 3 y el `javap` del aprendizaje 10 son de Linux y no existen en Windows.
+> **Hay tres máquinas.** Este documento se escribió en la de Ubuntu. Verificá en qué entorno estás antes de razonar sobre rutas: las de la sección 3 y el `javap` del aprendizaje 10 son de una máquina en particular.
+
+### Fedora (Luca, agregado 2026-10-05)
+
+- **AnyLogic 8.9.9 PLE** en `/home/lucaolivieri/Downloads/anylogic` (`.eclipseproduct`: `version=8.9.9.202607020720`). Se actualizó encima de una 8.9.8, así que en `plugins/` conviven `com.anylogic.engine_8.9.8.*` y `com.anylogic.engine_8.9.9.*`. Para `javap`, usar el glob `com.anylogic.engine_8.9.9.*`: el glob amplio expande a dos jars.
+- **Modelo:** `~/Desktop/facultad/simulacion/harvest-model` (clon del repositorio git). `~/Models` tiene otros modelos de la cursada, no este.
 
 ### Windows (agregado 2026-08-07)
 
@@ -57,11 +66,14 @@ Materia de Simulación, carrera de Ingeniería en Sistemas (UTN Rosario).
 | Qué | Dónde (Ubuntu) | Dónde (Windows) |
 |---|---|---|
 | Modelo | `/home/renaiss/Models/Harvest Simulator/Optimización de la Ventana de Siembra.alp` | `C:\Users\Santiago\Models\Optimización de la Ventana de Siembra\Optimización de la Ventana de Siembra.alp` |
+| Resultados del barrido | `.../resultados.csv` (versionado) | ídem |
+| Modelos 3D del cultivo | `.../3d/low_poly_wheat.dae`, `.../3d/sketch.dae` | ídem |
+| Explicación integral del modelo | `.../docs/ventana-siembra.html` | ídem |
 | Respaldos fechados | `.../Harvest Simulator/backups/` | `...\Optimización de la Ventana de Siembra\backups\` |
 | Plan de migración | `.../docs/superpowers/plans/2026-08-06-migracion-fluid-library.md` | ídem, relativo a la carpeta del modelo |
 | Este documento | `.../docs/CONTEXTO-TRASPASO.md` | ídem |
 
-La carpeta del modelo es un repositorio git.
+La carpeta del modelo es un repositorio git (rama principal `main`). En Fedora el clon está en `~/Desktop/facultad/simulacion/harvest-model`.
 
 El modelo **parte del ejemplo oficial "Harvest Simulator" de AnyLogic** (cosechadora + carro tolva + camión + silo), que se descargó del Cloud y se fue transformando.
 
@@ -115,7 +127,7 @@ Todos contradicen algún supuesto razonable y cada uno costó al menos una corri
 7. **El `.alp` serializa los campos de todos los tipos de trigger**, no solo el activo. Una transición por `timeout` conserva su `<Condition>` y su `<EqualsExpression>` viejos. Al auditar el cableado de mensajes hay que filtrar por `Trigger="message"`, si no da falsos positivos.
 8. **La Fluid Library acoplaba por conexión de puertos, con independencia del statechart.** Un tanque se llenaba estuviera el agente en el estado que estuviera. Al migrar a variables, todo acople implícito hay que reponerlo como mensaje explícito. Faltaba `START_LOADING`: el camión nunca entraba en `Loading`, nunca cargaba, y el silo quedaba vacío.
 9. **`triangular(min, max, moda)`** — ese es el orden real. `weibull` toma 3 argumentos; el orden no fue verificado.
-10. **Verificar APIs con `javap`**, no de memoria: `/home/renaiss/Descargas/anylogic/jre/bin/javap -classpath /home/renaiss/Descargas/anylogic/plugins/com.anylogic.engine_8.9.9.*/com.anylogic.engine.jar <clase>`.
+10. **Verificar APIs con `javap`**, no de memoria: `/home/renaiss/Descargas/anylogic/jre/bin/javap -classpath /home/renaiss/Descargas/anylogic/plugins/com.anylogic.engine_8.9.9.*/com.anylogic.engine.jar <clase>`. Fijar la versión en el glob: si hay dos plugins del motor instalados, `com.anylogic.engine_*` rompe el classpath.
 11. **El `.alp` es XML** y se puede editar con scripts de Python. Procedimiento seguro: copia de respaldo fechada → editar con reemplazos que aborten si el patrón no aparece exactamente una vez → validar con `xml.etree.ElementTree.parse`.
 12. **Límites de PLE:** 10 tipos de agente, 200 bloques por tipo, 50.000 agentes dinámicos.
 13. **Las transiciones por condición NO se re-evalúan cuando la variable la modifica otro agente.** AnyLogic las testea en momentos discretos, y uno garantizado es al entrar al estado de origen. Síntoma que costó una sesión: `Parked --[!main.siembraCompleta]--> GoingToField` disparaba en t=0 (porque al entrar a `Parked` la condición ya era verdadera) y **nunca más**, aunque `siembraCompleta` volviera a `false` 120 días después. La cosechadora quedaba estacionada para siempre. Solución: `Statechart.onChange()` (verificado con `javap`, es público) desde donde se modifica la variable. En el modelo hay dos: `combine.moveControl.onChange()` en la acción de `Maduro → SinSembrar`, y `cicloCultivo.onChange()` al final de `onCompleted()`. **Regla: toda condición que dependa de una variable de otro agente necesita su `onChange()` explícito.**
@@ -126,6 +138,8 @@ Todos contradicen algún supuesto razonable y cada uno costó al menos una corri
 18. **Ningún ejemplo de los que trae AnyLogic tiene un experimento Parameter Variation**, así que no hay plantilla XML de la cual copiar el esquema: ese experimento hay que crearlo en el IDE.
 19. **Límite de 65.535 bytes de bytecode por método de la JVM.** AnyLogic mete la inicialización de **todas** las variables de un agente en un único método generado (`setupPlainVariables_Main_xjal`). Tres literales de arreglo con 4.240 valores cada uno lo desbordan. Solución: guardar los datos como **String** (una sola instrucción `ldc`) y parsearlos al arranque. El límite de una constante String es 64 KB y el mayor de los tres mide 20 KB.
 20. **`<Guard>` existe y es fácil pasarlo por alto.** `Cart.trImmedGotoUnloading` tiene `Trigger="timeout"` con timeout 0 **y** `<Guard>main.truck.atField()</Guard>`. Al auditar una transición hay que leer el `<Guard>` además del trigger, si no se razona sobre lógica que no es la real. Ojo: si la guarda es falsa al expirar el timeout, la transición no dispara y **no se reprograma** — por eso no conviene endurecer guardas sin verificar que exista otro camino de salida del estado (acá lo hay: `trTruckArrived` por mensaje).
+21. **Conservar masa no prueba que la fuente sea correcta** (commit `7e66a63`, 2026-08-27). `tankControl` rearmaba `harvestRate()` en los entry/exit del tanque sin mirar `puedeTrabajar()`: la tolva se llenaba de noche y con el lote embarrado. `auditarMasa()` no lo vio, porque `totalCosechado` crecía en paralelo al nivel y la `FUGA` seguía en 1e-11. Arreglo: la tasa pasó a ser **derivada y no latcheada**, con la bandera `Combine.trabajando` y la función `tasaCosechaActual()`, usadas en los tres entry/exit del tanque y en parar/reanudar.
+22. **`terminarAlCerrarCampania` tiene que estar en `false` en el experimento `Simulation`.** Con `true` (el default de `Main`), `onCompleted()` llama a `finish()` en el mismo instante en que `siembraCompleta` pasa a `true`: `Creciendo` y `Maduro` son inalcanzables y `gdd` queda en 0. El barrido sí la usa en `true`, a propósito.
 
 ---
 
@@ -165,10 +179,41 @@ SinSembrar ──[condition siembraCompleta]──> Creciendo ──[timeout dia
 - `Main.onCompleted()` (que llama la cosechadora al terminar la pasada) pone `siembraCompleta = true`.
 - La cosechadora arranca con la condición `!main.siembraCompleta` en `Parked → GoingToField`.
 - `Creciendo` entry sortea `diasHastaMadurez = triangular( 90, 150, 120 )` y guarda `tInicioCrecimiento`.
-- **Deuda semántica:** `siembraCompleta` hoy significa "la pasada terminó". Cuando se agregue la campaña de siembra habrá que revisar el nombre y probablemente separar en dos banderas, o mejor, usar `inState()` como única fuente de verdad.
+- **Deuda semántica:** `siembraCompleta` hoy significa "la pasada terminó". Cuando se agregue la campaña de siembra habrá que revisar el nombre y probablemente separar en dos banderas, o mejor, usar `inState()` como única fuente de verdad. Ver 7 bis.
+
+### 7 bis. Estado real de siembra y cosecha (verificado 2026-10-05)
+
+> **Reemplazado el 2026-10-05.** Lo que sigue de esta sección describe el modelo **anterior** (la pasada de octubre era una cosechadora). El estado actual (siembra real, ciclo `SinSembrar → Creciendo → Maduro → Cosechado`, una corrida = una campaña, clima de 365 días) está en [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md).
+>
+> Corrida de verificación (campaña 0, 12 lotes, 1 turno): siembra cierra el día 40 (198,9 h = 12 × 16,57; 0 viajes), el cultivo madura el día 168, la cosecha cierra el día 236 (253,1 h = 12 × 21,09; 75 viajes; 16 días sin piso) y `FUGA` = 5e-9. El resumen de cosecha dice 74 viajes porque el viaje 75 termina después del cierre; el grano de ese camión está contado en `enSistema`.
+
+**En el modelo no existe la siembra.** La única máquina es `Combine`, una cosechadora: `harvestRate()` = velocidad × plataforma × `HarvestDensity`, y lo que recorre la cadena es grano cosechado (`totalCosechado`) que termina en el silo.
+
+Lo que sí es de siembra es el **calendario y el nombre de las variables**:
+- El reloj arranca el 1/10 y el clima embebido cubre del 1/10 al 30/4.
+- `diaFinSiembra` se mide contra el día 45 (15/11), que es una ventana de siembra.
+- `Main.onCompleted()` cuenta lotes y, cuando `lotesCompletados == cantidadLotes`, pone `siembraCompleta = true` e imprime `CAMPANIA CERRADA`.
+
+Una corrida del experimento `Simulation` (con `terminarAlCerrarCampania = false`) hace esto:
+
+1. **Pasada 1, desde el 1/10.** La cosechadora recorre todos los lotes. Se interpreta como "la siembra", pero mecánicamente es una cosecha de 3 t/ha.
+2. `siembraCompleta = true` → `Creciendo` durante `triangular(90,150,120)` días.
+3. `Maduro` → acción de `Maduro → SinSembrar`: resetea contadores, `siembraCompleta = false`, `combine.moveControl.onChange()`.
+4. **Pasada 2, a partir de febrero.** La misma cosechadora vuelve a salir. Esta sí es, por calendario, la cosecha real.
+
+Consecuencias:
+- **El entregable #1 mide la pasada 1.** El barrido corta ahí (`terminarAlCerrarCampania = true`). Por lo tanto la tabla de la sección 9 bis es la capacidad de **una cosechadora** (4,93 ha/h nominal) con el clima de octubre y noviembre. Una sembradora real tiene otro ancho de labor, otra velocidad y otra logística (semilla y fertilizante que entran, no grano que sale).
+- **Bug en la pasada 2:** la acción de `Maduro → SinSembrar` hace `diaCampania = 0`, así que la cosecha de febrero vuelve a leer el clima desde el 1/10. Además el clima termina el 30/4, que corta la cosecha de soja de primera (abril-mayo). No afecta al barrido, pero sí a cualquier medición de la cosecha.
+- La transición `SinSembrar → Creciendo` usa la bandera y no `inState()`.
+
+**Decisión abierta (2026-10-05).** El equipo acordó que por ahora el modelo debe ser **solo cosecha**, y la siembra se agrega después. Para que eso sea consistente hay que elegir entre:
+- **(A) Mover el calendario a cosecha.** La pasada que se mide es la cosecha: la ventana objetivo pasa a ser de cosecha (fecha de madurez → fecha límite) y el clima tiene que cubrir esos meses. La siembra entra más adelante como la primera pasada, con una máquina parametrizada por modo.
+- **(B) Mantener la pasada 1 como proxy de siembra** y declararlo como simplificación en el informe. Es lo más barato, pero contradice "solo cosecha".
+
+Hasta resolverlo, no renombrar variables ni tocar `cicloCultivo`.
 
 **Velocidad de simulación controlada desde el statechart** (API verificada):
-- `SinSembrar` entry: `getEngine().setRealTimeScale( 0.05 * day() );` — la máquina trabaja, se mira al detalle.
+- `SinSembrar` entry: `getEngine().setRealTimeScale( 0.5 * day() );` — la máquina siembra (desde 2026-10-05; antes era `0.05 * day()` y la siembra tardaba unos 13 minutos). `Maduro` entry usa `0.05 * day()`. Detalle en [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md).
 - `Creciendo` entry: `getEngine().setRealTimeScale( 1 * week() );` — la maduración son meses sin nada que ver.
 - Requiere el experimento en modo *Real time with scale*.
 
@@ -284,7 +329,7 @@ Además los dos contadores son **acumulados de por vida**: `cosechando = 42,18 h
 
 **Corregido:** el entry de `Combine.GoingToField` ahora hace `tUltimoEstado = time();`, así la ventana de maduración deja de imputarse a la máquina. Verificado: `detenida` en la campaña 2 bajó de **2631,60 h a 3,57 h** y el uso quedó estable en 92% en ambas campañas.
 
-**Pendiente:** reportar por campaña en vez de acumulado. Requiere variables nuevas en `Main` para la foto de los contadores al inicio de cada campaña, e imprimir el delta en `auditarMasa()`. Los números confiables hoy son los de la campaña 1.
+**Resuelto (verificado 2026-10-05):** `Main` guarda la foto de los contadores al inicio de cada campaña (`baseCosechando`, `baseDetenida`, `baseViajes`, `baseSinPiso`, en la acción de `Maduro → SinSembrar`) y `auditarMasa()` imprime el delta en la línea `CAMPANIA n`.
 
 ---
 
@@ -339,23 +384,27 @@ La jornada entró como **un término más de `puedeTrabajar()`**, sin mecanismos
 
 300 corridas: `cantidadLotes` 6→30 paso 6 × `turnos` 1→3 × `campania` 0→19.
 
+> **Rehecho el 2026-08-27** (commit `7e66a63`), tras corregir que la tolva se llenaba con la máquina detenida (aprendizaje 21). Es el `resultados.csv` versionado; los números de abajo se recalcularon de ese archivo el 2026-10-05. Respecto de la tabla original, dos celdas bajaron: 624 ha con 1 turno (100% → 95%) y 1.872 ha con 2 turnos (65% → 55%). La tabla original subestimaba el costo logístico.
+
 | Superficie | 1 turno (6,3 h/d) | 2 turnos (12,6 h/d) | 3 turnos (18,9 h/d) |
 |---|---|---|---|
-| 624 ha | **100%** | **100%** | **100%** |
+| 624 ha | 95% | **100%** | **100%** |
 | 1.248 ha | 0% | **100%** | **100%** |
-| 1.872 ha | 0% | 65% | **100%** |
+| 1.872 ha | 0% | 55% | **100%** |
 | 2.496 ha | 0% | 0% | **90%** |
 | 3.120 ha | 0% | 0% | 35% |
 
-Medianas del día de fin, casi exactamente proporcionales a los turnos:
+Medianas del día de fin, casi exactamente proporcionales a los turnos (las 300 corridas terminaron dentro de los 212 días de datos):
 
 | Superficie | 1 turno | 2 turnos | 3 turnos |
 |---|---|---|---|
-| 1.248 ha | 58 | 29 | 18 |
-| 1.872 ha | 85 | 44 | 29 |
-| 3.120 ha | 146 | 70 | 49 |
+| 624 ha | 33 | 14,5 | 8 |
+| 1.248 ha | 60 | 29,5 | 18,5 |
+| 1.872 ha | 87 | 44,5 | 29,5 |
+| 2.496 ha | 113,5 | 58,5 | 39 |
+| 3.120 ha | 148,5 | 71,5 | 48,5 |
 
-**Capacidad efectiva: 21,7 ha/día por turno**, constante en las 15 combinaciones (rango 21,4 a 22,1). Es el **70% de la nominal** (6,29 h × 4,93 ha/h = 31 ha/día); el 30% restante se lo llevan los viajes a la cabecera, las esperas del carro y la jornada que corta las pasadas por la mitad. **Que la capacidad por turno no se degrade al escalar** significa que la logística acompaña y el cuello de botella sigue siendo la máquina — resultado que vale reportar por sí mismo.
+**Capacidad efectiva: ~21 ha/día por turno**, estable desde 1.248 ha (rango 20,8 a 22,5). En 624 ha la cifra se aleja (19 a 26) porque son pocos días y pesa la discretización. Es el **70% de la nominal** (6,29 h × 4,93 ha/h = 31 ha/día); el 30% restante se lo llevan los viajes a la cabecera, las esperas del carro y la jornada que corta las pasadas por la mitad. **Que la capacidad por turno no se degrade al escalar** significa que la logística acompaña y el cuello de botella sigue siendo la máquina — resultado que vale reportar por sí mismo.
 
 ### La respuesta de dimensionamiento
 
@@ -363,15 +412,17 @@ Medianas del día de fin, casi exactamente proporcionales a los turnos:
 >
 > Un turno más y una máquina más aportan **la misma capacidad** (~900 ha), pero el turno solo cuesta un salario y la máquina cuesta alquiler más salario. **Conviene sumar turnos hasta agotar los tres y recién después máquinas.** El punto de quiebre está en las 2.500 ha.
 
-**Esta tabla es un límite optimista: todavía no hay roturas de máquina.** Cuando entren, la capacidad efectiva baja y los umbrales se corren hacia abajo.
+**Esta tabla es un límite optimista: todavía no hay roturas de máquina.** Y mide una pasada de **cosechadora** con calendario de siembra (sección 7 bis). Cuando entren, la capacidad efectiva baja y los umbrales se corren hacia abajo.
 
-Celdas de transición sin resolver: 1.872 ha con 2 turnos (65%) y 3.120 ha con 3 turnos (35%). Un barrido de `cantidadLotes` 14→26 paso 2 con `turnos` 2 y 3 los precisa.
+Celdas de transición sin resolver: 1.872 ha con 2 turnos (55%) y 3.120 ha con 3 turnos (35%). Un barrido de `cantidadLotes` 14→26 paso 2 con `turnos` 2 y 3 los precisa.
 
 ### Cómo reproducirlo
 
 Experimento `ParametersVariation`. Model time: **Stop at specified time = 31** (semanas — la unidad del modelo es Week), start date 01/10/2005. Con `terminarAlCerrarCampania = true` el modelo llama a `finish()` al cerrar la siembra, así que **cada corrida es una observación limpia**; si no cierra dentro de los 212 días de datos, `diaFinSiembra` queda en **−1**, que es la observación "no terminó" y no un error.
 
-Una fila por corrida en `resultados.csv`, desde "After simulation run":
+El experimento `Simulation` tiene `terminarAlCerrarCampania = false`, para que se vea el ciclo completo (aprendizaje 22).
+
+"Before each experiment run" borra `resultados.csv` y escribe el encabezado `lotes;turnos;campania;diaFinSiembra`. La ruta es relativa a la carpeta del modelo y los `catch` hacen `traceln` visible (antes apuntaba a `/home/renaiss/...` y fallaba en silencio en las otras máquinas). Una fila por corrida, desde "After simulation run":
 
 ```java
 w.println( root.cantidadLotes + ";" + root.turnos + ";" + root.campania + ";" + root.diaFinSiembra );
@@ -388,18 +439,23 @@ En orden de valor recomendado:
 1. ~~Verificar la corrida tras la corrección de overrides~~ — **hecho 2026-08-07**, ver sección 9. Dejó dos pendientes concretos:
    - ~~Cerrar el eslabón carro→camión~~ — **aplicado y verificado 2026-08-07** (tasas apareadas en `Cart.Unloading`, sección 8).
    - ~~Verificar la `FUGA`~~ — **cerrada**: ruido de punto flotante en las dos campañas. **La base de logística ya es confiable**, se puede calibrar y medir sobre ella.
-   - Queda abierto, menor: reportar los contadores **por campaña** en vez de acumulado (sección 9). Requiere variables nuevas en `Main` para la foto al inicio de cada campaña.
-2. **Fallas de máquina — máxima prioridad.** Es lo único que falta para que el #2 y el #3 tengan base completa, y además la tabla de resultados del entregable #1 es un límite optimista sin ellas. Diseño listo, sin implementar. Tercer statechart paralelo en `Combine` (junto a `tankControl` y `moveControl`): `Operativa ──[timeout horasHastaFalla]──> Reparando ──[timeout duracionReparacion]──> Operativa`. El reloj de desgaste se consume **solo mientras la máquina trabaja**, acoplado a `MoveHarvesting` con el mismo patrón que los niveles, y el timeout se expresa `inState( MoveHarvesting ) ? horasHastaFalla : 1e12`. **Detalle de orden importante:** el `STOP` lo manda `Reparando` al entrar, no la transición de falla, para que el rearmado guardado de `MoveHarvesting` se saltee solo y no haya `cancel()` sobre una transición que está disparando.
+   - ~~Reportar los contadores **por campaña**~~ — **hecho** (sección 9).
+0. ~~Definir el alcance cosecha/siembra~~ — **hecho 2026-10-05** (siembra v1 sin semilla). Falta la **v2 con reabastecimiento de semilla**: la sembradora gasta semilla y el carro se la lleva desde la cabecera; el tiempo parado esperando semilla es dato del entregable #2.
+0. **Rehacer el barrido** del entregable #1 con el modelo nuevo (`resultados.csv` es del anterior; ahora trae `diaMadurez` y `diaFinCosecha`). Recrear `ParametersVariation` si se quieren barrer `velocidadSiembra`, `velocidadCosecha` o `diaLimiteSiembra`.
+2. **Fallas de máquina — máxima prioridad de implementación.** Es lo único que falta para que el #2 y el #3 tengan base completa, y además la tabla de resultados del entregable #1 es un límite optimista sin ellas. Diseño listo, sin implementar. Tercer statechart paralelo en `Combine` (junto a `tankControl` y `moveControl`): `Operativa ──[timeout horasHastaFalla]──> Reparando ──[timeout duracionReparacion]──> Operativa`. El reloj de desgaste se consume **solo mientras la máquina trabaja**, acoplado a `MoveHarvesting` con el mismo patrón que los niveles, y el timeout se expresa `inState( MoveHarvesting ) ? horasHastaFalla : 1e12`. **Detalle de orden importante:** el `STOP` lo manda `Reparando` al entrar, no la transición de falla, para que el rearmado guardado de `MoveHarvesting` se saltee solo y no haya `cancel()` sobre una transición que está disparando.
    - **Distribución:** exponencial con MTBF en **horas de operación** (justificable por superposición de procesos de falla, teorema de Drenick). Weibull con β>1 solo si se declara explícitamente el supuesto de reparación perfecta; para desgaste acumulado real el modelo correcto sería un proceso de Poisson no homogéneo con ley de potencia.
    - **Parámetros:** MTBF del orden de 20-40 h de operación (estudios de cosechadoras reportan MTBF por subsistema de 15 a 72 h; referencia oficial: ASABE D497.7). Reparación asimétrica a derecha, ej. `triangular(0.5, 8, 2)` horas. Costo = fijo + horario.
    - **Criterio de calibración:** apuntar a 0,5–3 fallas esperadas por campaña (`horas_campaña / MTBF`).
+   - Los parámetros nuevos obligan a **recrear** `ParametersVariation` (aprendizaje 17).
 3. ~~Tabla climática~~ — **hecho 2026-08-11**, y con series históricas reales en vez de sintéticas. Ver sección 9 bis.
 4. **Clima — hecho a medias.** El balance hídrico y la compuerta de piso están andando (sección 9 bis). **Queda pendiente el acoplamiento térmico:** `gdd` se acumula en el tick pero **no se usa** en ningún lado; `Creciendo → Maduro` sigue siendo un timeout sobre `diasHastaMadurez = triangular(90,150,120)`. Para cerrarlo, pasar esa transición a condition `gdd >= gddObjetivo` (el `cicloCultivo.onChange()` ya se llama en el tick). El objetivo calibrado contra la serie real es **1.680 grados-día base 10 °C**, que da un ciclo medio de 119,7 días con dispersión de 101 a 135. Dato que importa: el `triangular(90,150,120)` actual abarca 60 días de rango cuando **la variabilidad real es de 34** — la distribución inventada es casi el doble de ancha y sesga el riesgo hacia arriba.
-5. **Crecimiento visual.** El cultivo ya está dibujado: una figura replicada `rectangle3` en Main con `ReplicationCode = Xunits.length`. Solo falta ligar `ZHeightCode = progresoCultivo() * alturaMaxPlanta`, con `progresoCultivo()` calculado desde `tInicioCrecimiento` (ya creada) y `diasHastaMadurez`. **No crear un agente por planta**, sería un desperdicio y consume el cupo de tipos de agente.
+5. **Crecimiento visual — hecho a medias (2026-09-09).** `rectangle3` se reemplazó por la figura 3D replicada `crop3D` (`3d/low_poly_wheat.dae`, escala fija 8) en Main, y `Xunits`/`Yunits` (4.000 plantas) se distribuyen en una grilla proporcional al lote. **Falta que la planta crezca:** ligar su escala o altura a `progresoCultivo()`, calculado desde `tInicioCrecimiento` (ya creada) y `diasHastaMadurez`, o desde `gdd / gddObjetivo` si se hace el ítem 4. **No crear un agente por planta**, sería un desperdicio y consume el cupo de tipos de agente.
 6. **Campaña de siembra.** Reusar el patrón de recipientes con el flujo invertido (la semilla sale de la sembradora hacia el lote y los camiones la reponen). Conviene **una sola clase de máquina parametrizada** por modo (siembra/cosecha) en vez de duplicar, por el límite de 10 tipos de agente.
 7. **Acople de rinde:** `rindeEfectivo = rindePotencial * penalizacionPorFecha( fechaSiembra )`, con la curva armada como lookup table a partir de datos de INTA de fecha de siembra contra rendimiento. Sin este acople, siembra y cosecha son dos simulaciones pegadas y el modelo no puede responder su propia pregunta.
 8. ~~Monte Carlo~~ — **hecho 2026-08-11**. 300 corridas, curva de probabilidad y respuesta de dimensionamiento en la sección 9 bis. **El entregable #1 está cerrado.**
-9. Contadores de ocio para carro y camión (solo está hecho el de la cosechadora).
+9. Contadores de ocio para carro y camión (solo está hecho el de la cosechadora). **Es la base del entregable #2** (cuellos de botella): sin ellos solo se puede reportar la espera de la cosechadora.
+10. **Análisis financiero (entregable #3).** Depende del ítem 7 (acople de rinde) y necesita costos de alquiler, salario por turno, reparación y precios de pizarra (sección 11).
+11. **Cierre de resultados.** Barrido fino de las celdas de transición y análisis de sensibilidad a `umbralPiso`, rehechos con fallas. Conviene dejarlo para el final.
 
 ---
 
