@@ -335,9 +335,11 @@ Además los dos contadores son **acumulados de por vida**: `cosechando = 42,18 h
 
 ## 9 bis. Clima, jornada laboral y el resultado del entregable #1 (2026-08-11)
 
+> ⚠️ **Los resultados de esta sección son del modelo anterior** (la "siembra" era una pasada de cosechadora en octubre) y hay que rehacerlos. El clima, el balance hídrico y la jornada siguen vigentes. Plan: [PLAN.md](PLAN.md).
+
 ### Datos climáticos
 
-Serie diaria **real** embebida en el modelo: **NASA POWER** (reanálisis MERRA-2), punto −33,0 / −61,0 (zona de Rosario), **20 campañas 2005/06 a 2024/25**, 212 días cada una (1/10 al 30/4), **cero valores faltantes**. Se baja con una sola llamada HTTP, sin registro ni API key:
+Serie diaria **real** embebida en el modelo: **NASA POWER** (reanálisis MERRA-2), punto −33,0 / −61,0 (zona de Rosario), **20 campañas 2005/06 a 2024/25**, **cero valores faltantes**. Eran 212 días por campaña (1/10 al 30/4); desde 2026-10-05 son 365 o 366 (1/10 al 30/9), generados por `herramientas/clima_nasa.py` (ver [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md)). Se baja con una sola llamada HTTP, sin registro ni API key:
 
 ```
 https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR,T2M_MAX,T2M_MIN&community=ag&longitude=-61.0&latitude=-33.0&start=20051001&end=20250430&format=CSV

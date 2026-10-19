@@ -10,6 +10,8 @@ Trabajo práctico de Simulación (UTN Rosario): dimensionar maquinaria agrícola
 
 **[docs/CONTEXTO-TRASPASO.md](docs/CONTEXTO-TRASPASO.md) es la fuente de verdad del estado del proyecto**: calibración, resultados medidos, hoja de ruta y los aprendizajes técnicos completos. Leerlo antes de tocar el modelo. Este archivo es el resumen operativo.
 
+**[docs/PLAN.md](docs/PLAN.md) es el plan de trabajo vigente** (pasos, decisiones, criterios de aceptación y estado de cada uno). [docs/CAMBIOS-2026-10.md](docs/CAMBIOS-2026-10.md) explica el modelo de siembra, cosecha y clima anual.
+
 ## Comandos
 
 No hay CLI de build. El flujo real es: editar el `.alp` con scripts, abrir AnyLogic, correr el experimento.
@@ -51,7 +53,7 @@ Usar el glob `com.anylogic.engine_8.9.9.*` y no `com.anylogic.engine_*`: en esta
 
 **Correr:** en el IDE. Dos experimentos:
 - `Simulation` — corrida única, modo *Real time with scale* (el statechart `cicloCultivo` cambia la escala de tiempo por estado: siembra 0,5 días/s, cosecha 0,05 días/s, crecimiento 1 semana/s). El dibujo del campo es **un lote**: la máquina lo repite `cantidadLotes` veces; el avance total se ve en `textAvance` y en la fila de cuadraditos `rectLote` (ver sección 6 bis de [docs/CAMBIOS-2026-10.md](docs/CAMBIOS-2026-10.md)).
-- `ParametersVariation` — Monte Carlo. Varía `campania` 0→19, `cantidadLotes` 6→30 paso 6, `turnos` 1→3. Stop at specified time = **31** (la unidad del modelo es **Week**), start date 01/10/2005. *Before each experiment run* borra `resultados.csv` y escribe el encabezado (`lotes;turnos;campania;diaFinSiembra`); *After simulation run* appendea una fila. La ruta es relativa (`"resultados.csv"`) y los `catch` hacen `traceln` visible. El `resultados.csv` versionado es el barrido de 300 corridas vigente.
+- `ParametersVariation` — Monte Carlo. Varía `campania` 0→19, `cantidadLotes` 6→30 paso 6, `turnos` 1→3. Stop at specified time = **52** (la unidad del modelo es **Week**; antes 31), start date 01/10/2005. *Before each experiment run* borra `resultados.csv` y escribe el encabezado (`lotes;turnos;campania;diaFinSiembra;diaMadurez;diaFinCosecha`); *After simulation run* appendea una fila. La ruta es relativa (`"resultados.csv"`) y los `catch` hacen `traceln` visible. ⚠️ El `resultados.csv` versionado es del **modelo anterior** (4 columnas, pasada de cosechadora en octubre): hay que rehacerlo, ver [docs/PLAN.md](docs/PLAN.md).
 
 ⚠️ Si se agregan parámetros a `Main` (por ejemplo los de fallas), hay que **recrear** `ParametersVariation`: su lista de parámetros quedó congelada al crearlo.
 
@@ -109,7 +111,7 @@ humedadSuperficie = clamp( humedadSuperficie + lluvia − kc·ET0, 0, capacidadS
 daPiso = humedadSuperficie <= umbralPiso && lluvia < lluviaBloqueante
 ```
 
-Series **reales de NASA POWER** (20 campañas 2005/06–2024/25, 212 días c/u) embebidas **como String** en `climaLluvia`/`climaTmedia`/`climaEt0` y parseadas por `cargarClima()` desde el StartupCode — literales de arreglo desbordan el límite de 65.535 bytes de bytecode por método de la JVM.
+Series **reales de NASA POWER** (20 campañas 2005/06–2024/25, 365 o 366 días c/u, del 1/10 al 30/9) embebidas **como String** en `climaLluvia`/`climaTmedia`/`climaEt0` y parseadas por `cargarClima()` desde el StartupCode — literales de arreglo desbordan el límite de 65.535 bytes de bytecode por método de la JVM.
 
 `Main.dentroDeJornada()` modela la Ley 26.727 (44 h semanales **por operario**), repartida uniforme sobre 7 días; `turnos` (1–3) es variable de decisión.
 
