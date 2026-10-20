@@ -52,7 +52,7 @@ $AL/jre/bin/javap -classpath $AL/plugins/com.anylogic.engine_8.9.9.*/com.anylogi
 Usar el glob `com.anylogic.engine_8.9.9.*` y no `com.anylogic.engine_*`: en esta máquina conviven el plugin 8.9.8 y el 8.9.9 (la actualización se hizo encima de la instalación vieja), y el glob amplio expande a dos jars y rompe el `-classpath`. Algunas clases (`UtilitiesRandom`) no están en ese jar; para esas, armar el classpath desde el `.classpath` del proyecto del workspace.
 
 **Correr:** en el IDE. Dos experimentos:
-- `Simulation` — corrida única, modo *Real time with scale* (el statechart `cicloCultivo` cambia la escala de tiempo por estado: siembra 0,5 días/s, cosecha 0,05 días/s, crecimiento 1 semana/s). El dibujo del campo es **un lote**: la máquina lo repite `cantidadLotes` veces; el avance total se ve en `textAvance` y en la fila de cuadraditos `rectLote` (ver sección 6 bis de [docs/CAMBIOS-2026-10.md](docs/CAMBIOS-2026-10.md)).
+- `Simulation` — corrida única, termina al cerrar la cosecha (`terminarAlCerrarCampania = true`), modo *Real time with scale* (el statechart `cicloCultivo` cambia la escala de tiempo por estado: siembra 0,5 días/s, cosecha 0,05 días/s, crecimiento 1 semana/s). El dibujo del campo es **un lote**: la máquina lo repite `cantidadLotes` veces; el avance total se ve en `textAvance` y en la fila de cuadraditos `rectLote` (ver sección 6 bis de [docs/CAMBIOS-2026-10.md](docs/CAMBIOS-2026-10.md)).
 - `ParametersVariation` — Monte Carlo. Varía `campania` 0→19, `cantidadLotes` 6→30 paso 6, `turnos` 1→3. Stop at specified time = **52** (la unidad del modelo es **Week**; antes 31), start date 01/10/2005. *Before each experiment run* borra `resultados.csv` y escribe el encabezado (`lotes;turnos;campania;diaFinSiembra;diaMadurez;diaFinCosecha`); *After simulation run* appendea una fila. La ruta es relativa (`"resultados.csv"`) y los `catch` hacen `traceln` visible. ⚠️ El `resultados.csv` versionado es del **modelo anterior** (4 columnas, pasada de cosechadora en octubre): hay que rehacerlo, ver [docs/PLAN.md](docs/PLAN.md).
 
 ⚠️ Si se agregan parámetros a `Main` (por ejemplo los de fallas), hay que **recrear** `ParametersVariation`: su lista de parámetros quedó congelada al crearlo.
@@ -115,7 +115,7 @@ Series **reales de NASA POWER** (20 campañas 2005/06–2024/25, 365 o 366 días
 
 `Main.dentroDeJornada()` modela la Ley 26.727 (44 h semanales **por operario**), repartida uniforme sobre 7 días; `turnos` (1–3) es variable de decisión.
 
-**Punto único de parada:** `Combine.puedeTrabajar()` = `main.daPiso && main.dentroDeJornada() && !inState(FullWaitCart)`. Todo motivo nuevo de parada (roturas, etc.) va **ahí**, no como mensaje nuevo.
+**Punto único de parada:** `Combine.puedeTrabajar()` = `main.daPiso && main.dentroDeJornada() && !inState(FullWaitCart) && !sinSemilla`. Todo motivo nuevo de parada (roturas, etc.) va **ahí**, no como mensaje nuevo.
 
 ### Ciclo de cultivo, siembra y cosecha
 
@@ -131,11 +131,13 @@ Series **reales de NASA POWER** (20 campañas 2005/06–2024/25, 365 o 366 días
 
 Explicación completa y decisiones: [docs/CAMBIOS-2026-10.md](docs/CAMBIOS-2026-10.md). Verificado con `Simulation` (12 lotes, 1 turno, campaña 0): siembra cierra el día 40 (198,9 h, 0 viajes), maduro día 168, cosecha cierra el día 236 (253,1 h, 75 viajes), `FUGA` = 5e-9.
 
+**Semilla (paso 1a, 2026-10-19):** tolva `Combine.semilla` integrada como el grano (`tasaSemilla`, `tUltimoSemilla`, `actualizarSemilla()`), con tasa derivada `tasaSemillaActual()` (solo trabajando y sembrando). Llamar a `actualizarTasaSemilla()` donde cambie `trabajando`. Statechart paralelo `Combine.semillaControl`: `Suficiente → Pedida → Agotada`; las vueltas exigen `semilla > umbral + 1 kg` (histéresis, aprendizaje 23). `Cart` tiene `CargandoSemilla → LlevandoSemilla → VolviendoSemilla`, vuelca de golpe y llama a `Combine.semillaEntregada()`; la semilla del carro es `semillaCarro`, nunca `nivel`. `Main.auditarSemilla()` verifica conservación y superficie (145 hileras = 104,4 ha por lote). Stock de la cabecera infinito; el 1b lo hace finito. Detalle: sección 11 de [docs/CAMBIOS-2026-10.md](docs/CAMBIOS-2026-10.md).
+
 **Clima:** `herramientas/clima_nasa.py` baja NASA POWER a `datos/` y reescribe las tres series String del `.alp` (365/366 días por campaña). `--verificar` solo compara.
 
 ## Trampas verificadas (cada una costó una corrida fallida)
 
-Las 22 completas están en la sección 5 de [docs/CONTEXTO-TRASPASO.md](docs/CONTEXTO-TRASPASO.md). Las que más muerden:
+Las 23 completas están en la sección 5 de [docs/CONTEXTO-TRASPASO.md](docs/CONTEXTO-TRASPASO.md). Las que más muerden:
 
 - **`Transition.restart()` no existe** en 8.9.9. La API es `start()` / `cancel()`; `start()` reevalúa el timeout.
 - **Las transiciones de salida se activan DESPUÉS del entry action.** Si el entry fija la tasa, el timeout ya la ve → no reprogramar. Llamar `cancel()` en el entry del propio estado origen tira `RuntimeException: a statechart transition being deactivated is not active`. **Nunca reprogramar en un exit action.**
@@ -155,6 +157,6 @@ Las 22 completas están en la sección 5 de [docs/CONTEXTO-TRASPASO.md](docs/CON
 
 ## Estado y próximo paso
 
-Entregable #1 con la **tabla vieja** (sección 9 bis del contexto): medía una pasada de cosechadora en octubre y hay que **rehacerlo** con el modelo nuevo (siembra real + clima anual). Hecho después: contadores por pasada (`reportarPasada()`), CSV con ruta relativa, cultivo 3D en grilla (`crop3D`, todavía sin crecer), clima anual y siembra v1 (sin semilla).
+Entregable #1 con la **tabla vieja** (sección 9 bis del contexto): medía una pasada de cosechadora en octubre y hay que **rehacerlo** con el modelo nuevo (siembra real + clima anual). Hecho después: contadores por pasada (`reportarPasada()`), CSV con ruta relativa, cultivo 3D en grilla (`crop3D`, todavía sin crecer), clima anual, siembra v1 y semilla 1a (carro con stock infinito; verificada en la siembra y en la cosecha con 1 lote). `Simulation` termina al cerrar la cosecha y corre con 512 MB.
 
-**Lo que falta, en orden:** siembra v2 con reabastecimiento de semilla (el carro lleva semilla a la sembradora; la espera es dato del entregable #2), rehacer el barrido (`ParametersVariation` hay que **recrearlo** si se quieren barrer parámetros nuevos), fallas de máquina (diseño listo en la sección 10 del contexto), `gdd → Maduro`, contadores de espera de carro y camión, acople de rinde y costos, sensibilidad a `umbralPiso`.
+**Lo que falta, en orden** (estado al día en [docs/PLAN.md](docs/PLAN.md)): semilla 1b (stock finito repuesto por el camión; la espera es dato del entregable #2), rehacer el barrido (`ParametersVariation` hay que **recrearlo** si se quieren barrer parámetros nuevos), fallas de máquina (diseño listo en la sección 10 del contexto), `gdd → Maduro`, contadores de espera de carro y camión, acople de rinde y costos, sensibilidad a `umbralPiso`.

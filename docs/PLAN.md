@@ -1,6 +1,6 @@
 # Plan de trabajo
 
-Estado al 2026-10-19. Este documento es el plan vigente del proyecto: qué falta, en qué orden, cómo se decide cada cosa y cómo se comprueba que quedó bien. Cada paso tiene un criterio de aceptación que se verifica con una corrida, y un estado que se actualiza al terminarlo.
+Estado al 2026-10-19 (última actualización: paso 1a). Este documento es el plan vigente del proyecto: qué falta, en qué orden, cómo se decide cada cosa y cómo se comprueba que quedó bien. Cada paso tiene un criterio de aceptación que se verifica con una corrida, y un estado que se actualiza al terminarlo.
 
 Para entender el modelo actual, leer primero [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md). Para la historia completa y los aprendizajes de AnyLogic, [CONTEXTO-TRASPASO.md](CONTEXTO-TRASPASO.md).
 
@@ -39,7 +39,7 @@ Todos los pasos siguen el mismo protocolo, para que cualquiera del grupo pueda r
 | Paso | Qué | Resultado | Depende de | Estado |
 |---|---|---|---|---|
 | 0 | Actualizar docs y armar este plan | Todos | Ninguna | **Hecho** |
-| 1 | Siembra con reabastecimiento de semilla | #2 | Ninguna | Pendiente |
+| 1 | Siembra con reabastecimiento de semilla | #2 | Ninguna | **1a verificado** (siembra y cosecha). 1b pendiente |
 | 2 | Fallas de máquina | #1, #2, #3 | Ninguna | Pendiente |
 | 3 | Madurez por grados-día (`gdd`) | #1 | Ninguna | Pendiente |
 | 4 | Causas de parada y contadores de carro y camión | #2 | 1, 2 | Pendiente |
@@ -121,9 +121,12 @@ Ninguno de estos valores se puede inventar. Cada uno queda marcado en el modelo 
 **Auditoría.** Igual que con el grano: `semillaDespachada = semillaSembrada + combine.semilla + cart.semilla`. La `FUGA` de semilla tiene que dar ruido de punto flotante (~1e-9).
 
 **Criterio de aceptación** (12 lotes, 1 turno, campaña 0):
-- Se consumen 12 × 7.280 = 87.360 kg de semilla en total.
+- Se consumen 12 × 104,4 ha × 70 = 87.696 kg de semilla. Cada lote mide 104,4 ha y no 104, porque la máquina hace 145 hileras de 9 m (1.305 m de ancho).
 - La `FUGA` de semilla es cercana a 0.
-- Aparecen entregas de semilla en el log, cada 7 a 9 h de trabajo con los valores propuestos.
+- Aparecen entregas de semilla en el log, una cada ~7,4 h de trabajo. Cada entrega es de unos 3.250 kg: lo que falta para llenar la tolva de 4.000 kg, que a esa altura tiene unos 800 kg. Salen entre 25 y 27 entregas.
+- La tasa de consumo es 0,1225 kg/s (441 kg/h) con 7 km/h, 9 m y 70 kg/ha.
+- La primera carga del carro es de 20.000 kg (se llena). Las siguientes son de solo lo que se entregó.
+- Con los valores propuestos la máquina **no** espera semilla (0 h sin semilla). Eso confirma la parte 4.2.
 - El día de fin de siembra no cambia más que por las esperas del carro (hoy: día 40).
 - La cosecha sigue igual: 75 viajes, `FUGA` de grano ~0.
 - Con `tViajeInsumos` muy grande, la máquina espera semilla y el contador lo muestra.
@@ -280,7 +283,7 @@ También se afinan las celdas de transición que quedaron sin resolver.
 Se actualiza al terminar cada paso, con la fecha y el commit.
 
 - [x] **Paso 0.** Docs actualizados y plan escrito. 2026-10-19.
-- [ ] Paso 1. Semilla (1a y 1b).
+- [ ] Paso 1. Semilla. **1a verificado** el 2026-10-19: siembra con 12 lotes (27 entregas, `FUGA` 1e-11, 0 h sin semilla) y campaña completa con 1 lote (2 entregas, `FUGA` de semilla 0, `FUGA` de grano 1e-11). 1b pendiente. Detalle en la sección 11 de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md).
 - [ ] Paso 2. Fallas de máquina.
 - [ ] Paso 3. Madurez por grados-día.
 - [ ] Paso 4. Causas de parada y contadores.

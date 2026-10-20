@@ -1,10 +1,10 @@
 # Cambios de octubre 2026: ciclo completo de campaña y clima anual
 
-Este documento explica qué cambió en el modelo el 5 de octubre de 2026, cómo funciona ahora y por qué se decidió así. Está pensado para que cualquiera del grupo pueda leerlo, entender el código y defender las decisiones frente al docente.
+Este documento explica qué cambió en el modelo el 5 y el 19 de octubre de 2026. También explica cómo funciona ahora y por qué se decidió así. Está pensado para que cualquiera del grupo pueda leerlo, entender el código y defender las decisiones frente al docente.
 
 No hace falta haber seguido la conversación en la que se hicieron los cambios. Sí conviene conocer lo básico de AnyLogic (agente, statechart, estado, transición). Esos términos están explicados en la Parte 2 de [ventana-siembra.html](ventana-siembra.html).
 
-**Estado:** la siembra sin reabastecimiento de semilla (versión 1) y el clima anual están implementados y **verificados con una corrida de `Simulation`** (sección 8). El reabastecimiento de semilla (versión 2) es el paso siguiente.
+**Estado:** la siembra y el clima anual están verificados con una corrida de `Simulation` (sección 8). La semilla con reposición del carro (paso 1a, sección 11) está verificada en la siembra y en la cosecha. El stock finito repuesto por el camión (paso 1b) es lo siguiente.
 
 ---
 
@@ -287,7 +287,7 @@ El experimento `Simulation` corre en tiempo real con escala: cada segundo real e
 | `SinSembrar` | `0.5 * day()` (0,5 días por segundo) | Unos 80 s para 40 días de siembra |
 | `Creciendo` | `1 * week()` | Segundos: la máquina está quieta |
 | `Maduro` | `0.05 * day()` | Unos 15 minutos para 70 días de cosecha |
-| `Cosechado` | `1 * week()` | Sin nada que mirar |
+| `Cosechado` | No aplica | La corrida termina al cerrar la cosecha (`terminarAlCerrarCampania = true` desde el 19/10) |
 
 La siembra usaba `0.05 * day()` y tardaba unos 13 minutos. Se subió a `0.5 * day()` para poder verla completa. Si la cosecha se hace lenta, se sube de la misma forma en el entry de `Maduro`. Se puede cambiar también durante la corrida, con el control de velocidad de la ventana de simulación.
 
@@ -358,7 +358,7 @@ Campo cosechado el dia ~200 — fin de campania
 - **`resultados.csv` es del modelo anterior.** Mide la pasada de cosechadora de octubre. El barrido hay que **rehacerlo** con el modelo nuevo. Ahora tarda más, porque cada corrida simula el año completo.
 - **El barrido no puede variar los parámetros nuevos.** La lista de parámetros de un `ParametersVariation` se congela al crearlo. Por eso `velocidadSiembra`, `velocidadCosecha` y `diaLimiteSiembra` corren con su valor por defecto. Para variarlos, hay que recrear el experimento.
 - **[ventana-siembra.html](ventana-siembra.html) quedó desactualizado** en la Parte 6 (statecharts), la Parte 9 (catálogo de variables), la Parte 11 (experimentos) y la Parte 13 (lo que falta). Mientras tanto vale este documento.
-- **Reabastecimiento de semilla (versión 2):** la sembradora gasta semilla, y cuando le queda poca llama al carro, que se la lleva desde la cabecera. Si se queda vacía antes de que llegue, se para. El tiempo parado esperando semilla es un dato directo para el entregable #2 (cuellos de botella).
+- **Reabastecimiento de semilla:** el paso 1a (carro con stock infinito) está hecho, ver la sección 11. Falta el 1b: stock finito en la cabecera, repuesto por el camión. El tiempo parado esperando semilla es un dato directo para el entregable #2 (cuellos de botella).
 - **Grados-día:** pasar `Creciendo → Maduro` a la condición `gdd >= gddObjetivo`, y recalibrar `gddObjetivo` para que la madurez caiga entre marzo y abril.
 - **Meta de la cosecha:** definir contra qué se mide la cosecha. Por ejemplo, "cosechar dentro de los 30 días desde la madurez". `diaFinCosecha − diaMadurez` ya se imprime y se guarda en el CSV.
 
@@ -376,5 +376,165 @@ Todos los cambios se hicieron por script sobre el `.alp`, con copia previa en `b
 | `backups/2026-10-05-pre-visual-lotes.alp` | Igual que el anterior, antes de tocar la animación |
 | `backups/2026-10-05-visual-lotes.alp` | Con texto de avance, cuadraditos por lote y trigo según el estado. Sin probar en AnyLogic |
 | `backups/2026-10-05-pre-escala-siembra.alp` | Igual que el anterior, antes de cambiar la escala de tiempo de la siembra |
+| `backups/2026-10-19-pre-semilla-1a.alp` | Estado mergeado en `main` (PR #2), antes de la semilla |
+| `backups/2026-10-19-pre-histeresis-semilla.alp` | Semilla 1a con el bucle infinito (no usar) |
+| `backups/2026-10-19-pre-fin-simulation.alp` | Semilla 1a con histéresis y 512 MB, antes de que `Simulation` termine al cerrar la cosecha |
 
 Para volver a un estado anterior, hay que copiar el respaldo sobre `Optimización de la Ventana de Siembra.alp`, con AnyLogic cerrado.
+
+---
+
+## 11. Semilla: la sembradora gasta semilla y el carro la repone (paso 1a, 19/10)
+
+Este cambio es el paso 1a de [PLAN.md](PLAN.md). Antes, la máquina sembraba sin gastar nada. Ahora tiene una tolva de semilla que se vacía mientras siembra, y el carro se la repone desde la cabecera. Si la tolva se queda vacía antes de que llegue el carro, la máquina para.
+
+En esta versión el depósito de la cabecera tiene **stock infinito**: el carro siempre encuentra semilla. El stock finito, repuesto por el camión, es el paso 1b.
+
+### La cadena de la semilla
+
+```
+depósito (cabecera) ──carro──► tolva de la sembradora ──sembrando──► lote
+     stock infinito         entrega de golpe          441 kg/h
+```
+
+Es la cadena del grano al revés. El grano sale del lote y termina en el silo. La semilla sale del depósito y termina en el lote.
+
+### Cuánto gasta
+
+`consumo = velocidad × ancho × densidad`. Con 7 km/h (1,944 m/s), 9 m y 70 kg/ha (0,007 kg/m²) da **0,1225 kg/s, o 441 kg/h**. La tolva de 4.000 kg alcanza para unas 9 horas de trabajo.
+
+La semilla se integra igual que el grano, con tres variables en `Combine`: `semilla` (kg en la tolva), `tasaSemilla` (kg por unidad de tiempo, negativa) y `tUltimoSemilla`. La función `actualizarSemilla()` pone el nivel al día con la tasa vigente.
+
+La tasa es **derivada**, igual que la del grano: `tasaSemillaActual()` vale el consumo solo si la máquina está trabajando **y** sembrando. Si no, vale 0. Cada vez que cambia `trabajando` se llama a `actualizarTasaSemilla()`. Eso pasa en cuatro lugares de `Combine`:
+
+| Dónde | Por qué cambia |
+|---|---|
+| `transition` (llega al lote) | Empieza un lote |
+| `transition5` (para) | Para por jornada, piso o falta de semilla |
+| `transition8` (reanuda) | Vuelve a trabajar |
+| `transition6` (termina el lote) | Termina un lote |
+
+### El statechart `semillaControl` (en `Combine`)
+
+Es un tercer statechart, paralelo a `tankControl` (grano) y `moveControl` (movimiento):
+
+```
+            [timeout: hasta el umbral]        [timeout: hasta vaciarse]
+Suficiente ─────────── aPedida ──────────► Pedida ──── aAgotada ────► Agotada
+    ▲                                         │                         │
+    └──────── recuperaPedida [semilla > umbral + 1 kg] ─┘                │
+    └──────── recuperaAgotada [semilla > umbral + 1 kg] ────────────────┘
+                                   Pedida ◄── recuperaParcial [0 < semilla ≤ umbral + 1 kg] ── Agotada
+```
+
+| Estado | Qué significa | Qué hace al entrar |
+|---|---|---|
+| `Suficiente` | La tolva está por encima del umbral (20% = 800 kg) | Nada |
+| `Pedida` | Bajó del umbral y se pidió semilla al carro | Manda `NEED_SEED` al carro |
+| `Agotada` | La tolva llegó a 0 | Pone `sinSemilla = true` y la máquina para |
+
+La parada por falta de semilla entra en `puedeTrabajar()`, que sigue siendo el **único punto de parada**: `... && !inState( FullWaitCart ) && !sinSemilla`.
+
+Los timeouts `aPedida` y `aAgotada` se calculan con `tUmbralSemilla()` y `tVaciaSemilla()`: el tiempo que falta para llegar al umbral o a 0 con la tasa actual. Si la máquina está parada, la tasa es 0 y el timeout vale `1e12`, o sea, nunca.
+
+### El carro
+
+El carro tiene tres estados nuevos en `moveControl`:
+
+```
+WaitCommand ──[NEED_SEED]──► CargandoSemilla ──[timeout: carga]──► LlevandoSemilla ──[ARRIVED: entrega]──► VolviendoSemilla ──[ARRIVED]──► WaitCommand
+                                                                    (se reapunta cada minuto)
+```
+
+| Estado | Qué hace |
+|---|---|
+| `CargandoSemilla` | Llena el carro en la cabecera. El tiempo es lo cargado dividido por `UnloadingRate` (150 kg/s) |
+| `LlevandoSemilla` | Viaja hacia la sembradora. Como la sembradora se mueve, se reapunta cada minuto, igual que `GoingToCombine` |
+| `VolviendoSemilla` | Vuelve a la cabecera |
+
+Al llegar a la sembradora, el carro vuelca `min( carga del carro, espacio libre en la tolva )` **de golpe**. Es el mismo criterio que el volcado de grano: lo que sale del carro entra a la tolva en el mismo instante, así que conserva por construcción. Después llama a `Combine.semillaEntregada()`, que reprograma los eventos y reevalúa las condiciones.
+
+La carga del carro se guarda en `semillaCarro`, una variable aparte de `nivel`, que es el grano. Así la semilla nunca se mezcla con el grano ni con su auditoría.
+
+### Decisiones (para la defensa)
+
+| Decisión | Alternativa descartada | Por qué |
+|---|---|---|
+| Pedir semilla al bajar del 20%, no al vaciarse | Pedir con la tolva vacía | Así trabaja un operario real: llama antes de quedarse sin semilla. El umbral es un parámetro (`umbralSemilla`) |
+| Entrega instantánea al llegar | Un flujo continuo carro → tolva | La carga real dura minutos. El flujo continuo exigía fijar las dos tasas y reprogramar dos timeouts, que fue la fuente de casi todos los errores de masa del modelo |
+| `WaitCommand` vuelve a mirar si hay un pedido pendiente | Confiar en el mensaje `NEED_SEED` | Si el carro está ocupado cuando llega el mensaje, AnyLogic lo descarta en silencio (aprendizaje 14 del contexto). Es el mismo patrón que ya usaba `WaitCommand` con `GO_TO_COMBINE` |
+| Histéresis de 1 kg para salir de `Pedida` y `Agotada` | Comparar contra el umbral exacto | Sin margen se arma un bucle infinito en tiempo cero (ver abajo) |
+| Stock infinito en la cabecera (1a) | Modelar el camión desde el principio | Probar la cadena carro → tolva aislada. El camión entra en el 1b |
+
+### La trampa del bucle infinito (aprendizaje 23)
+
+La primera versión entraba en un bucle y llenaba la consola con miles de `### PIDE SEMILLA` en el mismo instante. Pasaba esto:
+
+1. `aPedida` dispara cuando la tolva llega a 800 kg.
+2. Por redondeo de punto flotante, la semilla queda en 800,0000001 kg, apenas por encima del umbral.
+3. `recuperaPedida` (`semilla > 800`) es verdadera y vuelve a `Suficiente`.
+4. `aPedida` recalcula su timeout, `(800,0000001 − 800) / tasa ≈ 0`, y vuelve a `Pedida`. Y así sin fin.
+
+El arreglo es pedir `semilla > umbral + 1 kg` para salir. Ese margen solo se supera con una entrega real del carro, de unos 3.200 kg. **Regla:** una condición que deshace lo que hizo un timeout necesita margen.
+
+### Auditoría de semilla
+
+`Main.auditarSemilla()` se llama al terminar la siembra y hace dos comprobaciones independientes:
+
+1. **Conservación:** `semillaDespachada = semillaSembrada + semilla en la tolva + semilla en el carro`. La diferencia es la `FUGA` de semilla, y tiene que ser ruido de punto flotante.
+2. **Superficie:** `semillaSembrada` tiene que ser `densidad × superficie realmente recorrida`.
+
+La superficie recorrida **no es 104 ha por lote**. El lote mide 1.300 m de ancho y la máquina hace hileras enteras de 9 m: son 145 hileras, que cubren 1.305 m. Por eso cada lote tiene 104,4 ha. Con la cosecha pasa lo mismo: cada lote da 313,2 t y no 312. La auditoría calcula la superficie a partir de las hileras.
+
+### Parámetros y variables nuevos
+
+| Dónde | Nombre | Valor | Qué es |
+|---|---|---|---|
+| `Main` (parámetro) | `densidadSiembra` | 70 kg/ha | Semilla por hectárea. **Falta una fuente** (INTA) |
+| `Main` (parámetro) | `capacidadSemilla` | 4.000 kg | Tolva de semilla de la sembradora. **Falta una fuente** (ficha técnica) |
+| `Main` (parámetro) | `umbralSemilla` | 0,2 | Fracción de la tolva que dispara el pedido |
+| `Main` | `semillaDespachada`, `semillaSembrada` | kg | Para la auditoría |
+| `Main` | `entregasSemilla`, `horasSinSemilla` | | Para el resultado #2 |
+| `Combine` | `semilla`, `tasaSemilla`, `tUltimoSemilla` | | Nivel de la tolva de semilla |
+| `Combine` | `sinSemilla`, `tInicioSinSemilla` | | Parada por falta de semilla |
+| `Cart` | `semillaCarro`, `ultimaCargaSemilla` | | Semilla que lleva el carro |
+
+La máquina arranca la campaña con la tolva llena. Lo hace el StartupCode de `Main`, y esa carga inicial cuenta como semilla despachada.
+
+### Verificación (campaña 0, 12 lotes, 1 turno)
+
+| Qué | Esperado | Medido |
+|---|---|---|
+| Consumo | 441 kg/h | 441,0 kg/h (línea `### INICIO LOTE`) |
+| Primer pedido | Tras 7,26 h de trabajo | Día 1,286: 6,4 h del día 0 y 0,86 h del día 1 |
+| Entregas | 25 a 27, de unos 3.250 kg | 27, de 3.223 a 3.258 kg |
+| Horas sin semilla | 0 | 0 |
+| `FUGA` de semilla | ~0 | 1,1 × 10⁻¹¹ kg |
+| Semilla sembrada | 12 × 104,4 ha × 70 = 87.696 kg | 87.696 kg |
+| Fin de siembra | Día 40, igual que sin semilla | Día 40, con 198,86 h, idéntico |
+
+Que la máquina nunca espere semilla confirma la parte 4.2 del plan: con estos valores, la semilla no es un cuello de botella. Va a importar cuando la reposición sea lenta (paso 1b).
+
+**Cosecha (campaña 0, 1 lote, 1 turno).** Lo único que este cambio toca de la cosecha es `Cart.WaitCommand`, que ahora distingue siembra de cosecha. Se verificó con una campaña completa de 1 lote:
+
+| Qué | Esperado | Medido |
+|---|---|---|
+| Entregas de semilla | 2, de unos 3.200 kg | 2, de 3.250 y 3.258 kg |
+| Semilla sembrada | 104,4 ha × 70 = 7.308 kg | 7.308 kg, `FUGA` 0 |
+| Fin de siembra | | Día 2 (16,6 h de trabajo) |
+| Madurez | | Día 130 |
+| Horas de cosecha | 21,09 h, igual que antes | 21,09 h |
+| Grano cosechado | 313.200 kg | 313.200 kg |
+| `FUGA` de grano | ~0 | −1,3 × 10⁻¹¹ kg |
+| Viajes de camión | 6 | **5** |
+
+Los 5 viajes no son un error. Antes, la corrida seguía después de cerrar la cosecha y el camión terminaba de llenarse y hacía el sexto viaje. Ahora `Simulation` se detiene al cerrar la cosecha (`terminarAlCerrarCampania`), así que los 63.200 kg que no llegaron al silo quedan en la cosechadora, el carro y el camión. La auditoría los cuenta como masa en el sistema y la `FUGA` da 0. Por la misma razón, con 12 lotes pueden salir 74 viajes en vez de los 75 de antes: depende de cuánto grano quede en la cadena al cerrar.
+
+`viajesCamion` cuenta los viajes que llegaron al silo antes del cierre. Si el entregable #2 necesita los viajes totales, hay que sumar el grano que quedó en la cadena dividido por la capacidad del camión.
+
+### Otros cambios del 19/10
+
+- **Memoria del experimento `Simulation`:** pasó de 64 MB a 512 MB, la misma que el barrido. Con 64 MB el margen era muy chico.
+- **`Simulation` termina al cerrar la cosecha** (`terminarAlCerrarCampania = true`). Antes quedaba en `Cosechado` avanzando hasta mayo de 2026 sin nada que hacer.
+- **Diagnóstico:** cada lote de siembra imprime `### INICIO LOTE n`, con la semilla en la tolva, la velocidad, el ancho y el consumo.
+- **El editor de AnyLogic se trababa, no el modelo.** La herramienta `jstack` viene en la JRE de AnyLogic. Con ella se vio que el modelo seguía corriendo. El IDE, en cambio, recalculaba el panel de propiedades sin parar. Es un problema de SWT sobre Wayland. Mientras corre una simulación, conviene no tener seleccionado un elemento con muchas propiedades.
