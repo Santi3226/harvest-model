@@ -39,7 +39,7 @@ Todos los pasos siguen el mismo protocolo, para que cualquiera del grupo pueda r
 | Paso | Qué | Resultado | Depende de | Estado |
 |---|---|---|---|---|
 | 0 | Actualizar docs y armar este plan | Todos | Ninguna | **Hecho** |
-| 1 | Siembra con reabastecimiento de semilla | #2 | Ninguna | **1a verificado** (siembra y cosecha). 1b pendiente |
+| 1 | Siembra con reabastecimiento de semilla | #2 | Ninguna | **Hecho** (1a verificado). El 1b se descartó |
 | 2 | Fallas de máquina | #1, #2, #3 | Ninguna | Pendiente |
 | 3 | Madurez por grados-día (`gdd`) | #1 | Ninguna | Pendiente |
 | 4 | Causas de parada y contadores de carro y camión | #2 | 1, 2 | Pendiente |
@@ -73,7 +73,7 @@ El modelo tiene una sola máquina con su carro y su camión. La pregunta del tra
 
 Una sembradora gasta unos 441 kg de semilla por hora (6,3 ha/h × 70 kg/ha). Con una tolva de 4.000 kg, eso son unas 9 horas de autonomía. Si el carro llega antes de que se vacíe, la máquina nunca espera.
 
-Entonces el desabastecimiento solo aparece si **la reposición es lenta**. Por eso el paso 1 modela también el stock del depósito y el viaje del camión que lo repone. El resultado puede ser "la semilla no es un cuello de botella salvo que la reposición tarde más de X horas". Eso también es un resultado válido y se puede defender. El parámetro de reposición tiene que estar a la vista y barrerse en la sensibilidad.
+Entonces el desabastecimiento solo aparecería si la reposición fuera lenta. Se decidió el 2026-10-19 **no modelar el stock del depósito**: la cabecera es infinita y el carro siempre encuentra semilla. El resultado para el informe es que, con estos valores, la semilla no es un cuello de botella, y la tolva y el carro de 20 t cubren días de siembra. Se declara como supuesto, junto con `densidadSiembra` y `capacidadSemilla`.
 
 ### 4.3 Valores que hay que respaldar con una fuente
 
@@ -97,7 +97,7 @@ Ninguno de estos valores se puede inventar. Cada uno queda marcado en el modelo 
 
 **Objetivo.** Que la sembradora gaste semilla, que se le acabe y que dependa de una reposición. Medir el tiempo que espera.
 
-**Diseño (versión simple, en dos partes).**
+**Diseño.** Semilla por el carro, con stock infinito en la cabecera. El 1b (stock finito repuesto por el camión) se descartó el 2026-10-19: el depósito queda infinito.
 
 - **1a. Semilla por el carro, con stock infinito en la cabecera.**
   - `Combine` guarda `semilla` (kg en la tolva), `tasaSemilla` y `tUltimoSemilla`, igual que el grano. Un `actualizarSemilla()` integra el nivel por evento.
@@ -105,17 +105,12 @@ Ninguno de estos valores se puede inventar. Cada uno queda marcado en el modelo 
   - Cuando `semilla` baja de `umbralSemilla` (20%), `Combine` le manda `NEED_SEED` al carro.
   - El carro carga en la cabecera, viaja a la máquina y vuelca `min(carga, espacio)` de golpe, como el volcado de grano. Es conservativo por construcción. Después vuelve.
   - Si `semilla` llega a 0, la máquina para. Esto entra en `puedeTrabajar()`, que es el único punto de parada, sin mensajes nuevos.
-- **1b. Stock finito en la cabecera, repuesto por el camión.**
-  - La cabecera tiene `stockSemilla`. El carro lo gasta al cargar.
-  - Cuando baja de un umbral, el camión sale al depósito, tarda `tViajeInsumos` y trae su carga.
-  - Con 12 lotes se necesitan unas 87 t de semilla (12 × 7,28 t), o sea 2 viajes de 50 t.
 
-**Parámetros nuevos (`Main`).** `densidadSiembra` (70 kg/ha), `capacidadSemilla` (4.000 kg), `umbralSemilla` (0,2), `stockInicialSemilla` y `tViajeInsumos` (parte 1b).
+**Parámetros nuevos (`Main`).** `densidadSiembra` (70 kg/ha), `capacidadSemilla` (4.000 kg), `umbralSemilla` (0,2).
 
 **Elementos que se tocan.**
 - `Combine`: variables y función de semilla, transición de aviso, condición en `puedeTrabajar()`, y la tasa de consumo en `tasaCosechaActual()`.
 - `Cart`: estados nuevos para cargar semilla y entregarla, con guardas por `main.sembrando()` en las transiciones existentes que hoy asumen grano.
-- `Truck` (solo 1b): estado de viaje al depósito.
 - `Main`: parámetros, y la auditoría de conservación de semilla.
 
 **Auditoría.** Igual que con el grano: `semillaDespachada = semillaSembrada + combine.semilla + cart.semilla`. La `FUGA` de semilla tiene que dar ruido de punto flotante (~1e-9).
@@ -129,9 +124,8 @@ Ninguno de estos valores se puede inventar. Cada uno queda marcado en el modelo 
 - Con los valores propuestos la máquina **no** espera semilla (0 h sin semilla). Eso confirma la parte 4.2.
 - El día de fin de siembra no cambia más que por las esperas del carro (hoy: día 40).
 - La cosecha sigue igual: 75 viajes, `FUGA` de grano ~0.
-- Con `tViajeInsumos` muy grande, la máquina espera semilla y el contador lo muestra.
 
-**Riesgos.** El carro hoy asume que el flujo es de la máquina hacia el carro. Las transiciones que cambian por modo son delicadas por las trampas de LIFO y de mensajes que se descartan (sección 5 del contexto). Por eso 1a y 1b se prueban por separado.
+**Riesgos.** El carro hoy asume que el flujo es de la máquina hacia el carro. Las transiciones que cambian por modo son delicadas por las trampas de LIFO y de mensajes que se descartan (sección 5 del contexto). 
 
 **Qué hace cada uno.** Claude escribe los scripts y la documentación. Luca corre `Simulation` y pega la consola.
 
@@ -265,7 +259,6 @@ Se varía **un parámetro por vez** y los demás quedan en su valor base. Se mid
 | `umbralPiso` | 15, 20, 25, 30 mm | Es el parámetro más influyente y no tiene valor publicado único |
 | `mtbfHoras` | 40, 100, 200 h | Sin fuente definida |
 | `velocidadSiembra` | 5, 7, 9 km/h | Rango habitual de siembra |
-| `tViajeInsumos` | 1, 4, 12 h | Define si la semilla es o no un cuello de botella |
 | `gddObjetivo` | 1.700, 1.900, 2.100 | Define la fecha de cosecha |
 
 También se afinan las celdas de transición que quedaron sin resolver.
@@ -283,7 +276,7 @@ También se afinan las celdas de transición que quedaron sin resolver.
 Se actualiza al terminar cada paso, con la fecha y el commit.
 
 - [x] **Paso 0.** Docs actualizados y plan escrito. 2026-10-19.
-- [ ] Paso 1. Semilla. **1a verificado** el 2026-10-19: siembra con 12 lotes (27 entregas, `FUGA` 1e-11, 0 h sin semilla) y campaña completa con 1 lote (2 entregas, `FUGA` de semilla 0, `FUGA` de grano 1e-11). 1b pendiente. Detalle en la sección 11 de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md).
+- [x] Paso 1. Semilla. **1a verificado** el 2026-10-19: siembra con 12 lotes (27 entregas, `FUGA` 1e-11, 0 h sin semilla) y campaña completa con 1 lote (2 entregas, `FUGA` de semilla 0, `FUGA` de grano 1e-11). El 1b (stock finito) se descartó. Detalle en la sección 11 de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md).
 - [ ] Paso 2. Fallas de máquina.
 - [ ] Paso 3. Madurez por grados-día.
 - [ ] Paso 4. Causas de parada y contadores.

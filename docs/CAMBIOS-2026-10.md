@@ -4,7 +4,7 @@ Este documento explica qué cambió en el modelo el 5 y el 19 de octubre de 2026
 
 No hace falta haber seguido la conversación en la que se hicieron los cambios. Sí conviene conocer lo básico de AnyLogic (agente, statechart, estado, transición). Esos términos están explicados en la Parte 2 de [ventana-siembra.html](ventana-siembra.html).
 
-**Estado:** la siembra y el clima anual están verificados con una corrida de `Simulation` (sección 8). La semilla con reposición del carro (paso 1a, sección 11) está verificada en la siembra y en la cosecha. El stock finito repuesto por el camión (paso 1b) es lo siguiente.
+**Estado:** la siembra y el clima anual están verificados con una corrida de `Simulation` (sección 8). La semilla con reposición del carro (paso 1a, sección 11) está verificada en la siembra y en la cosecha. El stock finito repuesto por el camión (paso 1b) se descartó: el depósito queda infinito.
 
 ---
 
@@ -358,7 +358,7 @@ Campo cosechado el dia ~200 — fin de campania
 - **`resultados.csv` es del modelo anterior.** Mide la pasada de cosechadora de octubre. El barrido hay que **rehacerlo** con el modelo nuevo. Ahora tarda más, porque cada corrida simula el año completo.
 - **El barrido no puede variar los parámetros nuevos.** La lista de parámetros de un `ParametersVariation` se congela al crearlo. Por eso `velocidadSiembra`, `velocidadCosecha` y `diaLimiteSiembra` corren con su valor por defecto. Para variarlos, hay que recrear el experimento.
 - **[ventana-siembra.html](ventana-siembra.html) quedó desactualizado** en la Parte 6 (statecharts), la Parte 9 (catálogo de variables), la Parte 11 (experimentos) y la Parte 13 (lo que falta). Mientras tanto vale este documento.
-- **Reabastecimiento de semilla:** el paso 1a (carro con stock infinito) está hecho, ver la sección 11. Falta el 1b: stock finito en la cabecera, repuesto por el camión. El tiempo parado esperando semilla es un dato directo para el entregable #2 (cuellos de botella).
+- **Reabastecimiento de semilla:** el paso 1a (carro con stock infinito) está hecho, ver la sección 11. El 1b (stock finito en la cabecera, repuesto por el camión) se descartó el 19/10: la semilla no es un cuello de botella con estos valores y se declara como supuesto.
 - **Grados-día:** pasar `Creciendo → Maduro` a la condición `gdd >= gddObjetivo`, y recalibrar `gddObjetivo` para que la madurez caiga entre marzo y abril.
 - **Meta de la cosecha:** definir contra qué se mide la cosecha. Por ejemplo, "cosechar dentro de los 30 días desde la madurez". `diaFinCosecha − diaMadurez` ya se imprime y se guarda en el CSV.
 
@@ -388,7 +388,7 @@ Para volver a un estado anterior, hay que copiar el respaldo sobre `Optimizació
 
 Este cambio es el paso 1a de [PLAN.md](PLAN.md). Antes, la máquina sembraba sin gastar nada. Ahora tiene una tolva de semilla que se vacía mientras siembra, y el carro se la repone desde la cabecera. Si la tolva se queda vacía antes de que llegue el carro, la máquina para.
 
-En esta versión el depósito de la cabecera tiene **stock infinito**: el carro siempre encuentra semilla. El stock finito, repuesto por el camión, es el paso 1b.
+En esta versión el depósito de la cabecera tiene **stock infinito**: el carro siempre encuentra semilla. El stock finito, repuesto por el camión, era el paso 1b y se descartó.
 
 ### La cadena de la semilla
 
@@ -464,7 +464,7 @@ La carga del carro se guarda en `semillaCarro`, una variable aparte de `nivel`, 
 | Entrega instantánea al llegar | Un flujo continuo carro → tolva | La carga real dura minutos. El flujo continuo exigía fijar las dos tasas y reprogramar dos timeouts, que fue la fuente de casi todos los errores de masa del modelo |
 | `WaitCommand` vuelve a mirar si hay un pedido pendiente | Confiar en el mensaje `NEED_SEED` | Si el carro está ocupado cuando llega el mensaje, AnyLogic lo descarta en silencio (aprendizaje 14 del contexto). Es el mismo patrón que ya usaba `WaitCommand` con `GO_TO_COMBINE` |
 | Histéresis de 1 kg para salir de `Pedida` y `Agotada` | Comparar contra el umbral exacto | Sin margen se arma un bucle infinito en tiempo cero (ver abajo) |
-| Stock infinito en la cabecera (1a) | Modelar el camión desde el principio | Probar la cadena carro → tolva aislada. El camión entra en el 1b |
+| Stock infinito en la cabecera (1a) | Modelar el camión desde el principio | Probar la cadena carro → tolva aislada. El 1b, que sumaba el camión, se descartó |
 
 ### La trampa del bucle infinito (aprendizaje 23)
 
@@ -513,7 +513,7 @@ La máquina arranca la campaña con la tolva llena. Lo hace el StartupCode de `M
 | Semilla sembrada | 12 × 104,4 ha × 70 = 87.696 kg | 87.696 kg |
 | Fin de siembra | Día 40, igual que sin semilla | Día 40, con 198,86 h, idéntico |
 
-Que la máquina nunca espere semilla confirma la parte 4.2 del plan: con estos valores, la semilla no es un cuello de botella. Va a importar cuando la reposición sea lenta (paso 1b).
+Que la máquina nunca espere semilla confirma la parte 4.2 del plan: con estos valores, la semilla no es un cuello de botella. Importaría si la reposición fuera lenta, pero el stock finito (1b) se descartó: se declara como supuesto.
 
 **Cosecha (campaña 0, 1 lote, 1 turno).** Lo único que este cambio toca de la cosecha es `Cart.WaitCommand`, que ahora distingue siembra de cosecha. Se verificó con una campaña completa de 1 lote:
 
