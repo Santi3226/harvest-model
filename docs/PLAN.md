@@ -40,7 +40,7 @@ Todos los pasos siguen el mismo protocolo, para que cualquiera del grupo pueda r
 |---|---|---|---|---|
 | 0 | Actualizar docs y armar este plan | Todos | Ninguna | **Hecho** |
 | 1 | Siembra con reabastecimiento de semilla | #2 | Ninguna | **Hecho** (1a verificado). El 1b se descartó |
-| 2 | Fallas de máquina | #1, #2, #3 | Ninguna | Pendiente |
+| 2 | Fallas de máquina | #1, #2, #3 | Ninguna | **Implementado**, verificado con 1 lote. Falta la corrida de 12 lotes |
 | 3 | Madurez por grados-día (`gdd`) | #1 | Ninguna | Pendiente |
 | 4 | Causas de parada y contadores de carro y camión | #2 | 1, 2 | Pendiente |
 | 5 | Rinde según la fecha de siembra y costos | #3 | 1, 3, 4 | Pendiente |
@@ -154,7 +154,7 @@ El criterio nuevo es el porcentaje de tiempo perdido. **El MTBF necesita una fue
 **Elementos que se tocan.** `Combine` (statechart, `puedeTrabajar()`, rearmado de la falla al reanudar), `Main` (parámetros `mtbfHoras`, contadores de fallas y horas en reparación).
 
 **Criterio de aceptación.**
-- Con `mtbfHoras` muy grande (1e9), el resultado es idéntico al de hoy (siembra día 40, cosecha día 236). Esto prueba que el statechart nuevo no rompe lo que ya funciona.
+- Con `mtbfHoras` muy grande (1e9), el resultado es idéntico al de hoy (siembra día 40, cosecha día 236). Esto prueba que el statechart nuevo no rompe lo que ya funciona. Como las fallas usan un generador propio, también `diaMadurez` queda igual.
 - Con `mtbfHoras = 100`, el número de fallas de varias corridas tiene media cercana a 4,5.
 - Nunca hay una falla con la máquina parada.
 - La `FUGA` de grano y de semilla sigue en ~0 con las paradas por falla.
@@ -277,7 +277,7 @@ Se actualiza al terminar cada paso, con la fecha y el commit.
 
 - [x] **Paso 0.** Docs actualizados y plan escrito. 2026-10-19.
 - [x] Paso 1. Semilla. **1a verificado** el 2026-10-19: siembra con 12 lotes (27 entregas, `FUGA` 1e-11, 0 h sin semilla) y campaña completa con 1 lote (2 entregas, `FUGA` de semilla 0, `FUGA` de grano 1e-11). El 1b (stock finito) se descartó. Detalle en la sección 11 de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md).
-- [ ] Paso 2. Fallas de máquina.
+- [ ] Paso 2. Fallas de máquina. **Implementado el 2026-10-19** en `feat/fallas`, con generador propio (`semillaFallas`). **Verificado con 1 lote** (sin fallas idéntico al de antes; con `mtbfHoras = 5`, 9 fallas y `FUGA` ~0). Falta la corrida de 12 lotes con `mtbfHoras = 100` (unas 4,5 fallas). Detalle en la sección 12 de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md).
 - [ ] Paso 3. Madurez por grados-día.
 - [ ] Paso 4. Causas de parada y contadores.
 - [ ] Paso 5. Rinde y costos.

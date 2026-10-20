@@ -538,3 +538,72 @@ Los 5 viajes no son un error. Antes, la corrida seguía después de cerrar la co
 - **`Simulation` termina al cerrar la cosecha** (`terminarAlCerrarCampania = true`). Antes quedaba en `Cosechado` avanzando hasta mayo de 2026 sin nada que hacer.
 - **Diagnóstico:** cada lote de siembra imprime `### INICIO LOTE n`, con la semilla en la tolva, la velocidad, el ancho y el consumo.
 - **El editor de AnyLogic se trababa, no el modelo.** La herramienta `jstack` viene en la JRE de AnyLogic. Con ella se vio que el modelo seguía corriendo. El IDE, en cambio, recalculaba el panel de propiedades sin parar. Es un problema de SWT sobre Wayland. Mientras corre una simulación, conviene no tener seleccionado un elemento con muchas propiedades.
+
+## 12. Fallas de máquina (paso 2, 19/10)
+
+Este cambio es el paso 2 de [PLAN.md](PLAN.md). Antes, la máquina nunca se rompía, así que todos los tiempos eran un límite optimista. Ahora se rompe mientras trabaja y queda detenida hasta que la reparan. **Verificado con 1 lote (corridas 1 y 2 de abajo). Falta la corrida de 12 lotes.**
+
+### El statechart `fallaControl` (en `Combine`)
+
+Es el cuarto statechart paralelo de `Combine`, junto a `tankControl`, `moveControl` y `semillaControl`:
+
+```
+Operativa ──[aFalla: timeout]──► Reparando ──[finReparacion: timeout]──► Operativa
+```
+
+| Elemento | Qué hace |
+|---|---|
+| `aFalla` | Timeout en horas: `trabajando ? tHastaFallaHoras() : 1e12`. Solo corre mientras la máquina trabaja |
+| `Reparando` (entrada) | Cuenta la falla, pone `reparando = true`, sortea la duración y llama a `moveControl.onChange()` |
+| `finReparacion` | Timeout de `duracionReparacion` horas. Pone `reparando = false`, suma las horas y llama a `moveControl.onChange()` |
+
+La falla es un motivo más de parada. Entra en `puedeTrabajar()`, que sigue siendo el único punto de parada: `... && !sinSemilla && !reparando`. No hay mensajes nuevos. El `STOP` lo manda `transition5` al reevaluar la condición, no la transición de falla. Así no se hace `cancel()` sobre una transición que está disparando.
+
+### Cómo se sortea
+
+- **Tiempo hasta la falla:** exponencial de media `mtbfHoras`, medido en **horas de operación**. Una máquina parada no se rompe. `reprogramarFalla()` pone el timeout en `1e12` al parar y vuelve a sortear al reanudar. La exponencial no tiene memoria, así que sortear de nuevo da lo mismo que descontar el tiempo ya trabajado.
+- **Duración de la reparación:** `triangular(0,5; 8; 2)` horas (mínimo, máximo, moda), con media de 3,5 h. Corre en tiempo de calendario, no solo en horas de jornada.
+- **Generador propio.** Las fallas usan `Combine.rngFalla`, un `java.util.Random` con semilla `Main.semillaFallas`, y no el generador del modelo. Hay dos razones. Agregar fallas no mueve los demás sorteos (hoy `diasHastaMadurez`), y con `mtbfHoras` muy grande el resultado queda idéntico al de antes. Además, para el barrido del paso 7 alcanza con variar `semillaFallas` para tener réplicas distintas. El experimento usa semilla fija 1, así que sin esto todas las réplicas darían lo mismo.
+
+`reprogramarFalla()` se llama en los cuatro lugares donde cambia `trabajando`, junto a `actualizarTasaSemilla()`: `transition` (empieza el lote), `transition5` (para), `transition6` (termina el lote) y `transition8` (reanuda). Solo actúa si `Operativa` está activo.
+
+### Parámetros y variables nuevos
+
+| Dónde | Nombre | Valor | Qué es |
+|---|---|---|---|
+| `Main` (parámetro) | `mtbfHoras` | 100 h | Media de horas de operación entre fallas. **Falta una fuente** (ASABE D497.7) |
+| `Main` (parámetro) | `semillaFallas` | 1 | Semilla del generador de fallas |
+| `Main` | `fallas`, `horasReparando` | | Contadores de la campaña |
+| `Main` | `baseFallas`, `baseReparando` | | Foto para que `reportarPasada()` informe solo la pasada |
+| `Combine` | `reparando`, `tInicioReparacion`, `duracionReparacion`, `rngFalla` | | Estado de la reparación y generador |
+
+`reportarPasada()` agrega `fallas=N (X h reparando)`. La línea `### MAQUINA PARA` agrega `reparando=`. Cada falla imprime `### FALLA n | dia | repara X h` y cada fin `### REPARADA`.
+
+**`ParametersVariation` no tiene los parámetros nuevos.** Su lista quedó congelada al crearlo, así que corre con `mtbfHoras = 100` y `semillaFallas = 1` sin avisar. Hay que recrearlo en el paso 7.
+
+### Cómo verificarlo
+
+Tres corridas de `Simulation`, con `turnos = 1` y `campania = 0`:
+
+| Corrida | Qué se espera |
+|---|---|
+| 1 lote, `mtbfHoras = 1e9` | **Idéntica a la del 19/10 sin fallas:** siembra el día 2 (16,571 h), madurez el día 130, cosecha el día 134 (21,09 h), 5 viajes, `FUGA` de grano ~1e-11, `FUGA` de semilla 0. No aparece ninguna línea `### FALLA` |
+| 1 lote, `mtbfHoras = 5` | Unas 7 fallas (38 h de operación / 5 h). Cada `### FALLA` va seguida de un `### MAQUINA PARA ... reparando=true` en el mismo instante. Ambas `FUGA` siguen en ~0 |
+| 12 lotes, `mtbfHoras = 100` | Unas 4,5 fallas (450 h de operación / 100 h) y 16 h en reparación. Siembra más tarde que el día 40 |
+
+Con 1 lote y `mtbfHoras = 100` se espera una falla cada 2 o 3 corridas, así que esa corrida no prueba nada. Por eso la segunda usa 5 h.
+
+### Resultado de las corridas del 19/10
+
+| Corrida | Medido |
+|---|---|
+| 1 lote, sin fallas | Idéntica a la anterior al dígito: siembra el día 2 (16,571 h), madurez el día 130, cosecha el día 134 (21,09 h), 5 viajes, `FUGA` de grano −1,27e-11. Ninguna línea `### FALLA` |
+| 1 lote, `mtbfHoras = 5` | 9 fallas: 2 en la siembra (8,75 h reparando) y 7 en la cosecha (24,34 h). Siembra cierra el día 4, madurez el 132, cosecha el 138. `FUGA` de semilla 3,6e-12 y de grano 1,5e-10 |
+
+- **Las fallas no mueven otros sorteos.** En las dos corridas el cultivo crece 127 días. El generador propio cumple su función.
+- **Ninguna falla ocurre con la máquina parada.** Las 9 caen con `jornada=true` y cada `### FALLA` va seguida de `### MAQUINA PARA ... reparando=true` en el mismo instante.
+- **Las horas cierran.** Cada duración sorteada coincide con el tiempo entre `### FALLA` y `### REPARADA`, y la suma de cada pasada coincide con el contador `horasReparando`. El trabajo efectivo no cambia (16,571 h y 21,09 h): las fallas solo agregan tiempo detenido.
+- **9 fallas con 5 h de MTBF** es compatible con las 7,5 esperadas (38 h de operación / 5 h).
+- **Un efecto a tener en cuenta.** Si la máquina se rompe con grano en la tolva y el carro queda libre, el carro va a la máquina parada y se lleva el grano (se ve en la falla 4: la tolva pasa de 1.658 a 0 durante la reparación). Es consecuencia de que `Cart.WaitCommand` atiende cualquier parada de la máquina, no solo la de tolva llena. Conserva masa, pero hay que recordarlo al medir la espera del carro en el paso 4.
+
+**Qué mirar en el log.** Que ningún `### FALLA` ocurra con la máquina parada (el timeout vale `1e12` en ese caso). Y que después de `### REPARADA` aparezca `### MAQUINA REANUDA` si hay jornada y piso, o que quede parada por esa causa si no.
