@@ -139,7 +139,8 @@ Todos contradicen algún supuesto razonable y cada uno costó al menos una corri
 19. **Límite de 65.535 bytes de bytecode por método de la JVM.** AnyLogic mete la inicialización de **todas** las variables de un agente en un único método generado (`setupPlainVariables_Main_xjal`). Tres literales de arreglo con 4.240 valores cada uno lo desbordan. Solución: guardar los datos como **String** (una sola instrucción `ldc`) y parsearlos al arranque. El límite de una constante String es 64 KB y el mayor de los tres mide 20 KB.
 20. **`<Guard>` existe y es fácil pasarlo por alto.** `Cart.trImmedGotoUnloading` tiene `Trigger="timeout"` con timeout 0 **y** `<Guard>main.truck.atField()</Guard>`. Al auditar una transición hay que leer el `<Guard>` además del trigger, si no se razona sobre lógica que no es la real. Ojo: si la guarda es falsa al expirar el timeout, la transición no dispara y **no se reprograma** — por eso no conviene endurecer guardas sin verificar que exista otro camino de salida del estado (acá lo hay: `trTruckArrived` por mensaje).
 21. **Conservar masa no prueba que la fuente sea correcta** (commit `7e66a63`, 2026-08-27). `tankControl` rearmaba `harvestRate()` en los entry/exit del tanque sin mirar `puedeTrabajar()`: la tolva se llenaba de noche y con el lote embarrado. `auditarMasa()` no lo vio, porque `totalCosechado` crecía en paralelo al nivel y la `FUGA` seguía en 1e-11. Arreglo: la tasa pasó a ser **derivada y no latcheada**, con la bandera `Combine.trabajando` y la función `tasaCosechaActual()`, usadas en los tres entry/exit del tanque y en parar/reanudar.
-22. **`terminarAlCerrarCampania` tiene que estar en `false` en el experimento `Simulation`.** Con `true` (el default de `Main`), `onCompleted()` llama a `finish()` en el mismo instante en que `siembraCompleta` pasa a `true`: `Creciendo` y `Maduro` son inalcanzables y `gdd` queda en 0. El barrido sí la usa en `true`, a propósito.
+22. **`terminarAlCerrarCampania` y el ciclo de campaña.** En el modelo anterior, con `true`, `onCompleted()` llamaba a `finish()` al cerrar la primera pasada: `Creciendo` y `Maduro` eran inalcanzables y `gdd` quedaba en 0. Por eso `Simulation` usaba `false`. **Desde 2026-10-19 `Simulation` usa `true`**: `finish()` solo se llama al cerrar la **cosecha** (rama `else` de `onCompleted()`), así que la corrida termina en el momento justo. Con `false` el modelo quedaba en `Cosechado` avanzando de a una semana por segundo hasta mayo de 2026, y el editor se trababa recalculando el panel de propiedades (SWT sobre Wayland).
+23. **Un umbral comparado con `>` y alcanzado por un timeout arma un bucle en tiempo cero** (2026-10-19, semilla). El timeout `aPedida` dispara cuando la tolva llega a 800 kg, pero por redondeo queda en 800,0000001. La condición de vuelta `semilla > 800` es verdadera, vuelve a `Suficiente`, el timeout se recalcula en 0 s y se repite sin fin, con miles de `### PIDE SEMILLA` en el mismo instante. Arreglo: **histéresis** (`> umbral + 1 kg`), de modo que solo una entrega real saca de `Pedida`. Regla: toda condición que deshace lo que hizo un timeout necesita margen.
 
 ---
 
@@ -335,9 +336,11 @@ Además los dos contadores son **acumulados de por vida**: `cosechando = 42,18 h
 
 ## 9 bis. Clima, jornada laboral y el resultado del entregable #1 (2026-08-11)
 
+> ⚠️ **Los resultados de esta sección son del modelo anterior** (la "siembra" era una pasada de cosechadora en octubre) y hay que rehacerlos. El clima, el balance hídrico y la jornada siguen vigentes. Plan: [PLAN.md](PLAN.md).
+
 ### Datos climáticos
 
-Serie diaria **real** embebida en el modelo: **NASA POWER** (reanálisis MERRA-2), punto −33,0 / −61,0 (zona de Rosario), **20 campañas 2005/06 a 2024/25**, 212 días cada una (1/10 al 30/4), **cero valores faltantes**. Se baja con una sola llamada HTTP, sin registro ni API key:
+Serie diaria **real** embebida en el modelo: **NASA POWER** (reanálisis MERRA-2), punto −33,0 / −61,0 (zona de Rosario), **20 campañas 2005/06 a 2024/25**, **cero valores faltantes**. Eran 212 días por campaña (1/10 al 30/4); desde 2026-10-05 son 365 o 366 (1/10 al 30/9), generados por `herramientas/clima_nasa.py` (ver [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md)). Se baja con una sola llamada HTTP, sin registro ni API key:
 
 ```
 https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR,T2M_MAX,T2M_MIN&community=ag&longitude=-61.0&latitude=-33.0&start=20051001&end=20250430&format=CSV
@@ -420,7 +423,7 @@ Celdas de transición sin resolver: 1.872 ha con 2 turnos (55%) y 3.120 ha con 3
 
 Experimento `ParametersVariation`. Model time: **Stop at specified time = 31** (semanas — la unidad del modelo es Week), start date 01/10/2005. Con `terminarAlCerrarCampania = true` el modelo llama a `finish()` al cerrar la siembra, así que **cada corrida es una observación limpia**; si no cierra dentro de los 212 días de datos, `diaFinSiembra` queda en **−1**, que es la observación "no terminó" y no un error.
 
-El experimento `Simulation` tiene `terminarAlCerrarCampania = false`, para que se vea el ciclo completo (aprendizaje 22).
+El experimento `Simulation` tiene `terminarAlCerrarCampania = true` desde 2026-10-19: la corrida termina al cerrar la cosecha (aprendizaje 22).
 
 "Before each experiment run" borra `resultados.csv` y escribe el encabezado `lotes;turnos;campania;diaFinSiembra`. La ruta es relativa a la carpeta del modelo y los `catch` hacen `traceln` visible (antes apuntaba a `/home/renaiss/...` y fallaba en silencio en las otras máquinas). Una fila por corrida, desde "After simulation run":
 
@@ -440,7 +443,7 @@ En orden de valor recomendado:
    - ~~Cerrar el eslabón carro→camión~~ — **aplicado y verificado 2026-08-07** (tasas apareadas en `Cart.Unloading`, sección 8).
    - ~~Verificar la `FUGA`~~ — **cerrada**: ruido de punto flotante en las dos campañas. **La base de logística ya es confiable**, se puede calibrar y medir sobre ella.
    - ~~Reportar los contadores **por campaña**~~ — **hecho** (sección 9).
-0. ~~Definir el alcance cosecha/siembra~~ — **hecho 2026-10-05** (siembra v1 sin semilla). Falta la **v2 con reabastecimiento de semilla**: la sembradora gasta semilla y el carro se la lleva desde la cabecera; el tiempo parado esperando semilla es dato del entregable #2.
+0. ~~Definir el alcance cosecha/siembra~~ — **hecho 2026-10-05** (siembra v1 sin semilla). **Semilla 1a hecha 2026-10-19** (carro con stock infinito, ver [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md) sección 11). El **1b** (stock finito repuesto por el camión) se descartó el 2026-10-19: el depósito queda infinito.
 0. **Rehacer el barrido** del entregable #1 con el modelo nuevo (`resultados.csv` es del anterior; ahora trae `diaMadurez` y `diaFinCosecha`). Recrear `ParametersVariation` si se quieren barrer `velocidadSiembra`, `velocidadCosecha` o `diaLimiteSiembra`.
 2. **Fallas de máquina — máxima prioridad de implementación.** Es lo único que falta para que el #2 y el #3 tengan base completa, y además la tabla de resultados del entregable #1 es un límite optimista sin ellas. Diseño listo, sin implementar. Tercer statechart paralelo en `Combine` (junto a `tankControl` y `moveControl`): `Operativa ──[timeout horasHastaFalla]──> Reparando ──[timeout duracionReparacion]──> Operativa`. El reloj de desgaste se consume **solo mientras la máquina trabaja**, acoplado a `MoveHarvesting` con el mismo patrón que los niveles, y el timeout se expresa `inState( MoveHarvesting ) ? horasHastaFalla : 1e12`. **Detalle de orden importante:** el `STOP` lo manda `Reparando` al entrar, no la transición de falla, para que el rearmado guardado de `MoveHarvesting` se saltee solo y no haya `cancel()` sobre una transición que está disparando.
    - **Distribución:** exponencial con MTBF en **horas de operación** (justificable por superposición de procesos de falla, teorema de Drenick). Weibull con β>1 solo si se declara explícitamente el supuesto de reparación perfecta; para desgaste acumulado real el modelo correcto sería un proceso de Poisson no homogéneo con ley de potencia.
