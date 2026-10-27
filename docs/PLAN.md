@@ -59,7 +59,7 @@ Todos los pasos siguen el mismo protocolo, para que cualquiera del grupo pueda r
 
 Estas decisiones las tiene que conocer todo el grupo, porque son las que hay que defender frente al docente.
 
-### 4.1 El modelo no puede simular dos máquinas
+### 4.1 El modelo no puede simular dos máquinas (**a discutir con el grupo**)
 
 El modelo tiene una sola máquina con su carro y su camión. La pregunta del trabajo ("cuánta maquinaria alquilar") y el resultado #3 ("costo de maquinaria extra") necesitan comparar una máquina contra dos o tres.
 
@@ -67,7 +67,11 @@ El modelo tiene una sola máquina con su carro y su camión. La pregunta del tra
 
 **Qué se pierde:** los trenes no comparten recursos (por ejemplo, un camión que atiende a dos máquinas). Se declara como simplificación. Redondear hacia arriba los lotes por tren es conservador.
 
-**Alternativa descartada:** agregar una segunda instancia de `Combine`, `Cart` y `Truck` al modelo. Usa agentes del cupo de 10 de PLE, duplica el dibujo y el cableado de mensajes, y no aporta nada que la propuesta no dé.
+**Detalle agregado el 2026-10-27, por las fallas.** Cada máquina se rompe en momentos distintos, así que los N trenes ya no son idénticos. Para N máquinas hay que hacer N corridas de `ceil(lotes / N)` lotes con distinta `semillaFallas`, y tomar el día de fin **más tardío**. La cuenta se hace en el script de análisis del paso 7.
+
+**Alternativa: varias máquinas dentro del modelo.** Convertir `combine`, `cart` y `truck` en poblaciones de tamaño N. Las poblaciones no gastan cupo de tipos de agente de PLE. Pero hay que reescribir las ~87 referencias directas a `combine`, `cart` y `truck`, el reparto de lotes (hoy es un solo contador en `onCompleted()`), el cierre de cada pasada, las auditorías de masa y de semilla, y el dibujo del campo. Toca el acople por mensajes entre la máquina y el carro, que es la parte más frágil del modelo, y obliga a verificar todo de nuevo. Solo conviene si se quiere estudiar logística compartida, por ejemplo un carro para dos sembradoras.
+
+**Para decidir en el grupo.** ¿La pregunta del trabajo es "cuántas máquinas alquilar para terminar a tiempo"? Entonces alcanza la propuesta, sin cambios en el modelo. ¿Es "alcanza un carro o un camión para varias máquinas"? Entonces hace falta la alternativa, con su costo en tiempo. Recomendación: la propuesta, declarada como simplificación en el informe. Hay que decidirlo antes del paso 7, porque cambia el diseño del barrido.
 
 ### 4.2 Con valores realistas, la semilla casi no frena a la máquina
 
