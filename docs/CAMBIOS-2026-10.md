@@ -541,7 +541,7 @@ Los 5 viajes no son un error. Antes, la corrida seguía después de cerrar la co
 
 ## 12. Fallas de máquina (paso 2, 19/10)
 
-Este cambio es el paso 2 de [PLAN.md](PLAN.md). Antes, la máquina nunca se rompía, así que todos los tiempos eran un límite optimista. Ahora se rompe mientras trabaja y queda detenida hasta que la reparan. **Verificado con 1 lote (corridas 1 y 2 de abajo). Falta la corrida de 12 lotes.**
+Este cambio es el paso 2 de [PLAN.md](PLAN.md). Antes, la máquina nunca se rompía, así que todos los tiempos eran un límite optimista. Ahora se rompe mientras trabaja y queda detenida hasta que la reparan. **Verificado con 1 lote (19/10) y con 12 lotes (27/10).**
 
 ### El statechart `fallaControl` (en `Combine`)
 
@@ -563,7 +563,7 @@ La falla es un motivo más de parada. Entra en `puedeTrabajar()`, que sigue sien
 
 - **Tiempo hasta la falla:** exponencial de media `mtbfHoras`, medido en **horas de operación**. Una máquina parada no se rompe. `reprogramarFalla()` pone el timeout en `1e12` al parar y vuelve a sortear al reanudar. La exponencial no tiene memoria, así que sortear de nuevo da lo mismo que descontar el tiempo ya trabajado.
 - **Duración de la reparación:** `triangular(0,5; 8; 2)` horas (mínimo, máximo, moda), con media de 3,5 h. Corre en tiempo de calendario, no solo en horas de jornada.
-- **Generador propio.** Las fallas usan `Combine.rngFalla`, un `java.util.Random` con semilla `Main.semillaFallas`, y no el generador del modelo. Hay dos razones. Agregar fallas no mueve los demás sorteos (hoy `diasHastaMadurez`), y con `mtbfHoras` muy grande el resultado queda idéntico al de antes. Además, para el barrido del paso 7 alcanza con variar `semillaFallas` para tener réplicas distintas. El experimento usa semilla fija 1, así que sin esto todas las réplicas darían lo mismo.
+- **Generador propio.** Las fallas usan `Combine.rngFalla`, un `java.util.Random` con semilla `Main.semillaFallas`, y no el generador del modelo. Hay dos razones. Agregar fallas no mueve los demás sorteos del modelo, y con `mtbfHoras` muy grande el resultado queda idéntico al de antes. Además, para el barrido del paso 7 alcanza con variar `semillaFallas` para tener réplicas distintas. El experimento usa semilla fija 1, así que sin esto todas las réplicas darían lo mismo.
 
 `reprogramarFalla()` se llama en los cuatro lugares donde cambia `trabajando`, junto a `actualizarTasaSemilla()`: `transition` (empieza el lote), `transition5` (para), `transition6` (termina el lote) y `transition8` (reanuda). Solo actúa si `Operativa` está activo.
 
@@ -579,7 +579,7 @@ La falla es un motivo más de parada. Entra en `puedeTrabajar()`, que sigue sien
 
 `reportarPasada()` agrega `fallas=N (X h reparando)`. La línea `### MAQUINA PARA` agrega `reparando=`. Cada falla imprime `### FALLA n | dia | repara X h` y cada fin `### REPARADA`.
 
-**`ParametersVariation` no tiene los parámetros nuevos.** Su lista quedó congelada al crearlo, así que corre con `mtbfHoras = 100` y `semillaFallas = 1` sin avisar. Hay que recrearlo en el paso 7.
+**`ParametersVariation` ya tiene los parámetros nuevos.** Al guardar el modelo en el IDE (8.9.9, build 202607020720), AnyLogic los agregó solo a `Simulation` y a `ParametersVariation` como `FIXED` (commit `d5ba941`). En el paso 7 hay que pasar `semillaFallas` a variable, no recrear el experimento.
 
 ### Cómo verificarlo
 
@@ -606,4 +606,86 @@ Con 1 lote y `mtbfHoras = 100` se espera una falla cada 2 o 3 corridas, así que
 - **9 fallas con 5 h de MTBF** es compatible con las 7,5 esperadas (38 h de operación / 5 h).
 - **Un efecto a tener en cuenta.** Si la máquina se rompe con grano en la tolva y el carro queda libre, el carro va a la máquina parada y se lleva el grano (se ve en la falla 4: la tolva pasa de 1.658 a 0 durante la reparación). Es consecuencia de que `Cart.WaitCommand` atiende cualquier parada de la máquina, no solo la de tolva llena. Conserva masa, pero hay que recordarlo al medir la espera del carro en el paso 4.
 
+### Corrida de 12 lotes del 27/10
+
+Con `cantidadLotes = 12`, `mtbfHoras = 100`, `campania = 0` y `turnos = 1`. Ya incluye la madurez por grados-día (paso 3, sección 13).
+
+| Pasada | Medido |
+|---|---|
+| Siembra | 4 fallas (días 4, 16, 27 y 35) y 15,65 h reparando. Cierra el **día 42**, dos días después que sin fallas, y sigue dentro de la ventana. Trabajo efectivo 198,857 h, igual que sin fallas. 27 entregas de semilla, `FUGA` de semilla 2,5e-11 |
+| Crecimiento | Madura el **día 181** (139 días de ciclo, `gdd` = 1.909,4). Es el día calculado con la serie para una siembra cerrada el día 42 |
+| Cosecha | 1 falla (día 199) y 3,93 h reparando. Cierra el día 249. Trabajo 253,09 h, 74 viajes, `FUGA` de grano 6,4e-9 |
+
+- **5 fallas en 452 h de operación**, compatibles con las 4,5 esperadas, con 19,6 h de reparación en total. Una sola corrida no alcanza para medir la media. Eso queda para el barrido del paso 7, variando `semillaFallas`.
+- **Ninguna falla ocurre con la máquina parada.** Las cinco van seguidas de `### MAQUINA PARA ... reparando=true` en el mismo instante.
+- **Las horas cierran.** En las cinco fallas, el tiempo entre `### FALLA` y `### REPARADA` coincide con la duración sorteada (diferencia menor a 1e-6 h).
+- **Una reparación puede terminar fuera de la jornada.** La falla 5 termina a las 15:45, después de la jornada, así que la máquina reanuda al día siguiente. Es lo esperado: la reparación corre en tiempo de calendario. Para el paso 4 conviene saber que, en ese caso, parte del tiempo de reparación coincide con horas no laborables.
+- **El efecto se propaga.** Dos días de atraso en la siembra mueven la madurez cuatro días (de 177 a 181) y la cosecha seis (de 243 a 249).
+
 **Qué mirar en el log.** Que ningún `### FALLA` ocurra con la máquina parada (el timeout vale `1e12` en ese caso). Y que después de `### REPARADA` aparezca `### MAQUINA REANUDA` si hay jornada y piso, o que quede parada por esa causa si no.
+
+## 13. Madurez por grados-día (paso 3, 27/10)
+
+Este cambio es el paso 3 de [PLAN.md](PLAN.md). Antes, el período de crecimiento era un sorteo `triangular(90, 150, 120)` días, sin relación con el clima. Ahora el cultivo madura cuando suma una meta de grados-día, calculada con la temperatura real de la campaña. Un año caluroso madura antes y uno fresco, después. **Verificado el 27/10 con 1 y 12 lotes (ver el final de esta sección).**
+
+### Qué cambió
+
+| Elemento (`Main`) | Antes | Ahora |
+|---|---|---|
+| `Creciendo` (entrada) | Sorteaba `diasHastaMadurez` | Pone `gdd = 0` |
+| `transition1` (`Creciendo → Maduro`) | Timeout de `diasHastaMadurez` días | Condición `gdd >= gddObjetivo` |
+| `Maduro` (entrada) | | Calcula `diasHastaMadurez = diaMadurez − diaFinSiembra` y lo imprime con `gdd` |
+| `gddObjetivo` | 1.680 | **1.900** |
+
+El tick diario ya sumaba `max(0, tmedia − tBase)` a `gdd` mientras `Creciendo` estaba activo, y ya llamaba a `cicloCultivo.onChange()` al final. Por eso la condición se evalúa una vez por día, en el mismo tick que suma los grados-día. El día de madurez es el primer día en que el acumulado llega a la meta.
+
+`diasHastaMadurez` deja de ser un sorteo y pasa a ser una salida: el largo del ciclo medido. Los parámetros `diasMaduracionMin`, `diasMaduracionMax` y `diasMaduracionModa` quedan sin uso. No se borran porque aparecen en la pantalla del experimento `Simulation` y en las listas de los dos experimentos. Se borran en la limpieza del paso 9.
+
+El sorteo eliminado era el único del generador del modelo antes de la cosecha. Con fallas apagadas, la madurez ahora depende **solo** del clima y del día de cierre de la siembra.
+
+### Por qué 1.900
+
+Con las 20 campañas y siembra cerrada el día 40, la meta de 1.680 hacía madurar el cultivo a principios de marzo (mediana del día 156). La de 1.900 da una mediana del día 177 (fin de marzo), más cerca de la cosecha habitual de una soja de noviembre. El cálculo está en la parte 3 de [PLAN.md](PLAN.md). **Falta validar la meta con una fuente** (INTA o Bolsa de Cereales, parte 4.3).
+
+### Limitaciones
+
+- **Sin fotoperíodo.** En la realidad, sembrar tarde acorta el ciclo. Acá lo alarga, porque el cultivo arranca a sumar más tarde. Para siembras hasta fines de noviembre el efecto es chico.
+- **Año que no madura.** Si la suma no llega a la meta antes del 30/9, `Creciendo` no sale nunca y `diaMadurez` queda en −1. Con 1.900 y siembra el día 40 no pasa en ninguna de las 20 campañas.
+
+### Cómo verificarlo
+
+Corridas de `Simulation` con `turnos = 1`, `campania = 0` y `mtbfHoras = 1e9` (sin fallas, para que el día de siembra sea el conocido). Los valores esperados salen de la serie embebida en el `.alp`, con la misma cuenta que hace el tick:
+
+| Corrida | Qué se espera |
+|---|---|
+| 1 lote | Siembra el día 2, como antes. **Madurez el día 147** (145 días de ciclo, `gdd` ≈ 1.902,1) |
+| 12 lotes | Siembra el día 40, como antes. **Madurez el día 177** (137 días de ciclo, `gdd` ≈ 1.902,7) |
+
+El `gdd` impreso tiene que ser apenas mayor que 1.900: el excedente es lo que sumó el último día. La siembra no tiene que cambiar, porque el paso 3 solo toca lo que pasa después de `siembraCompleta`. La cosecha sí cambia, porque empieza en otro día. La `FUGA` de grano tiene que seguir en ~0.
+
+Día de madurez esperado por campaña, con siembra cerrada el día 40:
+
+| Campaña | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Día | 177 | 187 | 182 | 169 | 191 | 182 | 169 | 206 | 183 | 186 |
+
+| Campaña | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Día | 177 | 186 | 166 | 201 | 173 | 173 | 164 | 152 | 168 | 166 |
+
+### Resultado de las corridas del 27/10
+
+Las dos corridas usaron `campania = 0`, `turnos = 1` y `mtbfHoras = 1e9`.
+
+| Corrida | Medido |
+|---|---|
+| 1 lote | Siembra el día 2 (16,571 h, igual que antes). **Madurez el día 147**, 145 días de ciclo, `gdd` = 1.902,1. Cosecha el día 157: 21,09 h de trabajo y 5 viajes, igual que antes. `FUGA` de semilla 0 y de grano 9e-12 |
+| 12 lotes | Siembra el día 40 (198,857 h, 27 entregas de semilla, `FUGA` de semilla 1,1e-11, igual que antes). **Madurez el día 177**, 137 días de ciclo, `gdd` = 1.902,7. Cosecha el día 243 (antes, el 236): 253,09 h de trabajo, 74 viajes, `FUGA` de grano 5,9e-9 |
+
+- **El modelo hace la misma cuenta que el cálculo con la serie.** El día de madurez y el `gdd` coinciden al decimal en las dos corridas.
+- **La madurez depende del día de siembra.** Sembrar 38 días más tarde atrasa la madurez 30 días, porque el ciclo pasa de 145 a 137 días: el cultivo sembrado más tarde crece con más calor.
+- **La siembra no cambió.** El paso 3 solo toca lo que pasa después de `siembraCompleta`.
+- **La cosecha cambia de fecha, pero no de horas de trabajo.** La única diferencia es el clima que le toca.
+- **74 viajes y no 75.** El grano total es el mismo (3.758.400 kg). La corrida termina cuando la máquina cierra el último lote, no cuando el grano llega al silo: quedan 58.400 kg en el sistema y el viaje 75 no sale. El número de viajes depende del punto del ciclo del camión en que cierra la cosecha. Hay que tenerlo en cuenta al contar viajes en el paso 4.
+
+Respaldo: `backups/2026-10-27-pre-gdd.alp`.
