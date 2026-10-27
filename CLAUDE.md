@@ -161,6 +161,6 @@ Las 23 completas están en la sección 5 de [docs/CONTEXTO-TRASPASO.md](docs/CON
 
 ## Estado y próximo paso
 
-Entregable #1 con la **tabla vieja** (sección 9 bis del contexto): medía una pasada de cosechadora en octubre y hay que **rehacerlo** con el modelo nuevo (siembra real + clima anual). Hecho después: contadores por pasada (`reportarPasada()`), CSV con ruta relativa, cultivo 3D en grilla (`crop3D`, todavía sin crecer), clima anual, siembra v1 y semilla 1a (carro con stock infinito; verificada en la siembra y en la cosecha con 1 lote). `Simulation` termina al cerrar la cosecha y corre con 512 MB.
+Entregable #1 con la **tabla vieja** (sección 9 bis del contexto): medía una pasada de cosechadora en octubre y hay que **rehacerlo** con el modelo nuevo (siembra real + clima anual). Hecho después: contadores por pasada (`reportarPasada()`), CSV con ruta relativa, cultivo 3D en grilla (`crop3D`, crece con `progresoCultivo()` = `gdd / gddObjetivo`), animación de lluvia y piso (color del campo, indicador, gotas 2D y 3D), clima anual, siembra v1 y semilla 1a (carro con stock infinito; verificada en la siembra y en la cosecha con 1 lote). `Simulation` termina al cerrar la cosecha y corre con 512 MB.
 
 **Lo que falta, en orden** (estado al día en [docs/PLAN.md](docs/PLAN.md)): rinde y costos (paso 5), rehacer el barrido (paso 7; el IDE ya agregó los parámetros nuevos a `ParametersVariation`), sensibilidad (paso 8).

@@ -6016,6 +6016,22 @@ traceln( "AUDITORIA SEMILLA | despachada=" + semillaDespachada + " sembrada=" + 
 if ( lluviaDiaria == null ) return 0;
 return lluviaDiaria[ campania ][ diaCampania ];]]></Body>
 				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1794000000006</Id>
+					<Name><![CDATA[progresoCultivo]]></Name>
+					<X>1450</X><Y>-340</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[// tamano relativo del cultivo para la animacion: 0 sin sembrar, gdd / gddObjetivo creciendo, 1 maduro.
+// Solo lee: la usa la escala de crop3D.
+if ( inState( Creciendo ) ) return min( 1, gdd / gddObjetivo );
+if ( inState( Maduro ) || inState( Cosechado ) ) return 1;
+return 0;]]></Body>
+				</Function>
 			</Functions>
 			<AgentLinks>
 				<AgentLink>
@@ -6837,6 +6853,8 @@ return lluviaDiaria[ campania ][ diaCampania ];]]></Body>
 					<ReplicationCode Class="CodeValue">
 						<Code><![CDATA[Xunits.length]]></Code>
 					</ReplicationCode>
+					<ScaleCode><![CDATA[// crece con los grados-dia: 15% recien sembrado, tamano completo al madurar (escala base 8)
+8.0 * ( 0.15 + 0.85 * progresoCultivo() )]]></ScaleCode>
 </Figure3D>
 			</Presentation>
 

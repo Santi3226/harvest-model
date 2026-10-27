@@ -314,6 +314,22 @@ Para verlo, en la campaña 0: el día 22 llueven 22,2 mm y el campo queda sin pi
 
 Respaldo: `backups/2026-10-27-pre-lluvia-visual.alp`.
 
+### El cultivo crece (27/10, paso 6 del plan)
+
+`crop3D` (una figura por planta, unas 4.000) tenía escala fija 8. Ahora tiene una escala dinámica (`ScaleCode`):
+
+```
+8.0 * ( 0.15 + 0.85 * progresoCultivo() )
+```
+
+`Main.progresoCultivo()` vale 0 sin sembrar, `gdd / gddObjetivo` mientras crece y 1 desde la madurez. Las plantas aparecen al 15% detrás de la sembradora, crecen con los grados-día y llegan al tamaño completo al madurar. Es solo presentación.
+
+La etiqueta `ScaleCode` de una figura 3D no estaba en este modelo. Se tomó del ejemplo "Agent Based Population Model" que trae AnyLogic, donde un agente crece según su edad. Va después de `ReplicationCode`, como el tamaño dinámico de las figuras replicadas de los ejemplos.
+
+**Falta ver** si la escala cambia también el ícono en la vista 2D o solo en la 3D. Si en 2D no crece, la alternativa es un círculo por planta con radio dinámico (`RadiusXCode`, también verificado en los ejemplos).
+
+Respaldo: `backups/2026-10-27-pre-crecimiento-visual.alp`.
+
 ---
 
 ## 7. Decisiones de modelado (para la defensa)
