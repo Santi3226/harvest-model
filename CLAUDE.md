@@ -127,7 +127,7 @@ Series **reales de NASA POWER** (20 campañas 2005/06–2024/25, 365 o 366 días
 
 `Main.onCompleted()` lo llama `Combine` por cada lote; al cerrar todos los lotes de la pasada fija `diaFinSiembra` (contra `diaLimiteSiembra` = 45, 15/11) o `diaFinCosecha`/`diaMadurez`, e imprime `reportarPasada()`.
 
-**Madurez por grados-día (paso 3, 2026-10-27, falta corrida):** `Creciendo` pone `gdd = 0`; el tick suma `max(0, tmedia − tBase)` y `Creciendo → Maduro` es la condición `gdd >= gddObjetivo` (1.900). `diasHastaMadurez` ahora es salida (largo del ciclo); `diasMaduracionMin/Max/Moda` quedan sin uso hasta el paso 9. Esperado con `campania = 0`, sin fallas: 1 lote madura el día 147, 12 lotes el día 177. Sección 13 de [docs/CAMBIOS-2026-10.md](docs/CAMBIOS-2026-10.md).
+**Madurez por grados-día (paso 3, verificado 2026-10-27):** `Creciendo` pone `gdd = 0`; el tick suma `max(0, tmedia − tBase)` y `Creciendo → Maduro` es la condición `gdd >= gddObjetivo` (1.900). `diasHastaMadurez` ahora es salida (largo del ciclo); `diasMaduracionMin/Max/Moda` quedan sin uso hasta el paso 9. Medido con `campania = 0`, sin fallas: 1 lote madura el día 147, 12 lotes el día 177 (cosecha cierra el 243, 74 viajes, `FUGA` 5,9e-9). Sección 13 de [docs/CAMBIOS-2026-10.md](docs/CAMBIOS-2026-10.md).
 
 Explicación completa y decisiones: [docs/CAMBIOS-2026-10.md](docs/CAMBIOS-2026-10.md). Verificado con `Simulation` (12 lotes, 1 turno, campaña 0) **antes del paso 3**: siembra cierra el día 40 (198,9 h, 0 viajes), maduro día 168, cosecha cierra el día 236 (253,1 h, 75 viajes), `FUGA` = 5e-9.
 
@@ -161,4 +161,4 @@ Las 23 completas están en la sección 5 de [docs/CONTEXTO-TRASPASO.md](docs/CON
 
 Entregable #1 con la **tabla vieja** (sección 9 bis del contexto): medía una pasada de cosechadora en octubre y hay que **rehacerlo** con el modelo nuevo (siembra real + clima anual). Hecho después: contadores por pasada (`reportarPasada()`), CSV con ruta relativa, cultivo 3D en grilla (`crop3D`, todavía sin crecer), clima anual, siembra v1 y semilla 1a (carro con stock infinito; verificada en la siembra y en la cosecha con 1 lote). `Simulation` termina al cerrar la cosecha y corre con 512 MB.
 
-**Lo que falta, en orden** (estado al día en [docs/PLAN.md](docs/PLAN.md)): corridas de verificación de fallas (12 lotes) y de `gdd`, rehacer el barrido (el IDE ya agregó los parámetros nuevos a `ParametersVariation`), contadores de espera de carro y camión, acople de rinde y costos, sensibilidad a `umbralPiso`.
+**Lo que falta, en orden** (estado al día en [docs/PLAN.md](docs/PLAN.md)): corrida de fallas con 12 lotes, rehacer el barrido (el IDE ya agregó los parámetros nuevos a `ParametersVariation`), contadores de espera de carro y camión, acople de rinde y costos, sensibilidad a `umbralPiso`.

@@ -610,7 +610,7 @@ Con 1 lote y `mtbfHoras = 100` se espera una falla cada 2 o 3 corridas, así que
 
 ## 13. Madurez por grados-día (paso 3, 27/10)
 
-Este cambio es el paso 3 de [PLAN.md](PLAN.md). Antes, el período de crecimiento era un sorteo `triangular(90, 150, 120)` días, sin relación con el clima. Ahora el cultivo madura cuando suma una meta de grados-día, calculada con la temperatura real de la campaña. Un año caluroso madura antes y uno fresco, después. **Falta la corrida en el IDE.**
+Este cambio es el paso 3 de [PLAN.md](PLAN.md). Antes, el período de crecimiento era un sorteo `triangular(90, 150, 120)` días, sin relación con el clima. Ahora el cultivo madura cuando suma una meta de grados-día, calculada con la temperatura real de la campaña. Un año caluroso madura antes y uno fresco, después. **Verificado el 27/10 con 1 y 12 lotes (ver el final de esta sección).**
 
 ### Qué cambió
 
@@ -656,5 +656,20 @@ Día de madurez esperado por campaña, con siembra cerrada el día 40:
 | Campaña | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 |
 |---|---|---|---|---|---|---|---|---|---|---|
 | Día | 177 | 186 | 166 | 201 | 173 | 173 | 164 | 152 | 168 | 166 |
+
+### Resultado de las corridas del 27/10
+
+Las dos corridas usaron `campania = 0`, `turnos = 1` y `mtbfHoras = 1e9`.
+
+| Corrida | Medido |
+|---|---|
+| 1 lote | Siembra el día 2 (16,571 h, igual que antes). **Madurez el día 147**, 145 días de ciclo, `gdd` = 1.902,1. Cosecha el día 157: 21,09 h de trabajo y 5 viajes, igual que antes. `FUGA` de semilla 0 y de grano 9e-12 |
+| 12 lotes | Siembra el día 40 (198,857 h, 27 entregas de semilla, `FUGA` de semilla 1,1e-11, igual que antes). **Madurez el día 177**, 137 días de ciclo, `gdd` = 1.902,7. Cosecha el día 243 (antes, el 236): 253,09 h de trabajo, 74 viajes, `FUGA` de grano 5,9e-9 |
+
+- **El modelo hace la misma cuenta que el cálculo con la serie.** El día de madurez y el `gdd` coinciden al decimal en las dos corridas.
+- **La madurez depende del día de siembra.** Sembrar 38 días más tarde atrasa la madurez 30 días, porque el ciclo pasa de 145 a 137 días: el cultivo sembrado más tarde crece con más calor.
+- **La siembra no cambió.** El paso 3 solo toca lo que pasa después de `siembraCompleta`.
+- **La cosecha cambia de fecha, pero no de horas de trabajo.** La única diferencia es el clima que le toca.
+- **74 viajes y no 75.** El grano total es el mismo (3.758.400 kg). La corrida termina cuando la máquina cierra el último lote, no cuando el grano llega al silo: quedan 58.400 kg en el sistema y el viaje 75 no sale. El número de viajes depende del punto del ciclo del camión en que cierra la cosecha. Hay que tenerlo en cuenta al contar viajes en el paso 4.
 
 Respaldo: `backups/2026-10-27-pre-gdd.alp`.
