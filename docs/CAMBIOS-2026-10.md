@@ -301,6 +301,7 @@ La animación muestra por qué la máquina no entra al lote. Es solo presentaci�
 |---|---|
 | `field` y `rectangle` (campo y parte trabajada, 2D y 3D) | Sin piso: marrón de barro (la parte trabajada, más oscura). Llovió ese día pero da piso: gris azulado. Si no, el color original |
 | `textSueloPiso` (verde) y `textSueloSinPiso` (rojo), debajo de `textAvance` | La lluvia del día, si da piso, la humedad de la capa superficial y el umbral. Se ve uno u otro según `daPiso` |
+| `gotaLluvia3D` (línea replicada, solo 3D) | Las mismas gotas en la vista 3D. Caen en el eje Z (altura), de 120 al suelo: en 3D el eje Y del dibujo es el suelo, así que la línea de 2D quedaría acostada sobre el campo |
 | `gotaLluvia` (línea replicada, solo 2D) | Gotas que caen sobre el campo los días de lluvia. Son más cuanta más lluvia hay: `25 + 6 × mm`, hasta 150. Azul oscuro sobre el campo claro o gris, celeste sobre el barro |
 
 - **`Main.lluviaHoy()`** devuelve la lluvia del día en curso, o 0 si el clima todavía no se cargó. Solo lee: la usan las tres figuras.

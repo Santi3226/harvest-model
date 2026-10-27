@@ -7122,6 +7122,38 @@ de la Cosechadora]]></Text>
 					<Dy>14</Dy>
 					<Dz>0</Dz>
 				</Line>
+				<Line>
+					<Id>1794000000005</Id>
+					<Name><![CDATA[gotaLluvia3D]]></Name>
+					<X>250</X><Y>30</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_3D</DrawMode>
+					<XCode><![CDATA[262 + ( index * 97 ) % 500]]></XCode>
+					<YCode><![CDATA[40 + ( index * 61 ) % 300]]></YCode>
+					<ReplicationCode Class="CodeValue">
+						<Code><![CDATA[lluviaHoy() > 0 ? (int) min( 150, 25 + 6 * lluviaHoy() ) : 0]]></Code>
+					</ReplicationCode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZCode><![CDATA[// en 3D la gota cae en el eje Z (altura), de 120 al suelo, con el reloj real como la de 2D
+120 - ( index * 37 + System.currentTimeMillis() / 4 ) % 120]]></ZCode>
+					<ZHeight>0</ZHeight>
+					<LineWidth>2</LineWidth>
+					<LineColor>-10177034</LineColor>
+					<LineColorCode><![CDATA[!daPiso ? new java.awt.Color( 144, 202, 249 ) : new java.awt.Color( 13, 71, 161 )]]></LineColorCode>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<BeginArrowSize>1</BeginArrowSize>
+					<BeginArrowStyle>0</BeginArrowStyle>
+					<EndArrowSize>1</EndArrowSize>
+					<EndArrowStyle>0</EndArrowStyle>
+					<Dx>-2</Dx>
+					<Dy>0</Dy>
+					<Dz>-10</Dz>
+				</Line>
 				<Rectangle>
 					<Id>1790500000042</Id>
 					<Name><![CDATA[rectLote]]></Name>
