@@ -301,11 +301,12 @@ La animación muestra por qué la máquina no entra al lote. Es solo presentaci�
 |---|---|
 | `field` y `rectangle` (campo y parte trabajada, 2D y 3D) | Sin piso: marrón de barro (la parte trabajada, más oscura). Llovió ese día pero da piso: gris azulado. Si no, el color original |
 | `textSueloPiso` (verde) y `textSueloSinPiso` (rojo), debajo de `textAvance` | La lluvia del día, si da piso, la humedad de la capa superficial y el umbral. Se ve uno u otro según `daPiso` |
-| `gotaLluvia` (línea replicada, solo 2D) | Gotas que caen sobre el campo los días de lluvia. Son más cuantas más lluvia hay: `15 + 4 × mm`, hasta 150 |
+| `gotaLluvia` (línea replicada, solo 2D) | Gotas que caen sobre el campo los días de lluvia. Son más cuanta más lluvia hay: `25 + 6 × mm`, hasta 150. Azul oscuro sobre el campo claro o gris, celeste sobre el barro |
 
 - **`Main.lluviaHoy()`** devuelve la lluvia del día en curso, o 0 si el clima todavía no se cargó. Solo lee: la usan las tres figuras.
 - **La lluvia es un dato diario.** Las gotas duran todo el día del modelo, porque la serie no dice a qué hora llovió.
 - **Las gotas caen con el reloj real, no con el del modelo.** Así se mueven igual con cualquier escala de tiempo. Con la escala de la siembra (medio día por segundo), un día de lluvia se ve unos 2 segundos. El barro dura más, porque la capa superficial tarda días en secarse.
+- **Lluvia fuerte = sin piso.** Una lluvia de 5 mm o más (`lluviaBloqueante`) corta el piso ese mismo día. Los días de lluvia con piso son lluvias chicas, sobre el campo gris azulado. Por eso las gotas cambian de color según el fondo: con un solo color celeste no se veían esos días.
 - **El color dinámico nunca devuelve `null`:** una figura con relleno `null` queda transparente. Por eso el caso normal repite el color original.
 
 Para verlo, en la campaña 0: el día 22 llueven 22,2 mm y el campo queda sin piso hasta el día 26. Con la escala de la siembra, eso pasa entre los 44 y los 52 segundos de corrida.

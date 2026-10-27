@@ -7103,21 +7103,23 @@ de la Cosechadora]]></Text>
 					<XCode><![CDATA[262 + ( index * 97 ) % 500]]></XCode>
 					<YCode><![CDATA[30 + ( index * 53 + System.currentTimeMillis() / 3 ) % 305]]></YCode>
 					<ReplicationCode Class="CodeValue">
-						<Code><![CDATA[lluviaHoy() > 0 ? (int) min( 150, 15 + 4 * lluviaHoy() ) : 0]]></Code>
+						<Code><![CDATA[lluviaHoy() > 0 ? (int) min( 150, 25 + 6 * lluviaHoy() ) : 0]]></Code>
 					</ReplicationCode>
 					<EmbeddedIcon>false</EmbeddedIcon>
 					<Z>0</Z>
 					<ZHeight>0</ZHeight>
-					<LineWidth>1</LineWidth>
+					<LineWidth>2</LineWidth>
 					<LineColor>-10177034</LineColor>
+					<LineColorCode><![CDATA[// contraste con el fondo: celeste claro sobre el barro, azul oscuro sobre el campo claro o gris
+!daPiso ? new java.awt.Color( 144, 202, 249 ) : new java.awt.Color( 13, 71, 161 )]]></LineColorCode>
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
 					<BeginArrowSize>1</BeginArrowSize>
 					<BeginArrowStyle>0</BeginArrowStyle>
 					<EndArrowSize>1</EndArrowSize>
 					<EndArrowStyle>0</EndArrowStyle>
-					<Dx>-3</Dx>
-					<Dy>10</Dy>
+					<Dx>-4</Dx>
+					<Dy>14</Dy>
 					<Dz>0</Dz>
 				</Line>
 				<Rectangle>
