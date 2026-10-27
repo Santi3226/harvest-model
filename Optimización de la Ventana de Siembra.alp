@@ -6001,6 +6001,21 @@ traceln( "AUDITORIA SEMILLA | despachada=" + semillaDespachada + " sembrada=" + 
          + " (esperada " + esperada + ") enSistema=" + enSistema + " | FUGA=" + fuga
          + " | entregas=" + entregasSemilla + " | horas sin semilla=" + horasSinSemilla );]]></Body>
 				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1794000000001</Id>
+					<Name><![CDATA[lluviaHoy]]></Name>
+					<X>1450</X><Y>-380</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[// lluvia del dia en curso [mm], para la animacion. 0 si el clima todavia no se cargo.
+// Solo lee: la usan el color del campo, el indicador de suelo y las gotas.
+if ( lluviaDiaria == null ) return 0;
+return lluviaDiaria[ campania ][ diaCampania ];]]></Body>
+				</Function>
 			</Functions>
 			<AgentLinks>
 				<AgentLink>
@@ -6557,6 +6572,10 @@ traceln( "AUDITORIA SEMILLA | despachada=" + semillaDespachada + " sembrada=" + 
 					<Height>320</Height>
 					<Rotation>0.0</Rotation>
 					<FillColor>-103</FillColor>
+					<FillColorCode><![CDATA[// sin piso: barro; llovio hoy pero da piso: gris azulado; si no, el color original
+!daPiso ? new java.awt.Color( 121, 85, 72 )
+: lluviaHoy() > 0 ? new java.awt.Color( 176, 190, 197 )
+: new java.awt.Color( 255, 255, 153 )]]></FillColorCode>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle>
 				<Oval>
@@ -6686,6 +6705,10 @@ traceln( "AUDITORIA SEMILLA | despachada=" + semillaDespachada + " sembrada=" + 
 					<WidthCode><![CDATA[combine.XCompleted]]></WidthCode>
 					<Rotation>0.0</Rotation>
 					<FillColor>-1638503</FillColor>
+					<FillColorCode><![CDATA[// parte ya trabajada del lote: mas oscura que el resto del campo con barro o lluvia
+!daPiso ? new java.awt.Color( 78, 52, 46 )
+: lluviaHoy() > 0 ? new java.awt.Color( 144, 164, 174 )
+: new java.awt.Color( 230, 255, 153 )]]></FillColorCode>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle>
 				<Rectangle>
@@ -7022,6 +7045,81 @@ de la Cosechadora]]></Text>
 					</Font>
 					<Alignment>CENTER</Alignment>
 				</Text>
+				<Text>
+					<Id>1794000000002</Id>
+					<Name><![CDATA[textSueloPiso]]></Name>
+					<X>510</X><Y>430</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<VisibleCode><![CDATA[daPiso]]></VisibleCode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-13730510</Color>
+					<Text><![CDATA[suelo]]></Text>
+					<TextCode><![CDATA[( lluviaHoy() > 0 ? "Lluvia " + lluviaHoy() + " mm" : "Sin lluvia" ) + "  |  da piso  (" + "humedad " + round( humedadSuperficie * 10 ) / 10.0 + " mm, umbral " + umbralPiso + " mm" + ")"]]></TextCode>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>11</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>CENTER</Alignment>
+				</Text>
+				<Text>
+					<Id>1794000000003</Id>
+					<Name><![CDATA[textSueloSinPiso]]></Name>
+					<X>510</X><Y>430</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<VisibleCode><![CDATA[!daPiso]]></VisibleCode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-3790808</Color>
+					<Text><![CDATA[suelo]]></Text>
+					<TextCode><![CDATA[( lluviaHoy() > 0 ? "Lluvia " + lluviaHoy() + " mm" : "Sin lluvia" ) + "  |  SIN PISO: la maquina no entra  (" + "humedad " + round( humedadSuperficie * 10 ) / 10.0 + " mm, umbral " + umbralPiso + " mm" + ")"]]></TextCode>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>11</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>CENTER</Alignment>
+				</Text>
+				<Line>
+					<Id>1794000000004</Id>
+					<Name><![CDATA[gotaLluvia]]></Name>
+					<X>250</X><Y>30</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<XCode><![CDATA[262 + ( index * 97 ) % 500]]></XCode>
+					<YCode><![CDATA[30 + ( index * 53 + System.currentTimeMillis() / 3 ) % 305]]></YCode>
+					<ReplicationCode Class="CodeValue">
+						<Code><![CDATA[lluviaHoy() > 0 ? (int) min( 150, 15 + 4 * lluviaHoy() ) : 0]]></Code>
+					</ReplicationCode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<ZHeight>0</ZHeight>
+					<LineWidth>1</LineWidth>
+					<LineColor>-10177034</LineColor>
+					<LineMaterial>null</LineMaterial>
+					<LineStyle>SOLID</LineStyle>
+					<BeginArrowSize>1</BeginArrowSize>
+					<BeginArrowStyle>0</BeginArrowStyle>
+					<EndArrowSize>1</EndArrowSize>
+					<EndArrowStyle>0</EndArrowStyle>
+					<Dx>-3</Dx>
+					<Dy>10</Dy>
+					<Dz>0</Dz>
+				</Line>
 				<Rectangle>
 					<Id>1790500000042</Id>
 					<Name><![CDATA[rectLote]]></Name>
