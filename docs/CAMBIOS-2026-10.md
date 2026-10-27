@@ -541,7 +541,7 @@ Los 5 viajes no son un error. Antes, la corrida seguía después de cerrar la co
 
 ## 12. Fallas de máquina (paso 2, 19/10)
 
-Este cambio es el paso 2 de [PLAN.md](PLAN.md). Antes, la máquina nunca se rompía, así que todos los tiempos eran un límite optimista. Ahora se rompe mientras trabaja y queda detenida hasta que la reparan. **Verificado con 1 lote (corridas 1 y 2 de abajo). Falta la corrida de 12 lotes.**
+Este cambio es el paso 2 de [PLAN.md](PLAN.md). Antes, la máquina nunca se rompía, así que todos los tiempos eran un límite optimista. Ahora se rompe mientras trabaja y queda detenida hasta que la reparan. **Verificado con 1 lote (19/10) y con 12 lotes (27/10).**
 
 ### El statechart `fallaControl` (en `Combine`)
 
@@ -605,6 +605,22 @@ Con 1 lote y `mtbfHoras = 100` se espera una falla cada 2 o 3 corridas, así que
 - **Las horas cierran.** Cada duración sorteada coincide con el tiempo entre `### FALLA` y `### REPARADA`, y la suma de cada pasada coincide con el contador `horasReparando`. El trabajo efectivo no cambia (16,571 h y 21,09 h): las fallas solo agregan tiempo detenido.
 - **9 fallas con 5 h de MTBF** es compatible con las 7,5 esperadas (38 h de operación / 5 h).
 - **Un efecto a tener en cuenta.** Si la máquina se rompe con grano en la tolva y el carro queda libre, el carro va a la máquina parada y se lleva el grano (se ve en la falla 4: la tolva pasa de 1.658 a 0 durante la reparación). Es consecuencia de que `Cart.WaitCommand` atiende cualquier parada de la máquina, no solo la de tolva llena. Conserva masa, pero hay que recordarlo al medir la espera del carro en el paso 4.
+
+### Corrida de 12 lotes del 27/10
+
+Con `cantidadLotes = 12`, `mtbfHoras = 100`, `campania = 0` y `turnos = 1`. Ya incluye la madurez por grados-día (paso 3, sección 13).
+
+| Pasada | Medido |
+|---|---|
+| Siembra | 4 fallas (días 4, 16, 27 y 35) y 15,65 h reparando. Cierra el **día 42**, dos días después que sin fallas, y sigue dentro de la ventana. Trabajo efectivo 198,857 h, igual que sin fallas. 27 entregas de semilla, `FUGA` de semilla 2,5e-11 |
+| Crecimiento | Madura el **día 181** (139 días de ciclo, `gdd` = 1.909,4). Es el día calculado con la serie para una siembra cerrada el día 42 |
+| Cosecha | 1 falla (día 199) y 3,93 h reparando. Cierra el día 249. Trabajo 253,09 h, 74 viajes, `FUGA` de grano 6,4e-9 |
+
+- **5 fallas en 452 h de operación**, compatibles con las 4,5 esperadas, con 19,6 h de reparación en total. Una sola corrida no alcanza para medir la media. Eso queda para el barrido del paso 7, variando `semillaFallas`.
+- **Ninguna falla ocurre con la máquina parada.** Las cinco van seguidas de `### MAQUINA PARA ... reparando=true` en el mismo instante.
+- **Las horas cierran.** En las cinco fallas, el tiempo entre `### FALLA` y `### REPARADA` coincide con la duración sorteada (diferencia menor a 1e-6 h).
+- **Una reparación puede terminar fuera de la jornada.** La falla 5 termina a las 15:45, después de la jornada, así que la máquina reanuda al día siguiente. Es lo esperado: la reparación corre en tiempo de calendario. Para el paso 4 conviene saber que, en ese caso, parte del tiempo de reparación coincide con horas no laborables.
+- **El efecto se propaga.** Dos días de atraso en la siembra mueven la madurez cuatro días (de 177 a 181) y la cosecha seis (de 243 a 249).
 
 **Qué mirar en el log.** Que ningún `### FALLA` ocurra con la máquina parada (el timeout vale `1e12` en ese caso). Y que después de `### REPARADA` aparezca `### MAQUINA REANUDA` si hay jornada y piso, o que quede parada por esa causa si no.
 
