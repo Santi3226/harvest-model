@@ -3194,7 +3194,7 @@ return main.daPiso && main.dentroDeJornada() && !inState( FullWaitCart ) && !sin
 					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Body><![CDATA[// generador PROPIO de las fallas (semilla main.semillaFallas). Es aparte del generador del modelo para que
-// agregar fallas no mueva los demas sorteos (diasHastaMadurez) y para repetir con semillas distintas.
+// agregar fallas no mueva los demas sorteos del modelo y para repetir con semillas distintas.
 if ( rngFalla == null ) rngFalla = new java.util.Random( main.semillaFallas );
 return rngFalla;]]></Body>
 				</Function>
@@ -5105,7 +5105,7 @@ for (int i = 0; i < n; i++) {
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[1680]]></Code>
+							<Code><![CDATA[1900]]></Code>
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1786000000808</Id>
@@ -5249,10 +5249,12 @@ getEngine().setRealTimeScale( 0.5 * day() );]]></EntryAction>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="100" Height="30">
-						<EntryAction><![CDATA[// firma real: triangular(min, max, moda) -- verificado en el engine
-diasHastaMadurez = triangular( diasMaduracionMin, diasMaduracionMax, diasMaduracionModa );
+						<EntryAction><![CDATA[// la madurez depende del clima de la campania: el tick diario suma grados-dia
+// mientras se este en este estado y la salida es la condicion gdd >= gddObjetivo
+// (diasMaduracionMin/Max/Moda quedan obsoletos: eran el sorteo triangular de antes)
+gdd = 0;
 tInicioCrecimiento = time();
-traceln( "Siembra cerrada el dia " + diaCampania + " — el cultivo crece " + (int) diasHastaMadurez + " dias" );
+traceln( "Siembra cerrada el dia " + diaCampania + " — el cultivo madura al sumar " + (int) gddObjetivo + " grados-dia" );
 // ritmo de presentacion: la maduracion son meses sin nada que ver
 getEngine().setRealTimeScale( 1 * week() );]]></EntryAction>
 						<FillColor>-10496</FillColor>
@@ -5268,7 +5270,9 @@ getEngine().setRealTimeScale( 1 * week() );]]></EntryAction>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="100" Height="30">
 						<EntryAction><![CDATA[diaMadurez = diaCampania;
-traceln( "Cultivo maduro el dia " + diaMadurez + " — listo para cosecha" );
+// largo del ciclo medido (antes era el sorteo): dias desde el cierre de la siembra
+diasHastaMadurez = diaMadurez - diaFinSiembra;
+traceln( "Cultivo maduro el dia " + diaMadurez + " — " + (int) diasHastaMadurez + " dias de ciclo, gdd=" + gdd + " — listo para cosecha" );
 // los dias sin piso del crecimiento no son de la cosecha: foto para reportarPasada()
 baseSinPiso = diasSinPiso;
 // ritmo de presentacion: la maquina esta por trabajar, se mira al detalle
@@ -5335,12 +5339,12 @@ getEngine().setRealTimeScale( 1 * week() );]]></EntryAction>
 						<Point><X>50</X><Y>0</Y></Point>
 					</Points>
 					<IconOffset>20.0</IconOffset>
-					<Properties Source="1785872297912" Target="1785872303710" Trigger="timeout">
+					<Properties Source="1785872297912" Target="1785872303710" Trigger="condition">
 						<Timeout Class="CodeUnitValue">
-							<Code><![CDATA[diasHastaMadurez]]></Code>
+							<Code><![CDATA[1]]></Code>
 							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
 						</Timeout>
-						<Condition><![CDATA[true]]></Condition>
+						<Condition><![CDATA[gdd >= gddObjetivo]]></Condition>
 						<Rate Class="CodeUnitValue">
 							<Code><![CDATA[1]]></Code>
 							<Unit Class="RateUnits"><![CDATA[PER_MINUTE]]></Unit>
