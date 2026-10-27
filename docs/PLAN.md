@@ -59,7 +59,7 @@ Todos los pasos siguen el mismo protocolo, para que cualquiera del grupo pueda r
 
 Estas decisiones las tiene que conocer todo el grupo, porque son las que hay que defender frente al docente.
 
-### 4.1 El modelo no puede simular dos máquinas
+### 4.1 El modelo no puede simular dos máquinas (**a discutir con el grupo**)
 
 El modelo tiene una sola máquina con su carro y su camión. La pregunta del trabajo ("cuánta maquinaria alquilar") y el resultado #3 ("costo de maquinaria extra") necesitan comparar una máquina contra dos o tres.
 
@@ -67,7 +67,11 @@ El modelo tiene una sola máquina con su carro y su camión. La pregunta del tra
 
 **Qué se pierde:** los trenes no comparten recursos (por ejemplo, un camión que atiende a dos máquinas). Se declara como simplificación. Redondear hacia arriba los lotes por tren es conservador.
 
-**Alternativa descartada:** agregar una segunda instancia de `Combine`, `Cart` y `Truck` al modelo. Usa agentes del cupo de 10 de PLE, duplica el dibujo y el cableado de mensajes, y no aporta nada que la propuesta no dé.
+**Detalle agregado el 2026-10-27, por las fallas.** Cada máquina se rompe en momentos distintos, así que los N trenes ya no son idénticos. Para N máquinas hay que hacer N corridas de `ceil(lotes / N)` lotes con distinta `semillaFallas`, y tomar el día de fin **más tardío**. La cuenta se hace en el script de análisis del paso 7.
+
+**Alternativa: varias máquinas dentro del modelo.** Convertir `combine`, `cart` y `truck` en poblaciones de tamaño N. Las poblaciones no gastan cupo de tipos de agente de PLE. Pero hay que reescribir las ~87 referencias directas a `combine`, `cart` y `truck`, el reparto de lotes (hoy es un solo contador en `onCompleted()`), el cierre de cada pasada, las auditorías de masa y de semilla, y el dibujo del campo. Toca el acople por mensajes entre la máquina y el carro, que es la parte más frágil del modelo, y obliga a verificar todo de nuevo. Solo conviene si se quiere estudiar logística compartida, por ejemplo un carro para dos sembradoras.
+
+**Para decidir en el grupo.** ¿La pregunta del trabajo es "cuántas máquinas alquilar para terminar a tiempo"? Entonces alcanza la propuesta, sin cambios en el modelo. ¿Es "alcanza un carro o un camión para varias máquinas"? Entonces hace falta la alternativa, con su costo en tiempo. Recomendación: la propuesta, declarada como simplificación en el informe. Hay que decidirlo antes del paso 7, porque cambia el diseño del barrido.
 
 ### 4.2 Con valores realistas, la semilla casi no frena a la máquina
 
@@ -88,6 +92,50 @@ Ninguno de estos valores se puede inventar. Cada uno queda marcado en el modelo 
 | Meta de grados-día | 1.900 | INTA o Bolsa de Cereales: fecha típica de cosecha de soja |
 | Pérdida de rinde por siembra tardía | A definir | INTA, ensayos de fecha de siembra |
 | Costos y precios | A definir | Ver paso 5 |
+
+### 4.4 Escenarios a comparar (**a discutir con el grupo**)
+
+La consigna pide comparar alternativas y elegir la mejor. Para eso hay que separar dos tipos de factores:
+
+- **Variables de decisión:** lo que el productor elige. Con ellas se arman los escenarios que se comparan.
+- **Factores inciertos:** lo que nadie controla. No se eligen. Se repiten para medir el riesgo de cada escenario, o se varían en la sensibilidad (paso 8).
+
+**Variables de decisión.**
+
+| Factor | Cómo está hoy | Qué decisión representa |
+|---|---|---|
+| Turnos (`turnos`) | Parámetro de 1 a 3, ya se barre | Contratar más operarios |
+| Cantidad de máquinas | Se calcula en el análisis (parte 4.1) | Alquilar más equipos |
+| Velocidad (`velocidadSiembra`, `velocidadCosecha`) | Parámetros de `Main` | Una máquina más grande o más rápida |
+| Equipo nuevo o usado (`mtbfHoras`) | Parámetro de `Main` | Pagar más por un equipo que se rompe menos |
+| Tolva de semilla (`capacidadSemilla`, `umbralSemilla`) | Parámetros de `Main` | Tamaño de la sembradora y cuándo pedir semilla |
+| Logística de apoyo: capacidad y velocidad del carro, capacidad del camión | Parámetros de `Cart` y `Truck` (20 t, 15 km/h, 50 t) | La consigna la pide explícitamente: "camiones tolva, acoplados tanque" |
+
+La superficie (`cantidadLotes`) es el tamaño del problema, no una decisión. Se presenta como filas de la tabla de resultados: "para 1.250 ha, la mejor opción es...".
+
+**Límite técnico.** `ParametersVariation` solo varía parámetros de `Main`. Para barrer el carro y el camión hay que subir sus parámetros a `Main` y pasarlos a las instancias `cart` y `truck`, que hoy tienen valores fijos (`truck.Capacity = 50000` y `cart.Speed = 15`). Es un cambio mecánico, por script.
+
+**Factores inciertos.**
+
+| Factor | Cómo se usa |
+|---|---|
+| Clima (`campania`, 0 a 19) | Cada escenario se corre con los 20 años. De ahí sale la probabilidad de terminar a tiempo |
+| Fallas (`semillaFallas`) | Varias réplicas por escenario |
+| Suelo (`umbralPiso`, `lluviaBloqueante`, `capacidadSuperficie`) | Sensibilidad. Se puede presentar como "suelo pesado o liviano" |
+| Cultivo (`gddObjetivo`, `densidadSiembra`, `diaLimiteSiembra`) | Sensibilidad. `gddObjetivo` también podría ser una decisión (variedad de ciclo más corto), pero cambia el rinde y no hay datos para modelarlo |
+| Precios y costos (paso 5) | Sensibilidad del margen |
+
+**Criterios para comparar.** Salen de la consigna:
+
+1. Probabilidad de terminar la siembra antes del 15/11, sobre los 20 climas y las réplicas de fallas.
+2. Capacidad ociosa: horas paradas del equipo contratado, por causa (paso 4).
+3. Margen: ingreso según el rinde, menos alquiler, sueldos y reparaciones (paso 5).
+
+La mejor elección para cada superficie es la combinación de **mayor margen que cumple una probabilidad mínima** de terminar a tiempo, por ejemplo 90%.
+
+**Propuesta.** El barrido principal (paso 7) cruza turnos (1 a 3) × máquinas (1 a 3) × superficie, más uno o dos tamaños de carro y de camión. Las demás variables de decisión y los factores inciertos van a la sensibilidad (paso 8), de a uno por vez. Cada factor que se agrega al barrido multiplica la cantidad de corridas. Por eso conviene elegir pocos y bien.
+
+**Para decidir en el grupo.** Qué variables de decisión entran al barrido principal, qué tamaños de carro y de camión se comparan, y qué probabilidad mínima se exige. Hay que decidirlo antes del paso 7.
 
 ---
 
@@ -238,7 +286,7 @@ Que el trigo 3D crezca durante `Creciendo`: altura o escala proporcional a `gdd 
 **Objetivo.** Generar los resultados definitivos de los tres entregables.
 
 **Diseño.**
-- Experimento `ParametersVariation` con `campania` de 0 a 19, `cantidadLotes` y `turnos`. Con el paso 2 hay aleatoriedad (las fallas), así que se hacen **varias réplicas** por combinación, con semillas distintas. La madurez por grados-día no suma aleatoriedad: depende solo del clima de la campaña.
+- Experimento `ParametersVariation` con `campania` de 0 a 19, `cantidadLotes`, `turnos` y las variables de decisión que se elijan en la parte 4.4. Con el paso 2 hay aleatoriedad (las fallas), así que se hacen **varias réplicas** por combinación, con semillas distintas. La madurez por grados-día no suma aleatoriedad: depende solo del clima de la campaña.
 - Se agregan al experimento los parámetros nuevos, como `mtbfHoras` y `densidadSiembra`. La lista de parámetros se congela al crear el experimento. Por eso hay que agregarlos al XML o recrearlo (aprendizaje 17 del contexto).
 - `herramientas/analizar_barrido.py` (nuevo) lee `resultados.csv` y arma las tablas: probabilidad de terminar antes del 15/11, medianas, causas de parada y margen. Así el análisis se puede repetir y auditar.
 - Las máquinas extra se calculan en el análisis (parte 4.1).
