@@ -296,6 +296,66 @@
 						</ParameterEditor>
 					</Properties>                 
 				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1793000000021</Id>
+					<Name><![CDATA[horasEstado]]></Name>
+					<X>1000</X><Y>100</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double[]]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[new double[ 6 ]]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1793000000022</Id>
+					<Name><![CDATA[baseEstado]]></Name>
+					<X>1000</X><Y>140</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double[]]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[new double[ 6 ]]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1793000000023</Id>
+					<Name><![CDATA[estado]]></Name>
+					<X>1000</X><Y>180</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[-1]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1793000000024</Id>
+					<Name><![CDATA[tEstado]]></Name>
+					<X>1000</X><Y>220</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
 			</Variables>
 			<StatechartElements>
 				<StatechartElement Class="State" ParentState="ROOT_NODE">
@@ -319,7 +379,10 @@
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="110" Height="30">
-						<EntryAction><![CDATA[// sin la Fluid Library el camion ya no se llena por conexion de puertos:
+						<EntryAction><![CDATA[// horas por estado (paso 4)
+cerrarEstado();
+estado = 4;
+// sin la Fluid Library el camion ya no se llena por conexion de puertos:
 // hay que avisarle para que entre en Loading y acumule
 send( "START_LOADING", main.truck );
 actualizarNivel();
@@ -352,6 +415,9 @@ main.truck.tasaActual = 0;]]></ExitAction>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="110" Height="30">
+						<EntryAction><![CDATA[// horas por estado (paso 4)
+cerrarEstado();
+estado = 3;]]></EntryAction>
 						<FillColor>-29696</FillColor>
 					</Properties>
 				</StatechartElement>
@@ -364,7 +430,10 @@ main.truck.tasaActual = 0;]]></ExitAction>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="110" Height="30">
-						<EntryAction><![CDATA[send( "STARTED_UNLOADING", main.combine );
+						<EntryAction><![CDATA[// horas por estado (paso 4)
+cerrarEstado();
+estado = 2;
+send( "STARTED_UNLOADING", main.combine );
 //synchronize speed with combine
 setSpeed( main.combine.getSpeed() );
 //start moving with combine
@@ -391,7 +460,10 @@ tasaActual = 0;]]></ExitAction>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="110" Height="30">
-						<EntryAction><![CDATA[moveTo( Parking.getX(), Parking.getY() );]]></EntryAction>
+						<EntryAction><![CDATA[// horas por estado (paso 4)
+cerrarEstado();
+estado = 1;
+moveTo( Parking.getX(), Parking.getY() );]]></EntryAction>
 						<FillColor>-10496</FillColor>
 					</Properties>
 				</StatechartElement>
@@ -404,7 +476,10 @@ tasaActual = 0;]]></ExitAction>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="110" Height="30">
-						<EntryAction><![CDATA[//go to combine
+						<EntryAction><![CDATA[// horas por estado (paso 4)
+cerrarEstado();
+estado = 1;
+//go to combine
 double x = main.combine.getX() - main.combine.RowWidth; 
 double y = main.combine.getY();
 moveTo( x, y );
@@ -421,7 +496,10 @@ moveTo( x, y );
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="110" Height="30">
-						<EntryAction><![CDATA[// grano: la cosechadora esta parada y necesita carro
+						<EntryAction><![CDATA[// horas por estado (paso 4)
+cerrarEstado();
+estado = 0;
+// grano: la cosechadora esta parada y necesita carro
 if( main.autoControl && !main.sembrando() && main.combine.inState( Combine.MoveWaitCart ) )
 	send( "GO_TO_COMBINE", this );
 // semilla: si quedo un pedido sin atender mientras el carro estaba ocupado, se atiende ahora
@@ -439,7 +517,10 @@ if( main.autoControl && main.sembrando() && main.combine.inState( Combine.Pedida
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="130" Height="30">
-						<EntryAction><![CDATA[// carga semilla en la cabecera. Version 1a: el deposito tiene stock infinito.
+						<EntryAction><![CDATA[// horas por estado (paso 4)
+cerrarEstado();
+estado = 5;
+// carga semilla en la cabecera. Version 1a: el deposito tiene stock infinito.
 // La masa aparece al entrar (se cuenta como despachada) y el tiempo de carga es el del timeout.
 double falta = Capacity - semillaCarro;
 ultimaCargaSemilla = falta;
@@ -458,7 +539,10 @@ traceln( "### CARRO CARGA SEMILLA | dia " + main.diaCampania + " | " + (int) fal
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="130" Height="30">
-						<EntryAction><![CDATA[// va hacia la sembradora, que se mueve: se reapunta cada minuto (como GoingToCombine)
+						<EntryAction><![CDATA[// horas por estado (paso 4)
+cerrarEstado();
+estado = 1;
+// va hacia la sembradora, que se mueve: se reapunta cada minuto (como GoingToCombine)
 setSpeed( Speed, KPH );
 double x = main.combine.getX() - main.combine.RowWidth;
 double y = main.combine.getY();
@@ -475,7 +559,10 @@ moveTo( x, y );]]></EntryAction>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="130" Height="30">
-						<EntryAction><![CDATA[setSpeed( Speed, KPH );
+						<EntryAction><![CDATA[// horas por estado (paso 4)
+cerrarEstado();
+estado = 1;
+setSpeed( Speed, KPH );
 moveTo( Parking.getX(), Parking.getY() );]]></EntryAction>
 						<FillColor>-5383962</FillColor>
 					</Properties>
@@ -1074,6 +1161,57 @@ if ( bruto > Capacity ) { main.masaDescartada += bruto - Capacity; bruto = Capac
 if ( bruto < 0 )        { main.masaInventada  += -bruto;           bruto = 0; }
 nivel = bruto;
 tUltimo = time();]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[void]]></ReturnType>
+					<Id>1793000000025</Id>
+					<Name><![CDATA[cerrarEstado]]></Name>
+					<X>1000</X><Y>260</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[// suma al estado vigente el tiempo desde el ultimo cambio. Cada estado la llama al entrar, antes de fijar 'estado'.
+if ( estado >= 0 ) horasEstado[ estado ] += ( time() - tEstado ) / hour();
+tEstado = time();]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[void]]></ReturnType>
+					<Id>1793000000026</Id>
+					<Name><![CDATA[iniciarPasada]]></Name>
+					<X>1000</X><Y>300</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[// arranca la medicion de una pasada: lo anterior (por ejemplo, los meses de crecimiento) no se cuenta
+cerrarEstado();
+baseEstado = horasEstado.clone();]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[String]]></ReturnType>
+					<Id>1793000000027</Id>
+					<Name><![CDATA[reporteEstados]]></Name>
+					<X>1000</X><Y>340</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[// horas en cada estado desde el inicio de la pasada y su porcentaje. Deja arrancada la pasada siguiente.
+String[] nombres = { "ocioso", "viajando", "conLaMaquina", "esperaCamion", "descargando", "cargaSemilla" };
+cerrarEstado();
+double total = 0;
+for ( int k = 0; k < nombres.length; k++ ) total += horasEstado[ k ] - baseEstado[ k ];
+String txt = "total=" + round( total * 100 ) / 100.0 + " h";
+for ( int k = 0; k < nombres.length; k++ ) {
+	double d = horasEstado[ k ] - baseEstado[ k ];
+	txt += " | " + nombres[ k ] + "=" + round( d * 100 ) / 100.0 + " h (" + round( 100 * d / max( 1e-9, total ) ) + "%)";
+}
+iniciarPasada();
+return txt;]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -2001,6 +2139,51 @@ final static CellDirection NOTSTARTED = null;
 						</ParameterEditor>
 					</Properties>                 
 				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1793000000011</Id>
+					<Name><![CDATA[causaParada]]></Name>
+					<X>1300</X><Y>600</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1793000000012</Id>
+					<Name><![CDATA[tCausa]]></Name>
+					<X>1300</X><Y>640</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1793000000013</Id>
+					<Name><![CDATA[enCampo]]></Name>
+					<X>1300</X><Y>680</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[boolean]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[false]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
 			</Variables>
 			<StatechartElements>
 				<StatechartElement Class="State" ParentState="ROOT_NODE">
@@ -2189,6 +2372,9 @@ moveTo( x, y );
 // arranca la campania: los meses de maduracion con la maquina en Parked
 // no son tiempo detenido, no se le imputan al uso
 tUltimoEstado = time();
+// el viaje al lote si cuenta como detenido (igual que horasDetenida): causa traslado
+registrarCausa();
+causaParada = 6;
 ]]></EntryAction>
 						<FillColor>-10496</FillColor>
 					</Properties>
@@ -2293,6 +2479,7 @@ tInicioSinSemilla = time();
 traceln( "### SIN SEMILLA | dia " + main.diaCampania + " | t=" + time( DAY ) + " d" );
 moveControl.onChange();]]></EntryAction>
 						<ExitAction><![CDATA[sinSemilla = false;
+registrarCausa();
 main.horasSinSemilla += ( time() - tInicioSinSemilla ) / hour();]]></ExitAction>
 						<FillColor>-5383962</FillColor>
 					</Properties>
@@ -2537,6 +2724,7 @@ actualizarNivel();
 trabajando = true;
 actualizarTasaSemilla();
 reprogramarFalla();
+registrarCausa();
 tasaCosecha = tasaCosechaActual();
 if ( inState( WithCart ) ) {
 	main.cart.actualizarNivel();
@@ -2589,6 +2777,7 @@ actualizarNivel();                    // integra con la tasa VIEJA antes de pisa
 trabajando = false;
 actualizarTasaSemilla();
 reprogramarFalla();
+registrarCausa();
 tasaCosecha = 0;
 if ( inState( WithCart ) ) {
 	main.cart.actualizarNivel();
@@ -2668,7 +2857,11 @@ traceln( "### MAQUINA PARA | dia " + main.diaCampania
 					</Points>
 					<IconOffset>14.0</IconOffset>
 					<Properties Source="1169735952562" Target="1169735952563" Trigger="condition">
-						<Action><![CDATA[trabajando = false;
+						<Action><![CDATA[// fin del lote: cierra el tramo trabajado. La vuelta al galpon no cuenta como detenida (igual que horasDetenida)
+registrarCausa();
+enCampo = false;
+causaParada = 0;
+trabajando = false;
 actualizarTasaSemilla();
 reprogramarFalla();
 stop();
@@ -2740,6 +2933,8 @@ main.onCompleted();]]></Action>
 trabajando = puedeTrabajar();
 actualizarTasaSemilla();
 reprogramarFalla();
+enCampo = true;
+registrarCausa();
 // diagnostico: semilla al empezar cada lote y consumo teorico sembrando [kg/h]
 if ( main.sembrando() )
 	traceln( "### INICIO LOTE " + ( main.lotesCompletados + 1 ) + " | dia " + main.diaCampania
@@ -3097,6 +3292,8 @@ YDirection = NORTH;
 // reprogramarFalla() no hace nada ahora: el timeout de aFalla se calcula al activarse Operativa
 // y ahi ya ve trabajando = true. Si todavia no puede reanudar, trabajando es false y vale 1e12.
 reparando = false;
+// si sigue parada (por ejemplo, fuera de jornada) la causa cambia ahora
+registrarCausa();
 main.horasReparando += ( time() - tInicioReparacion ) / hour();
 traceln( "### REPARADA | dia " + main.diaCampania + " | t=" + time( DAY ) + " d" );
 moveControl.onChange();]]></Action>
@@ -3358,6 +3555,44 @@ moveControl.onChange();]]></Body>
 // el tanque se llena con la maquina parada. getSpeed() NO se va a 0 con stop().
 // Sembrando no entra grano: la maquina recorre el lote pero la tolva no se llena.
 return ( trabajando && !main.sembrando() ) ? harvestRate() / second() : 0;]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[int]]></ReturnType>
+					<Id>1793000000014</Id>
+					<Name><![CDATA[causaActual]]></Name>
+					<X>1300</X><Y>720</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[// por que la maquina no esta trabajando. Si coinciden varias causas se imputa la de mayor prioridad:
+// 1 falla, 2 sin semilla, 3 fuera de jornada, 4 sin piso, 5 tolva llena esperando carro, 7 otra (control: tiene que dar 0 h).
+// 0 es trabajando. La 6 (traslado al lote) la fija GoingToField, no esta funcion.
+if ( trabajando ) return 0;
+if ( reparando ) return 1;
+if ( sinSemilla ) return 2;
+if ( !main.dentroDeJornada() ) return 3;
+if ( !main.daPiso ) return 4;
+if ( inState( FullWaitCart ) ) return 5;
+return 7;]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[void]]></ReturnType>
+					<Id>1793000000015</Id>
+					<Name><![CDATA[registrarCausa]]></Name>
+					<X>1300</X><Y>760</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[// cierra el tramo de tiempo con la causa vigente y abre otro con la causa de ahora.
+// Llamar donde pueda cambiar una causa. Llamarla dos veces en el mismo instante no suma nada.
+// Fuera del lote (enCampo = false) la causa la fijan GoingToField y transition6.
+if ( causaParada > 0 ) main.horasParada[ causaParada ] += ( time() - tCausa ) / hour();
+tCausa = time();
+if ( enCampo ) causaParada = causaActual();]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>
@@ -5222,6 +5457,36 @@ for (int i = 0; i < n; i++) {
 						</ParameterEditor>
 					</Properties>                 
 				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1793000000001</Id>
+					<Name><![CDATA[horasParada]]></Name>
+					<X>1450</X><Y>-460</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double[]]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[new double[ 8 ]]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1793000000002</Id>
+					<Name><![CDATA[baseParada]]></Name>
+					<X>1450</X><Y>-420</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double[]]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[new double[ 8 ]]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
 			</Variables>
 			<StatechartElements>
 				<StatechartElement Class="State" ParentState="ROOT_NODE">
@@ -5275,6 +5540,9 @@ diasHastaMadurez = diaMadurez - diaFinSiembra;
 traceln( "Cultivo maduro el dia " + diaMadurez + " — " + (int) diasHastaMadurez + " dias de ciclo, gdd=" + gdd + " — listo para cosecha" );
 // los dias sin piso del crecimiento no son de la cosecha: foto para reportarPasada()
 baseSinPiso = diasSinPiso;
+// la cosecha se mide desde la madurez: los meses de crecimiento no son ocio del carro ni del camion
+cart.iniciarPasada();
+truck.iniciarPasada();
 // ritmo de presentacion: la maquina esta por trabajar, se mira al detalle
 getEngine().setRealTimeScale( 0.05 * day() );
 // la condicion de Parked -> GoingToField depende de este estado: sin el aviso
@@ -5483,7 +5751,9 @@ if ( horaTick % 24 == 0 ) {
 		combine.moveControl.onChange();
 	}
 	cicloCultivo.onChange();
-}]]></Action>
+}
+// la jornada y el piso cambian en este tick: la maquina reimputa su tiempo detenido a la causa nueva
+combine.registrarCausa();]]></Action>
 						<Timeout Class="CodeUnitValue">
 							<Code><![CDATA[1]]></Code>
 							<Unit Class="TimeUnits"><![CDATA[HOUR]]></Unit>
@@ -5685,6 +5955,19 @@ traceln( pasada + " | trabajando=" + dTrab + " h | detenida=" + dDet
          + "% | viajes camion=" + (int)( viajesCamion - baseViajes )
          + " | dias sin piso=" + ( diasSinPiso - baseSinPiso )
          + " | fallas=" + ( fallas - baseFallas ) + " (" + ( horasReparando - baseReparando ) + " h reparando)" );
+// tiempo detenido por causa (Combine.causaActual() define la prioridad). La suma tiene que dar 'detenida'.
+String[] causas = { "", "falla", "sinSemilla", "jornada", "sinPiso", "esperaCarro", "traslado", "otra" };
+String txt = pasada + " PARADAS |";
+double suma = 0;
+for ( int k = 1; k < causas.length; k++ ) {
+	double d = horasParada[ k ] - baseParada[ k ];
+	suma += d;
+	txt += " " + causas[ k ] + "=" + round( d * 100 ) / 100.0 + " h";
+}
+traceln( txt + " | suma-detenida=" + ( suma - dDet ) );
+traceln( pasada + " CARRO | " + cart.reporteEstados() );
+traceln( pasada + " CAMION | " + truck.reporteEstados() );
+baseParada = horasParada.clone();
 baseTrabajando = horasTrabajando;
 baseDetenida   = horasDetenida;
 baseViajes     = viajesCamion;
@@ -7831,6 +8114,66 @@ de la Cosechadora]]></Text>
 						</ParameterEditor>
 					</Properties>                 
 				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1793000000031</Id>
+					<Name><![CDATA[horasEstado]]></Name>
+					<X>1000</X><Y>100</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double[]]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[new double[ 4 ]]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1793000000032</Id>
+					<Name><![CDATA[baseEstado]]></Name>
+					<X>1000</X><Y>140</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double[]]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[new double[ 4 ]]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1793000000033</Id>
+					<Name><![CDATA[estado]]></Name>
+					<X>1000</X><Y>180</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[-1]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1793000000034</Id>
+					<Name><![CDATA[tEstado]]></Name>
+					<X>1000</X><Y>220</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
 			</Variables>
 			<StatechartElements>
 				<StatechartElement Class="State" ParentState="ROOT_NODE">
@@ -7855,7 +8198,10 @@ de la Cosechadora]]></Text>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="110" Height="30">
-						<EntryAction><![CDATA[moveTo( Parking.getX(), Parking.getY() );]]></EntryAction>
+						<EntryAction><![CDATA[// horas por estado (paso 4)
+cerrarEstado();
+estado = 2;
+moveTo( Parking.getX(), Parking.getY() );]]></EntryAction>
 						<FillColor>-10496</FillColor>
 					</Properties>
 				</StatechartElement>
@@ -7868,7 +8214,10 @@ de la Cosechadora]]></Text>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="110" Height="30">
-						<EntryAction><![CDATA[actualizarNivel();
+						<EntryAction><![CDATA[// horas por estado (paso 4)
+cerrarEstado();
+estado = 3;
+actualizarNivel();
 main.viajesCamion++;
 traceln( "VIAJE " + (int)main.viajesCamion + " | dia " + time( DAY ) + " | carga " + nivel
          + " kg de " + Capacity + " (" + (int)( 100 * nivel / Capacity ) + "%)" );
@@ -7893,7 +8242,10 @@ main.tasaSilo = 0;]]></ExitAction>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="110" Height="30">
-						<EntryAction><![CDATA[moveTo( Bin.getX(), Bin.getY() );
+						<EntryAction><![CDATA[// horas por estado (paso 4)
+cerrarEstado();
+estado = 2;
+moveTo( Bin.getX(), Bin.getY() );
 ]]></EntryAction>
 						<FillColor>-10496</FillColor>
 					</Properties>
@@ -7907,7 +8259,10 @@ main.tasaSilo = 0;]]></ExitAction>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="110" Height="30">
-						<EntryAction><![CDATA[send( "TRUCK_ARRIVED", main.cart );]]></EntryAction>
+						<EntryAction><![CDATA[// horas por estado (paso 4)
+cerrarEstado();
+estado = 0;
+send( "TRUCK_ARRIVED", main.cart );]]></EntryAction>
 						<FillColor>-5383962</FillColor>
 					</Properties>
 				</StatechartElement>
@@ -7920,7 +8275,10 @@ main.tasaSilo = 0;]]></ExitAction>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="110" Height="30">
-						<EntryAction><![CDATA[actualizarNivel();
+						<EntryAction><![CDATA[// horas por estado (paso 4)
+cerrarEstado();
+estado = 1;
+actualizarNivel();
 // la tasa solo vale si el carro esta realmente descargando: sin esta guarda,
 // un FINISHED_LOADING perdido por LIFO deja al camion acumulando de la nada
 tasaActual = main.cart.inState( Cart.Unloading ) ? main.cart.UnloadingRate / second() : 0;
@@ -8227,6 +8585,57 @@ if ( bruto > Capacity ) { main.masaDescartada += bruto - Capacity; bruto = Capac
 if ( bruto < 0 )        { main.masaInventada  += -bruto;           bruto = 0; }
 nivel = bruto;
 tUltimo = time();]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[void]]></ReturnType>
+					<Id>1793000000035</Id>
+					<Name><![CDATA[cerrarEstado]]></Name>
+					<X>1000</X><Y>260</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[// suma al estado vigente el tiempo desde el ultimo cambio. Cada estado la llama al entrar, antes de fijar 'estado'.
+if ( estado >= 0 ) horasEstado[ estado ] += ( time() - tEstado ) / hour();
+tEstado = time();]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[void]]></ReturnType>
+					<Id>1793000000036</Id>
+					<Name><![CDATA[iniciarPasada]]></Name>
+					<X>1000</X><Y>300</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[// arranca la medicion de una pasada: lo anterior (por ejemplo, los meses de crecimiento) no se cuenta
+cerrarEstado();
+baseEstado = horasEstado.clone();]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[String]]></ReturnType>
+					<Id>1793000000037</Id>
+					<Name><![CDATA[reporteEstados]]></Name>
+					<X>1000</X><Y>340</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[// horas en cada estado desde el inicio de la pasada y su porcentaje. Deja arrancada la pasada siguiente.
+String[] nombres = { "esperaCarro", "cargando", "viajando", "descargando" };
+cerrarEstado();
+double total = 0;
+for ( int k = 0; k < nombres.length; k++ ) total += horasEstado[ k ] - baseEstado[ k ];
+String txt = "total=" + round( total * 100 ) / 100.0 + " h";
+for ( int k = 0; k < nombres.length; k++ ) {
+	double d = horasEstado[ k ] - baseEstado[ k ];
+	txt += " | " + nombres[ k ] + "=" + round( d * 100 ) / 100.0 + " h (" + round( 100 * d / max( 1e-9, total ) ) + "%)";
+}
+iniciarPasada();
+return txt;]]></Body>
 				</Function>
 			</Functions>
 			<AgentLinks>

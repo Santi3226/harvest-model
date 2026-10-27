@@ -689,3 +689,93 @@ Las dos corridas usaron `campania = 0`, `turnos = 1` y `mtbfHoras = 1e9`.
 - **74 viajes y no 75.** El grano total es el mismo (3.758.400 kg). La corrida termina cuando la máquina cierra el último lote, no cuando el grano llega al silo: quedan 58.400 kg en el sistema y el viaje 75 no sale. El número de viajes depende del punto del ciclo del camión en que cierra la cosecha. Hay que tenerlo en cuenta al contar viajes en el paso 4.
 
 Respaldo: `backups/2026-10-27-pre-gdd.alp`.
+
+## 14. Causas de parada y horas del carro y del camión (paso 4, 27/10)
+
+Este cambio es el paso 4 de [PLAN.md](PLAN.md) y es la base del resultado #2 (cuellos de botella). Antes, `horasDetenida` mezclaba todas las causas. Ahora cada hora detenida se imputa a una causa, y el carro y el camión informan en qué se les va el tiempo. **Falta la corrida en el IDE.**
+
+Los contadores solo miden: no cambian ninguna decisión del modelo. Por eso una corrida con los mismos parámetros tiene que dar exactamente los mismos eventos que antes.
+
+### Causas de parada de la máquina
+
+`Combine.causaActual()` decide la causa. Si coinciden varias, se imputa la de mayor prioridad:
+
+| # | Causa | Cuándo |
+|---|---|---|
+| 1 | `falla` | `reparando` |
+| 2 | `sinSemilla` | `sinSemilla` |
+| 3 | `jornada` | Fuera de la jornada (`!main.dentroDeJornada()`) |
+| 4 | `sinPiso` | `!main.daPiso` |
+| 5 | `esperaCarro` | Tolva llena esperando el carro (`FullWaitCart`) |
+| 6 | `traslado` | Viaje del galpón al lote (`GoingToField`). Lo fija ese estado |
+| 7 | `otra` | Ninguna de las anteriores. Es un control: tiene que dar 0 h |
+
+**Por qué este orden.** Primero van las causas que paran la máquina pase lo que pase. Una falla de noche se imputa a la falla, porque la reparación corre igual. Una noche de lluvia se imputa a la jornada, porque sin lluvia la máquina tampoco habría trabajado. La espera del carro va última: solo cuenta cuando es lo único que frena a la máquina.
+
+**Cómo se mide.** `registrarCausa()` cierra el tramo de tiempo con la causa vigente y abre otro con la causa de ese momento. Se llama donde puede cambiar una causa:
+
+- al parar y al reanudar (`transition5` y `transition8`);
+- al empezar y al terminar un lote (`transition` y `transition6`);
+- al terminar una reparación (`finReparacion`) y al recibir semilla con la tolva vacía (salida de `Agotada`);
+- en cada tick horario de `Main.tickDiario`, que es donde cambian la jornada y el piso.
+
+Llamarla dos veces en el mismo instante no suma nada.
+
+**Qué cuenta como detenido.** Lo mismo que ya contaba `horasDetenida`: la espera en el lote y el viaje del galpón al lote. La vuelta al galpón y los meses estacionado no cuentan. Por eso la suma de las causas tiene que dar `horasDetenida` de la pasada.
+
+### Horas por estado del carro y del camión
+
+Cada estado llama a `cerrarEstado()` al entrar, y después fija su índice en `estado`:
+
+| Agente | Grupo | Estados |
+|---|---|---|
+| `Cart` | `ocioso` | `WaitCommand` |
+| | `viajando` | `GoingToCombine`, `GoingToUnload`, `LlevandoSemilla`, `VolviendoSemilla` |
+| | `conLaMaquina` | `Loading` (al lado de la máquina, trabaje o no) |
+| | `esperaCamion` | `WaitTruck` |
+| | `descargando` | `Unloading` |
+| | `cargaSemilla` | `CargandoSemilla` |
+| `Truck` | `esperaCarro` | `WaitCart` |
+| | `cargando` | `Loading` |
+| | `viajando` | `GoingToBin`, `GoingBack` |
+| | `descargando` | `Unloading` (en el silo) |
+
+La siembra se mide desde el inicio de la corrida. La cosecha, desde la madurez: `Maduro` llama a `iniciarPasada()` del carro y del camión, así los meses de crecimiento no cuentan como ocio.
+
+### Elementos nuevos
+
+| Dónde | Nombre | Qué es |
+|---|---|---|
+| `Main` | `horasParada[8]`, `baseParada[8]` | Horas por causa (índice = número de causa) y foto para informar por pasada |
+| `Combine` | `causaParada`, `tCausa`, `enCampo` | Causa vigente, inicio del tramo y si la máquina está en el lote |
+| `Combine` | `causaActual()`, `registrarCausa()` | Prioridad de causas y cierre de tramos |
+| `Cart`, `Truck` | `horasEstado`, `baseEstado`, `estado`, `tEstado` | Horas por grupo de estados |
+| `Cart`, `Truck` | `cerrarEstado()`, `iniciarPasada()`, `reporteEstados()` | Cierre de tramos, inicio de pasada y texto del reporte |
+
+`reportarPasada()` imprime tres líneas nuevas por pasada:
+
+```
+SIEMBRA PARADAS | falla=… h sinSemilla=… jornada=… sinPiso=… esperaCarro=… traslado=… otra=… | suma-detenida=…
+SIEMBRA CARRO | total=… h | ocioso=… h (…%) | viajando=… | …
+SIEMBRA CAMION | total=… h | esperaCarro=… h (…%) | …
+```
+
+El CSV del barrido no cambia todavía. Sus columnas se definen en el paso 7, junto con las variables de decisión (parte 4.4 del plan).
+
+### Cómo verificarlo
+
+Una corrida de `Simulation` con los parámetros de la corrida C de la sección 12: `cantidadLotes = 12`, `mtbfHoras = 100`, `campania = 0` y `turnos = 1`.
+
+| Qué | Qué se espera |
+|---|---|
+| Eventos | **Idénticos a la corrida C**: siembra el día 42, 5 fallas, madurez el día 181, cosecha el día 249, 74 viajes. Los contadores no cambian la dinámica |
+| `suma-detenida` | ~0 (ruido de punto flotante) en las dos pasadas |
+| `otra` | ~0 |
+| `falla` | Igual a las horas de reparación de la pasada: 15,65 h en la siembra y 3,93 h en la cosecha |
+| `sinSemilla` | 0, como `horas sin semilla` |
+| `esperaCarro` | 0 en la siembra, porque no entra grano. Mayor que 0 en la cosecha |
+| `jornada` | La causa más grande. Con 1 turno, unas 17,7 h por día de calendario |
+| `total` del carro y del camión | Siembra: la duración de la siembra desde el inicio de la corrida. Cosecha: desde la madurez hasta el cierre |
+| Camión en la siembra | 100% `esperaCarro`: no hay grano |
+
+Respaldo: `backups/2026-10-27-pre-causas-parada.alp`.
