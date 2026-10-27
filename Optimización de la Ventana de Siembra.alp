@@ -4,7 +4,7 @@
 	         AnyLogic Project File
 *************************************************
 -->
-<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.9.9.202606170507" AlpVersion="8.9.9">
+<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.9.9.202607020720" AlpVersion="8.9.9">
 <Model>
 	<Id>1169735952464</Id>
 	<Name><![CDATA[Optimización de la Ventana de Siembra]]></Name>
@@ -430,6 +430,56 @@ if( main.autoControl && main.sembrando() && main.combine.inState( Combine.Pedida
 						<FillColor>-5383962</FillColor>
 					</Properties>
 				</StatechartElement>
+				<StatechartElement Class="State" ParentState="ROOT_NODE">
+					<Id>1791000000401</Id>
+					<Name><![CDATA[CargandoSemilla]]></Name>
+					<X>330</X><Y>100</Y>
+					<Label><X>10</X><Y>20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties Width="130" Height="30">
+						<EntryAction><![CDATA[// carga semilla en la cabecera. Version 1a: el deposito tiene stock infinito.
+// La masa aparece al entrar (se cuenta como despachada) y el tiempo de carga es el del timeout.
+double falta = Capacity - semillaCarro;
+ultimaCargaSemilla = falta;
+main.semillaDespachada += falta;
+semillaCarro = Capacity;
+traceln( "### CARRO CARGA SEMILLA | dia " + main.diaCampania + " | " + (int) falta + " kg | t=" + time( DAY ) + " d" );]]></EntryAction>
+						<FillColor>-5383962</FillColor>
+					</Properties>
+				</StatechartElement>
+				<StatechartElement Class="State" ParentState="ROOT_NODE">
+					<Id>1791000000402</Id>
+					<Name><![CDATA[LlevandoSemilla]]></Name>
+					<X>330</X><Y>170</Y>
+					<Label><X>10</X><Y>20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties Width="130" Height="30">
+						<EntryAction><![CDATA[// va hacia la sembradora, que se mueve: se reapunta cada minuto (como GoingToCombine)
+setSpeed( Speed, KPH );
+double x = main.combine.getX() - main.combine.RowWidth;
+double y = main.combine.getY();
+moveTo( x, y );]]></EntryAction>
+						<FillColor>-5383962</FillColor>
+					</Properties>
+				</StatechartElement>
+				<StatechartElement Class="State" ParentState="ROOT_NODE">
+					<Id>1791000000403</Id>
+					<Name><![CDATA[VolviendoSemilla]]></Name>
+					<X>330</X><Y>240</Y>
+					<Label><X>10</X><Y>20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties Width="130" Height="30">
+						<EntryAction><![CDATA[setSpeed( Speed, KPH );
+moveTo( Parking.getX(), Parking.getY() );]]></EntryAction>
+						<FillColor>-5383962</FillColor>
+					</Properties>
+				</StatechartElement>
 				<StatechartElement Class="EntryPoint" ParentState="ROOT_NODE">
 					<Id>1169735952487</Id>
 					<Name><![CDATA[moveControl]]></Name>
@@ -821,56 +871,6 @@ if( main.autoControl && main.sembrando() && main.combine.inState( Combine.Pedida
 						<SatisfiesExpression><![CDATA[true]]></SatisfiesExpression>
 					</Properties>	
 				</StatechartElement>
-				<StatechartElement Class="State" ParentState="ROOT_NODE">
-					<Id>1791000000401</Id>
-					<Name><![CDATA[CargandoSemilla]]></Name>
-					<X>330</X><Y>100</Y>
-					<Label><X>10</X><Y>20</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties Width="130" Height="30">
-						<EntryAction><![CDATA[// carga semilla en la cabecera. Version 1a: el deposito tiene stock infinito.
-// La masa aparece al entrar (se cuenta como despachada) y el tiempo de carga es el del timeout.
-double falta = Capacity - semillaCarro;
-ultimaCargaSemilla = falta;
-main.semillaDespachada += falta;
-semillaCarro = Capacity;
-traceln( "### CARRO CARGA SEMILLA | dia " + main.diaCampania + " | " + (int) falta + " kg | t=" + time( DAY ) + " d" );]]></EntryAction>
-						<FillColor>-5383962</FillColor>
-					</Properties>
-				</StatechartElement>
-				<StatechartElement Class="State" ParentState="ROOT_NODE">
-					<Id>1791000000402</Id>
-					<Name><![CDATA[LlevandoSemilla]]></Name>
-					<X>330</X><Y>170</Y>
-					<Label><X>10</X><Y>20</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties Width="130" Height="30">
-						<EntryAction><![CDATA[// va hacia la sembradora, que se mueve: se reapunta cada minuto (como GoingToCombine)
-setSpeed( Speed, KPH );
-double x = main.combine.getX() - main.combine.RowWidth;
-double y = main.combine.getY();
-moveTo( x, y );]]></EntryAction>
-						<FillColor>-5383962</FillColor>
-					</Properties>
-				</StatechartElement>
-				<StatechartElement Class="State" ParentState="ROOT_NODE">
-					<Id>1791000000403</Id>
-					<Name><![CDATA[VolviendoSemilla]]></Name>
-					<X>330</X><Y>240</Y>
-					<Label><X>10</X><Y>20</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties Width="130" Height="30">
-						<EntryAction><![CDATA[setSpeed( Speed, KPH );
-moveTo( Parking.getX(), Parking.getY() );]]></EntryAction>
-						<FillColor>-5383962</FillColor>
-					</Properties>
-				</StatechartElement>
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1791000000411</Id>
 					<Name><![CDATA[pedidoSemilla]]></Name>
@@ -899,7 +899,7 @@ moveTo( Parking.getX(), Parking.getY() );]]></EntryAction>
 						<FilterType><![CDATA[equalsTo]]></FilterType>
 						<EqualsExpression><![CDATA["NEED_SEED"]]></EqualsExpression>
 						<SatisfiesExpression><![CDATA[true]]></SatisfiesExpression>
-					</Properties>
+					</Properties>	
 				</StatechartElement>
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1791000000412</Id>
@@ -929,7 +929,7 @@ moveTo( Parking.getX(), Parking.getY() );]]></EntryAction>
 						<FilterType><![CDATA[unconditionally]]></FilterType>
 						<EqualsExpression><![CDATA[Sample_Message]]></EqualsExpression>
 						<SatisfiesExpression><![CDATA[true]]></SatisfiesExpression>
-					</Properties>
+					</Properties>	
 				</StatechartElement>
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1791000000413</Id>
@@ -963,7 +963,7 @@ moveTo( Parking.getX(), Parking.getY() );]]></EntryAction>
 						<FilterType><![CDATA[unconditionally]]></FilterType>
 						<EqualsExpression><![CDATA[Sample_Message]]></EqualsExpression>
 						<SatisfiesExpression><![CDATA[true]]></SatisfiesExpression>
-					</Properties>
+					</Properties>	
 				</StatechartElement>
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1791000000414</Id>
@@ -1000,7 +1000,7 @@ main.combine.semillaEntregada();]]></Action>
 						<FilterType><![CDATA[equalsTo]]></FilterType>
 						<EqualsExpression><![CDATA["ARRIVED"]]></EqualsExpression>
 						<SatisfiesExpression><![CDATA[true]]></SatisfiesExpression>
-					</Properties>
+					</Properties>	
 				</StatechartElement>
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1791000000415</Id>
@@ -1032,7 +1032,7 @@ main.combine.semillaEntregada();]]></Action>
 						<FilterType><![CDATA[equalsTo]]></FilterType>
 						<EqualsExpression><![CDATA["ARRIVED"]]></EqualsExpression>
 						<SatisfiesExpression><![CDATA[true]]></SatisfiesExpression>
-					</Properties>
+					</Properties>	
 				</StatechartElement>
 			</StatechartElements>
 			<Functions>
@@ -1803,7 +1803,6 @@ final static CellDirection NOTSTARTED = null;
 						</InitialValue>
 					</Properties>
 				</Variable>
-				
 				<Variable Class="PlainVariable">
 					<Id>1792000000022</Id>
 					<Name><![CDATA[tInicioReparacion]]></Name>
@@ -1819,7 +1818,6 @@ final static CellDirection NOTSTARTED = null;
 						</InitialValue>
 					</Properties>
 				</Variable>
-				
 				<Variable Class="PlainVariable">
 					<Id>1792000000023</Id>
 					<Name><![CDATA[duracionReparacion]]></Name>
@@ -1835,7 +1833,6 @@ final static CellDirection NOTSTARTED = null;
 						</InitialValue>
 					</Properties>
 				</Variable>
-				
 				<Variable Class="PlainVariable">
 					<Id>1792000000024</Id>
 					<Name><![CDATA[rngFalla]]></Name>
@@ -1851,7 +1848,6 @@ final static CellDirection NOTSTARTED = null;
 						</InitialValue>
 					</Properties>
 				</Variable>
-				
 				<Variable Class="Parameter">
 					<Id>1169735952567</Id>
 					<Name><![CDATA[Capacity]]></Name>
@@ -2245,6 +2241,92 @@ tasaActual = tasaCosecha;
 main.cart.actualizarNivel();
 main.cart.tasaActual = 0;]]></ExitAction>
 						<FillColor>-10496</FillColor>
+					</Properties>
+				</StatechartElement>
+				<StatechartElement Class="State" ParentState="ROOT_NODE">
+					<Id>1791000000201</Id>
+					<Name><![CDATA[Suficiente]]></Name>
+					<X>100</X><Y>400</Y>
+					<Label><X>10</X><Y>20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties Width="120" Height="30">
+						<FillColor>-5383962</FillColor>
+					</Properties>
+				</StatechartElement>
+				<StatechartElement Class="State" ParentState="ROOT_NODE">
+					<Id>1791000000202</Id>
+					<Name><![CDATA[Pedida]]></Name>
+					<X>280</X><Y>400</Y>
+					<Label><X>10</X><Y>20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties Width="120" Height="30">
+						<EntryAction><![CDATA[// HISTERESIS: las salidas de Pedida/Agotada exigen umbral + 1 kg. Sin ese margen, el redondeo
+// deja la semilla apenas por encima del umbral al disparar aPedida, recuperaPedida vuelve a
+// Suficiente, aPedida recalcula 0 s y se arma un bucle infinito en tiempo cero.
+// pide semilla al carro. Si el carro esta ocupado el mensaje se pierde (aprendizaje 14):
+// por eso Cart.WaitCommand vuelve a mirar si hay un pedido pendiente al quedar libre.
+actualizarSemilla();
+traceln( "### PIDE SEMILLA | dia " + main.diaCampania + " | semilla=" + (int) semilla + " kg | t=" + time( DAY ) + " d" );
+if ( main.autoControl ) send( "NEED_SEED", main.cart );]]></EntryAction>
+						<FillColor>-5383962</FillColor>
+					</Properties>
+				</StatechartElement>
+				<StatechartElement Class="State" ParentState="ROOT_NODE">
+					<Id>1791000000203</Id>
+					<Name><![CDATA[Agotada]]></Name>
+					<X>460</X><Y>400</Y>
+					<Label><X>10</X><Y>20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties Width="120" Height="30">
+						<EntryAction><![CDATA[// la tolva se vacio: la maquina para. La parada la decide puedeTrabajar() (punto unico).
+actualizarSemilla();
+main.semillaSembrada += semilla;   // resto de punto flotante del instante exacto en que se vacia
+semilla = 0;
+sinSemilla = true;
+tInicioSinSemilla = time();
+traceln( "### SIN SEMILLA | dia " + main.diaCampania + " | t=" + time( DAY ) + " d" );
+moveControl.onChange();]]></EntryAction>
+						<ExitAction><![CDATA[sinSemilla = false;
+main.horasSinSemilla += ( time() - tInicioSinSemilla ) / hour();]]></ExitAction>
+						<FillColor>-5383962</FillColor>
+					</Properties>
+				</StatechartElement>
+				<StatechartElement Class="State" ParentState="ROOT_NODE">
+					<Id>1792000000002</Id>
+					<Name><![CDATA[Operativa]]></Name>
+					<X>100</X><Y>500</Y>
+					<Label><X>10</X><Y>20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties Width="120" Height="30">
+						<FillColor>-5383962</FillColor>
+					</Properties>
+				</StatechartElement>
+				<StatechartElement Class="State" ParentState="ROOT_NODE">
+					<Id>1792000000003</Id>
+					<Name><![CDATA[Reparando]]></Name>
+					<X>280</X><Y>500</Y>
+					<Label><X>10</X><Y>20</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties Width="120" Height="30">
+						<EntryAction><![CDATA[// la maquina se rompio y queda detenida durante la reparacion. La parada la decide puedeTrabajar()
+// (punto unico): el STOP lo manda transition5 al reevaluar, no la transicion de falla (aprendizaje 2).
+main.fallas++;
+reparando = true;
+tInicioReparacion = time();
+duracionReparacion = duracionReparacionHoras();
+traceln( "### FALLA " + main.fallas + " | dia " + main.diaCampania + " | repara " + duracionReparacion + " h | t=" + time( DAY ) + " d" );
+moveControl.onChange();]]></EntryAction>
+						<FillColor>-5383962</FillColor>
 					</Properties>
 				</StatechartElement>
 				<StatechartElement Class="EntryPoint" ParentState="ROOT_NODE">
@@ -2791,61 +2873,7 @@ YDirection = NORTH;
 						<Point><X>40</X><Y>0</Y></Point>
 					</Points>
 					<Properties Target="1791000000201">
-					</Properties>
-				</StatechartElement>
-				<StatechartElement Class="State" ParentState="ROOT_NODE">
-					<Id>1791000000201</Id>
-					<Name><![CDATA[Suficiente]]></Name>
-					<X>100</X><Y>400</Y>
-					<Label><X>10</X><Y>20</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties Width="120" Height="30">
-						<FillColor>-5383962</FillColor>
-					</Properties>
-				</StatechartElement>
-				<StatechartElement Class="State" ParentState="ROOT_NODE">
-					<Id>1791000000202</Id>
-					<Name><![CDATA[Pedida]]></Name>
-					<X>280</X><Y>400</Y>
-					<Label><X>10</X><Y>20</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties Width="120" Height="30">
-						<EntryAction><![CDATA[// HISTERESIS: las salidas de Pedida/Agotada exigen umbral + 1 kg. Sin ese margen, el redondeo
-// deja la semilla apenas por encima del umbral al disparar aPedida, recuperaPedida vuelve a
-// Suficiente, aPedida recalcula 0 s y se arma un bucle infinito en tiempo cero.
-// pide semilla al carro. Si el carro esta ocupado el mensaje se pierde (aprendizaje 14):
-// por eso Cart.WaitCommand vuelve a mirar si hay un pedido pendiente al quedar libre.
-actualizarSemilla();
-traceln( "### PIDE SEMILLA | dia " + main.diaCampania + " | semilla=" + (int) semilla + " kg | t=" + time( DAY ) + " d" );
-if ( main.autoControl ) send( "NEED_SEED", main.cart );]]></EntryAction>
-						<FillColor>-5383962</FillColor>
-					</Properties>
-				</StatechartElement>
-				<StatechartElement Class="State" ParentState="ROOT_NODE">
-					<Id>1791000000203</Id>
-					<Name><![CDATA[Agotada]]></Name>
-					<X>460</X><Y>400</Y>
-					<Label><X>10</X><Y>20</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties Width="120" Height="30">
-						<EntryAction><![CDATA[// la tolva se vacio: la maquina para. La parada la decide puedeTrabajar() (punto unico).
-actualizarSemilla();
-main.semillaSembrada += semilla;   // resto de punto flotante del instante exacto en que se vacia
-semilla = 0;
-sinSemilla = true;
-tInicioSinSemilla = time();
-traceln( "### SIN SEMILLA | dia " + main.diaCampania + " | t=" + time( DAY ) + " d" );
-moveControl.onChange();]]></EntryAction>
-						<ExitAction><![CDATA[sinSemilla = false;
-main.horasSinSemilla += ( time() - tInicioSinSemilla ) / hour();]]></ExitAction>
-						<FillColor>-5383962</FillColor>
-					</Properties>
+					</Properties>	
 				</StatechartElement>
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1791000000211</Id>
@@ -2875,7 +2903,7 @@ main.horasSinSemilla += ( time() - tInicioSinSemilla ) / hour();]]></ExitAction>
 						<FilterType><![CDATA[unconditionally]]></FilterType>
 						<EqualsExpression><![CDATA[Sample_Message]]></EqualsExpression>
 						<SatisfiesExpression><![CDATA[true]]></SatisfiesExpression>
-					</Properties>
+					</Properties>	
 				</StatechartElement>
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1791000000212</Id>
@@ -2905,7 +2933,7 @@ main.horasSinSemilla += ( time() - tInicioSinSemilla ) / hour();]]></ExitAction>
 						<FilterType><![CDATA[unconditionally]]></FilterType>
 						<EqualsExpression><![CDATA[Sample_Message]]></EqualsExpression>
 						<SatisfiesExpression><![CDATA[true]]></SatisfiesExpression>
-					</Properties>
+					</Properties>	
 				</StatechartElement>
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1791000000213</Id>
@@ -2937,7 +2965,7 @@ main.horasSinSemilla += ( time() - tInicioSinSemilla ) / hour();]]></ExitAction>
 						<FilterType><![CDATA[unconditionally]]></FilterType>
 						<EqualsExpression><![CDATA[Sample_Message]]></EqualsExpression>
 						<SatisfiesExpression><![CDATA[true]]></SatisfiesExpression>
-					</Properties>
+					</Properties>	
 				</StatechartElement>
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1791000000214</Id>
@@ -2969,7 +2997,7 @@ main.horasSinSemilla += ( time() - tInicioSinSemilla ) / hour();]]></ExitAction>
 						<FilterType><![CDATA[unconditionally]]></FilterType>
 						<EqualsExpression><![CDATA[Sample_Message]]></EqualsExpression>
 						<SatisfiesExpression><![CDATA[true]]></SatisfiesExpression>
-					</Properties>
+					</Properties>	
 				</StatechartElement>
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1791000000215</Id>
@@ -3001,7 +3029,7 @@ main.horasSinSemilla += ( time() - tInicioSinSemilla ) / hour();]]></ExitAction>
 						<FilterType><![CDATA[unconditionally]]></FilterType>
 						<EqualsExpression><![CDATA[Sample_Message]]></EqualsExpression>
 						<SatisfiesExpression><![CDATA[true]]></SatisfiesExpression>
-					</Properties>
+					</Properties>	
 				</StatechartElement>
 				<StatechartElement Class="EntryPoint" ParentState="ROOT_NODE">
 					<Id>1792000000001</Id>
@@ -3016,43 +3044,8 @@ main.horasSinSemilla += ( time() - tInicioSinSemilla ) / hour();]]></ExitAction>
 						<Point><X>40</X><Y>0</Y></Point>
 					</Points>
 					<Properties Target="1792000000002">
-					</Properties>
+					</Properties>	
 				</StatechartElement>
-				
-				<StatechartElement Class="State" ParentState="ROOT_NODE">
-					<Id>1792000000002</Id>
-					<Name><![CDATA[Operativa]]></Name>
-					<X>100</X><Y>500</Y>
-					<Label><X>10</X><Y>20</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties Width="120" Height="30">
-						<FillColor>-5383962</FillColor>
-					</Properties>
-				</StatechartElement>
-				
-				<StatechartElement Class="State" ParentState="ROOT_NODE">
-					<Id>1792000000003</Id>
-					<Name><![CDATA[Reparando]]></Name>
-					<X>280</X><Y>500</Y>
-					<Label><X>10</X><Y>20</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties Width="120" Height="30">
-						<EntryAction><![CDATA[// la maquina se rompio y queda detenida durante la reparacion. La parada la decide puedeTrabajar()
-// (punto unico): el STOP lo manda transition5 al reevaluar, no la transicion de falla (aprendizaje 2).
-main.fallas++;
-reparando = true;
-tInicioReparacion = time();
-duracionReparacion = duracionReparacionHoras();
-traceln( "### FALLA " + main.fallas + " | dia " + main.diaCampania + " | repara " + duracionReparacion + " h | t=" + time( DAY ) + " d" );
-moveControl.onChange();]]></EntryAction>
-						<FillColor>-5383962</FillColor>
-					</Properties>
-				</StatechartElement>
-				
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1792000000011</Id>
 					<Name><![CDATA[aFalla]]></Name>
@@ -3081,9 +3074,8 @@ moveControl.onChange();]]></EntryAction>
 						<FilterType><![CDATA[unconditionally]]></FilterType>
 						<EqualsExpression><![CDATA[Sample_Message]]></EqualsExpression>
 						<SatisfiesExpression><![CDATA[true]]></SatisfiesExpression>
-					</Properties>
+					</Properties>	
 				</StatechartElement>
-				
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1792000000012</Id>
 					<Name><![CDATA[finReparacion]]></Name>
@@ -3122,9 +3114,8 @@ moveControl.onChange();]]></Action>
 						<FilterType><![CDATA[unconditionally]]></FilterType>
 						<EqualsExpression><![CDATA[Sample_Message]]></EqualsExpression>
 						<SatisfiesExpression><![CDATA[true]]></SatisfiesExpression>
-					</Properties>
+					</Properties>	
 				</StatechartElement>
-				
 			</StatechartElements>
 			<Functions>
 				<Function AccessType="default" StaticFunction="false">
@@ -3207,7 +3198,6 @@ return main.daPiso && main.dentroDeJornada() && !inState( FullWaitCart ) && !sin
 if ( rngFalla == null ) rngFalla = new java.util.Random( main.semillaFallas );
 return rngFalla;]]></Body>
 				</Function>
-				
 				<Function AccessType="default" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
@@ -3222,7 +3212,6 @@ return rngFalla;]]></Body>
 // 1 - nextDouble() cae en (0,1], asi que el log nunca da -infinito.
 return -main.mtbfHoras * Math.log( 1.0 - generadorFalla().nextDouble() );]]></Body>
 				</Function>
-				
 				<Function AccessType="default" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
 					<ReturnType><![CDATA[double]]></ReturnType>
@@ -3236,7 +3225,6 @@ return -main.mtbfHoras * Math.log( 1.0 - generadorFalla().nextDouble() );]]></Bo
 					<Body><![CDATA[// horas de reparacion: triangular(minimo, maximo, moda) = (0.5, 8, 2), media 3,5 h. Asimetrica a derecha.
 return triangular( 0.5, 8.0, 2.0, generadorFalla() );]]></Body>
 				</Function>
-				
 				<Function AccessType="default" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[void]]></ReturnType>
@@ -3253,7 +3241,6 @@ return triangular( 0.5, 8.0, 2.0, generadorFalla() );]]></Body>
 // desde la accion de la propia aFalla ni desde un exit action (aprendizaje 2).
 if ( inState( Operativa ) ) { aFalla.cancel(); aFalla.start(); }]]></Body>
 				</Function>
-				
 				<Function AccessType="default" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
 					<ReturnType><![CDATA[void]]></ReturnType>
@@ -4300,84 +4287,6 @@ for (int i = 0; i < n; i++) {
 						</InitialValue>
 					</Properties>
 				</Variable>
-				<Variable Class="Parameter">
-					<Id>1790500000001</Id>
-					<Name><![CDATA[velocidadSiembra]]></Name>
-					<X>1450</X><Y>-680</Y>
-					<Label><X>20</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
-						<Type><![CDATA[double]]></Type>
-						<UnitType><![CDATA[NONE]]></UnitType>
-						<SdArray>false</SdArray>
-						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[7]]></Code>
-						</DefaultValue>
-						<ParameterEditor>
-							<Id>1790500000501</Id>
-							<Name><![CDATA[null]]></Name>
-							<Label><![CDATA[Velocidad de la maquina sembrando [km/h]]]></Label>
-							<EditorContolType>TEXT_BOX</EditorContolType>
-							<MinSliderValue><![CDATA[0]]></MinSliderValue>
-							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
-							<DelimeterType>NO_DELIMETER</DelimeterType>
-						</ParameterEditor>
-					</Properties>                 
-				</Variable>
-				<Variable Class="Parameter">
-					<Id>1790500000002</Id>
-					<Name><![CDATA[velocidadCosecha]]></Name>
-					<X>1450</X><Y>-640</Y>
-					<Label><X>20</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
-						<Type><![CDATA[double]]></Type>
-						<UnitType><![CDATA[NONE]]></UnitType>
-						<SdArray>false</SdArray>
-						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[5.5]]></Code>
-						</DefaultValue>
-						<ParameterEditor>
-							<Id>1790500000502</Id>
-							<Name><![CDATA[null]]></Name>
-							<Label><![CDATA[Velocidad de la maquina cosechando [km/h]]]></Label>
-							<EditorContolType>TEXT_BOX</EditorContolType>
-							<MinSliderValue><![CDATA[0]]></MinSliderValue>
-							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
-							<DelimeterType>NO_DELIMETER</DelimeterType>
-						</ParameterEditor>
-					</Properties>                 
-				</Variable>
-				<Variable Class="Parameter">
-					<Id>1790500000003</Id>
-					<Name><![CDATA[diaLimiteSiembra]]></Name>
-					<X>1450</X><Y>-600</Y>
-					<Label><X>20</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
-						<Type><![CDATA[int]]></Type>
-						<UnitType><![CDATA[NONE]]></UnitType>
-						<SdArray>false</SdArray>
-						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[45]]></Code>
-						</DefaultValue>
-						<ParameterEditor>
-							<Id>1790500000503</Id>
-							<Name><![CDATA[null]]></Name>
-							<Label><![CDATA[Ultimo dia de la ventana de siembra (dia 0 = 1/oct, 45 = 15/nov)]]></Label>
-							<EditorContolType>TEXT_BOX</EditorContolType>
-							<MinSliderValue><![CDATA[0]]></MinSliderValue>
-							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
-							<DelimeterType>NO_DELIMETER</DelimeterType>
-						</ParameterEditor>
-					</Properties>                 
-				</Variable>
 				<Variable Class="PlainVariable">
 					<Id>1790500000011</Id>
 					<Name><![CDATA[cosechaCompleta]]></Name>
@@ -4422,138 +4331,6 @@ for (int i = 0; i < n; i++) {
 							<Code><![CDATA[-1]]></Code>
 						</InitialValue>
 					</Properties>
-				</Variable>
-				<Variable Class="Parameter">
-					<Id>1791000000001</Id>
-					<Name><![CDATA[densidadSiembra]]></Name>
-					<X>1450</X><Y>-300</Y>
-					<Label><X>20</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
-						<Type><![CDATA[double]]></Type>
-						<UnitType><![CDATA[NONE]]></UnitType>
-						<SdArray>false</SdArray>
-						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[70]]></Code>
-						</DefaultValue>
-						<ParameterEditor>
-							<Id>1791000000501</Id>
-							<Name><![CDATA[null]]></Name>
-							<Label><![CDATA[Densidad de siembra [kg/ha]]]></Label>
-							<EditorContolType>TEXT_BOX</EditorContolType>
-							<MinSliderValue><![CDATA[0]]></MinSliderValue>
-							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
-							<DelimeterType>NO_DELIMETER</DelimeterType>
-						</ParameterEditor>
-					</Properties>                 
-				</Variable>
-				<Variable Class="Parameter">
-					<Id>1792000000051</Id>
-					<Name><![CDATA[mtbfHoras]]></Name>
-					<X>1700</X><Y>-300</Y>
-					<Label><X>20</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
-						<Type><![CDATA[double]]></Type>
-						<UnitType><![CDATA[NONE]]></UnitType>
-						<SdArray>false</SdArray>
-						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[100]]></Code>
-						</DefaultValue>
-						<ParameterEditor>
-							<Id>1792000000061</Id>
-							<Name><![CDATA[null]]></Name>
-							<Label><![CDATA[MTBF de la maquina [h de operacion]]]></Label>
-							<EditorContolType>TEXT_BOX</EditorContolType>
-							<MinSliderValue><![CDATA[0]]></MinSliderValue>
-							<MaxSliderValue><![CDATA[500]]></MaxSliderValue>
-							<DelimeterType>NO_DELIMETER</DelimeterType>
-						</ParameterEditor>
-					</Properties>                 
-				</Variable>
-				
-				<Variable Class="Parameter">
-					<Id>1792000000052</Id>
-					<Name><![CDATA[semillaFallas]]></Name>
-					<X>1700</X><Y>-260</Y>
-					<Label><X>20</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
-						<Type><![CDATA[int]]></Type>
-						<UnitType><![CDATA[NONE]]></UnitType>
-						<SdArray>false</SdArray>
-						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[1]]></Code>
-						</DefaultValue>
-						<ParameterEditor>
-							<Id>1792000000062</Id>
-							<Name><![CDATA[null]]></Name>
-							<Label><![CDATA[Semilla del generador de fallas]]></Label>
-							<EditorContolType>TEXT_BOX</EditorContolType>
-							<MinSliderValue><![CDATA[0]]></MinSliderValue>
-							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
-							<DelimeterType>NO_DELIMETER</DelimeterType>
-						</ParameterEditor>
-					</Properties>                 
-				</Variable>
-				
-				<Variable Class="Parameter">
-					<Id>1791000000002</Id>
-					<Name><![CDATA[capacidadSemilla]]></Name>
-					<X>1450</X><Y>-260</Y>
-					<Label><X>20</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
-						<Type><![CDATA[double]]></Type>
-						<UnitType><![CDATA[NONE]]></UnitType>
-						<SdArray>false</SdArray>
-						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[4000]]></Code>
-						</DefaultValue>
-						<ParameterEditor>
-							<Id>1791000000502</Id>
-							<Name><![CDATA[null]]></Name>
-							<Label><![CDATA[Capacidad de la tolva de semilla [kg]]]></Label>
-							<EditorContolType>TEXT_BOX</EditorContolType>
-							<MinSliderValue><![CDATA[0]]></MinSliderValue>
-							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
-							<DelimeterType>NO_DELIMETER</DelimeterType>
-						</ParameterEditor>
-					</Properties>                 
-				</Variable>
-				<Variable Class="Parameter">
-					<Id>1791000000003</Id>
-					<Name><![CDATA[umbralSemilla]]></Name>
-					<X>1450</X><Y>-220</Y>
-					<Label><X>20</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
-						<Type><![CDATA[double]]></Type>
-						<UnitType><![CDATA[NONE]]></UnitType>
-						<SdArray>false</SdArray>
-						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[0.2]]></Code>
-						</DefaultValue>
-						<ParameterEditor>
-							<Id>1791000000503</Id>
-							<Name><![CDATA[null]]></Name>
-							<Label><![CDATA[Nivel de la tolva que dispara el pedido de semilla (fraccion de la capacidad)]]></Label>
-							<EditorContolType>TEXT_BOX</EditorContolType>
-							<MinSliderValue><![CDATA[0]]></MinSliderValue>
-							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
-							<DelimeterType>NO_DELIMETER</DelimeterType>
-						</ParameterEditor>
-					</Properties>                 
 				</Variable>
 				<Variable Class="PlainVariable">
 					<Id>1791000000011</Id>
@@ -4630,7 +4407,6 @@ for (int i = 0; i < n; i++) {
 						</InitialValue>
 					</Properties>
 				</Variable>
-				
 				<Variable Class="PlainVariable">
 					<Id>1792000000042</Id>
 					<Name><![CDATA[horasReparando]]></Name>
@@ -4646,7 +4422,6 @@ for (int i = 0; i < n; i++) {
 						</InitialValue>
 					</Properties>
 				</Variable>
-				
 				<Variable Class="PlainVariable">
 					<Id>1792000000043</Id>
 					<Name><![CDATA[baseFallas]]></Name>
@@ -4662,7 +4437,6 @@ for (int i = 0; i < n; i++) {
 						</InitialValue>
 					</Properties>
 				</Variable>
-				
 				<Variable Class="PlainVariable">
 					<Id>1792000000044</Id>
 					<Name><![CDATA[baseReparando]]></Name>
@@ -4678,7 +4452,6 @@ for (int i = 0; i < n; i++) {
 						</InitialValue>
 					</Properties>
 				</Variable>
-				
 				<Variable Class="PlainVariable">
 					<Id>1786000001201</Id>
 					<Name><![CDATA[diasSinPiso]]></Name>
@@ -4798,6 +4571,214 @@ for (int i = 0; i < n; i++) {
 							<Code><![CDATA[0]]></Code>
 						</InitialValue>
 					</Properties>
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1790500000001</Id>
+					<Name><![CDATA[velocidadSiembra]]></Name>
+					<X>1450</X><Y>-680</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[double]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA[7]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1790500000501</Id>
+							<Name><![CDATA[null]]></Name>
+							<Label><![CDATA[Velocidad de la maquina sembrando [km/h]]]></Label>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1790500000002</Id>
+					<Name><![CDATA[velocidadCosecha]]></Name>
+					<X>1450</X><Y>-640</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[double]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA[5.5]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1790500000502</Id>
+							<Name><![CDATA[null]]></Name>
+							<Label><![CDATA[Velocidad de la maquina cosechando [km/h]]]></Label>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1790500000003</Id>
+					<Name><![CDATA[diaLimiteSiembra]]></Name>
+					<X>1450</X><Y>-600</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[int]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA[45]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1790500000503</Id>
+							<Name><![CDATA[null]]></Name>
+							<Label><![CDATA[Ultimo dia de la ventana de siembra (dia 0 = 1/oct, 45 = 15/nov)]]></Label>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1791000000001</Id>
+					<Name><![CDATA[densidadSiembra]]></Name>
+					<X>1450</X><Y>-300</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[double]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA[70]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1791000000501</Id>
+							<Name><![CDATA[null]]></Name>
+							<Label><![CDATA[Densidad de siembra [kg/ha]]]></Label>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1792000000051</Id>
+					<Name><![CDATA[mtbfHoras]]></Name>
+					<X>1700</X><Y>-300</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[double]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA[100]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1792000000061</Id>
+							<Name><![CDATA[null]]></Name>
+							<Label><![CDATA[MTBF de la maquina [h de operacion]]]></Label>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[500]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1792000000052</Id>
+					<Name><![CDATA[semillaFallas]]></Name>
+					<X>1700</X><Y>-260</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[int]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA[1]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1792000000062</Id>
+							<Name><![CDATA[null]]></Name>
+							<Label><![CDATA[Semilla del generador de fallas]]></Label>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1791000000002</Id>
+					<Name><![CDATA[capacidadSemilla]]></Name>
+					<X>1450</X><Y>-260</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[double]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA[4000]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1791000000502</Id>
+							<Name><![CDATA[null]]></Name>
+							<Label><![CDATA[Capacidad de la tolva de semilla [kg]]]></Label>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1791000000003</Id>
+					<Name><![CDATA[umbralSemilla]]></Name>
+					<X>1450</X><Y>-220</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[double]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA[0.2]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1791000000503</Id>
+							<Name><![CDATA[null]]></Name>
+							<Label><![CDATA[Nivel de la tolva que dispara el pedido de semilla (fraccion de la capacidad)]]></Label>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
 				</Variable>
 				<Variable Class="Parameter">
 					<Id>1169735952668</Id>
@@ -8966,6 +8947,9 @@ de Operaciones Agricolas]]></Text>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[cantidadLotes]]></ParameterName>
+					<ParameterValue Class="CodeValue">
+						<Code><![CDATA[1]]></Code>
+					</ParameterValue>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[capacidadSuperficie]]></ParameterName>
@@ -8999,6 +8983,30 @@ de Operaciones Agricolas]]></Text>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[horaInicio]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[velocidadSiembra]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[velocidadCosecha]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[diaLimiteSiembra]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[densidadSiembra]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[mtbfHoras]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[semillaFallas]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[capacidadSemilla]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[umbralSemilla]]></ParameterName>
 				</Parameter>
 			</Parameters>
 			<PresentationProperties>
@@ -9991,6 +9999,30 @@ try {
 			<FreeformParamValue>	
 				<Id>1786000001505</Id>
 			</FreeformParamValue>
+			<FreeformParamValue>	
+				<Id>1790500000001</Id>
+			</FreeformParamValue>
+			<FreeformParamValue>	
+				<Id>1790500000002</Id>
+			</FreeformParamValue>
+			<FreeformParamValue>	
+				<Id>1790500000003</Id>
+			</FreeformParamValue>
+			<FreeformParamValue>	
+				<Id>1791000000001</Id>
+			</FreeformParamValue>
+			<FreeformParamValue>	
+				<Id>1791000000002</Id>
+			</FreeformParamValue>
+			<FreeformParamValue>	
+				<Id>1791000000003</Id>
+			</FreeformParamValue>
+			<FreeformParamValue>	
+				<Id>1792000000051</Id>
+			</FreeformParamValue>
+			<FreeformParamValue>	
+				<Id>1792000000052</Id>
+			</FreeformParamValue>
 			<RangeVariationParamValue>	
 				<Id>1169735952668</Id>
 				<Type>FIXED</Type>
@@ -10084,6 +10116,38 @@ try {
 			</RangeVariationParamValue>
 			<RangeVariationParamValue>	
 				<Id>1786000001505</Id>
+				<Type>FIXED</Type>
+			</RangeVariationParamValue>
+			<RangeVariationParamValue>	
+				<Id>1790500000001</Id>
+				<Type>FIXED</Type>
+			</RangeVariationParamValue>
+			<RangeVariationParamValue>	
+				<Id>1790500000002</Id>
+				<Type>FIXED</Type>
+			</RangeVariationParamValue>
+			<RangeVariationParamValue>	
+				<Id>1790500000003</Id>
+				<Type>FIXED</Type>
+			</RangeVariationParamValue>
+			<RangeVariationParamValue>	
+				<Id>1791000000001</Id>
+				<Type>FIXED</Type>
+			</RangeVariationParamValue>
+			<RangeVariationParamValue>	
+				<Id>1791000000002</Id>
+				<Type>FIXED</Type>
+			</RangeVariationParamValue>
+			<RangeVariationParamValue>	
+				<Id>1791000000003</Id>
+				<Type>FIXED</Type>
+			</RangeVariationParamValue>
+			<RangeVariationParamValue>	
+				<Id>1792000000051</Id>
+				<Type>FIXED</Type>
+			</RangeVariationParamValue>
+			<RangeVariationParamValue>	
+				<Id>1792000000052</Id>
 				<Type>FIXED</Type>
 			</RangeVariationParamValue>
 			<ModelTimeProperties>
