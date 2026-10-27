@@ -692,7 +692,7 @@ Respaldo: `backups/2026-10-27-pre-gdd.alp`.
 
 ## 14. Causas de parada y horas del carro y del camión (paso 4, 27/10)
 
-Este cambio es el paso 4 de [PLAN.md](PLAN.md) y es la base del resultado #2 (cuellos de botella). Antes, `horasDetenida` mezclaba todas las causas. Ahora cada hora detenida se imputa a una causa, y el carro y el camión informan en qué se les va el tiempo. **Falta la corrida en el IDE.**
+Este cambio es el paso 4 de [PLAN.md](PLAN.md) y es la base del resultado #2 (cuellos de botella). Antes, `horasDetenida` mezclaba todas las causas. Ahora cada hora detenida se imputa a una causa, y el carro y el camión informan en qué se les va el tiempo. **Verificado el 27/10 (ver el final de esta sección).**
 
 Los contadores solo miden: no cambian ninguna decisión del modelo. Por eso una corrida con los mismos parámetros tiene que dar exactamente los mismos eventos que antes.
 
@@ -777,5 +777,28 @@ Una corrida de `Simulation` con los parámetros de la corrida C de la sección 1
 | `jornada` | La causa más grande. Con 1 turno, unas 17,7 h por día de calendario |
 | `total` del carro y del camión | Siembra: la duración de la siembra desde el inicio de la corrida. Cosecha: desde la madurez hasta el cierre |
 | Camión en la siembra | 100% `esperaCarro`: no hay grano |
+
+### Resultado de la corrida del 27/10
+
+Con los parámetros de la corrida C: 12 lotes, `mtbfHoras = 100`, `campania = 0` y `turnos = 1`.
+
+**Los eventos son idénticos a la corrida C:** siembra el día 42, 5 fallas, madurez el día 181, cosecha el día 249 y 74 viajes. La `FUGA` de grano (6,4337e-9) coincide al último dígito. Los contadores no cambian la dinámica.
+
+| Pasada | Paradas (horas) | Control |
+|---|---|---|
+| Siembra (815,68 h detenida) | jornada 768,45 · sinPiso 31,0 · falla 15,65 · traslado 0,57 · sinSemilla 0 · esperaCarro 0 · otra 0 | `suma-detenida` = 1,2e-11 |
+| Cosecha (1.386,29 h detenida) | jornada 1.258,36 · sinPiso 102,0 · esperaCarro 21,28 · falla 3,93 · traslado 0,73 · sinSemilla 0 · otra 0 | `suma-detenida` = 6,8e-13 |
+
+| Pasada | Carro | Camión |
+|---|---|---|
+| Siembra (1.017 h) | ocioso 99,5% · viajando 4,72 h · cargaSemilla 0,19 h | esperaCarro 100% |
+| Cosecha (1.643 h) | conLaMaquina 1.251,76 h (76%) · ocioso 310,7 h (19%) · esperaCamion 41,36 h (3%) · viajando 32,31 h · descargando 6,94 h | esperaCarro 1.594,78 h (97%) · viajando 31,08 h · descargando 10,28 h · cargando 6,94 h |
+
+- **Todos los controles cierran.** Las causas suman `horasDetenida`, `otra` da 0, `falla` coincide con las horas de reparación y el `total` del carro y del camión es la duración de la pasada. Lo que el carro descarga coincide con lo que el camión carga (6,94 h).
+- **La jornada es la causa dominante.** Es el 91% de lo detenido en la cosecha y el 94% en la siembra. Con 1 turno, la máquina trabaja unas 6 h por día.
+- **El piso suma horas enteras** (31 y 102), porque cambia en el tick diario y solo se le imputan las horas de jornada: las demás ya son de `jornada`.
+- **La logística pesa poco.** La máquina espera al carro 21,3 h, el 8% de sus 253 h de trabajo. El carro espera al camión 41,4 h. El camión está ocioso el 97% de la cosecha, así que parece sobredimensionado. Es un candidato para comparar tamaños en el barrido (parte 4.4 del plan).
+- **En la siembra, el carro de semilla está ocioso el 99,5% del tiempo.** Confirma la parte 4.2 del plan: la semilla no es un cuello de botella.
+- **Cuidado al leer `conLaMaquina`.** Incluye las noches en que el carro queda estacionado al lado de la máquina parada. No es tiempo útil.
 
 Respaldo: `backups/2026-10-27-pre-causas-parada.alp`.

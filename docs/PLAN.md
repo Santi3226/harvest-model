@@ -42,7 +42,7 @@ Todos los pasos siguen el mismo protocolo, para que cualquiera del grupo pueda r
 | 1 | Siembra con reabastecimiento de semilla | #2 | Ninguna | **Hecho** (1a verificado). El 1b se descartó |
 | 2 | Fallas de máquina | #1, #2, #3 | Ninguna | **Hecho** (verificado con 1 y 12 lotes) |
 | 3 | Madurez por grados-día (`gdd`) | #1 | Ninguna | **Hecho** (verificado con 1 y 12 lotes) |
-| 4 | Causas de parada y contadores de carro y camión | #2 | 1, 2 | **Implementado**. Falta la corrida |
+| 4 | Causas de parada y contadores de carro y camión | #2 | 1, 2 | **Hecho** (verificado con 12 lotes) |
 | 5 | Rinde según la fecha de siembra y costos | #3 | 1, 3, 4 | Pendiente |
 | 6 | Crecimiento visual del cultivo | Ninguno | 3 | Opcional |
 | 7 | Barrido final de Monte Carlo | #1, #2, #3 | 1 a 5 | Pendiente |
@@ -327,7 +327,7 @@ Se actualiza al terminar cada paso, con la fecha y el commit.
 - [x] Paso 1. Semilla. **1a verificado** el 2026-10-19: siembra con 12 lotes (27 entregas, `FUGA` 1e-11, 0 h sin semilla) y campaña completa con 1 lote (2 entregas, `FUGA` de semilla 0, `FUGA` de grano 1e-11). El 1b (stock finito) se descartó. Detalle en la sección 11 de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md).
 - [x] Paso 2. Fallas de máquina. **Implementado el 2026-10-19** en `feat/fallas`, con generador propio (`semillaFallas`). **Verificado con 1 lote** (sin fallas idéntico al de antes; con `mtbfHoras = 5`, 9 fallas y `FUGA` ~0) y **con 12 lotes el 2026-10-27** (`mtbfHoras = 100`: 5 fallas, 19,6 h de reparación, siembra el día 42, `FUGA` ~0). La media de fallas se mide en el barrido. Detalle en la sección 12 de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md).
 - [x] Paso 3. Madurez por grados-día. **Verificado el 2026-10-27** en `feat/gdd` (sale de `feat/fallas`), con meta 1.900: 1 lote madura el día 147 y 12 lotes el día 177, como se calculó. La cosecha de 12 lotes cierra el día 243, con `FUGA` 5,9e-9. Detalle en la sección 13 de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md).
-- [ ] Paso 4. Causas de parada y contadores. **Implementado el 2026-10-27** en `feat/causas-parada`. Falta la corrida: con los parámetros de la corrida C tiene que repetir los mismos eventos, y las causas tienen que sumar `horasDetenida`. Detalle en la sección 14 de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md).
+- [x] Paso 4. Causas de parada y contadores. **Verificado el 2026-10-27** en `feat/causas-parada`: con los parámetros de la corrida C repite los mismos eventos, las causas suman `horasDetenida` (diferencia 1e-11) y `otra` da 0. En la cosecha, la jornada es el 91% de lo detenido y la espera del carro, 21 h. Detalle en la sección 14 de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md).
 - [ ] Paso 5. Rinde y costos.
 - [ ] Paso 6. Crecimiento visual (opcional).
 - [ ] Paso 7. Barrido final.
