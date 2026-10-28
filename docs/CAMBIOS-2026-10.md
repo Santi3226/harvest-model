@@ -924,3 +924,50 @@ Corrida de Santiago con AnyLogic **8.9.10**, con los parámetros de la corrida C
 **Consecuencia para el barrido:** todas las corridas que se comparan tienen que hacerse con la misma versión de AnyLogic. Si no, las mismas semillas no dan las mismas fallas y se pierde la comparación con semillas comunes.
 
 Respaldo: `backups/2026-10-28-pre-rinde-costos.alp`.
+
+## 16. Madurez con distribución triangular (28/10)
+
+Hasta acá la madurez no tenía distribución: el cultivo maduraba al sumar 1.900 grados-día fijos, y con la misma campaña siempre maduraba el mismo día. Ahora **la meta de grados-día se sortea una vez por corrida** y el clima sigue decidiendo qué tan rápido se llega a ella.
+
+```
+● ──> SinSembrar ──[siembraCompleta]──> Creciendo ──[gdd >= gddMeta]──> Maduro ──[cosechaCompleta]──> Cosechado
+                                         └─ al entrar: gdd = 0
+                                                       gddMeta = triangular(gddMinimo, gddMaximo, gddObjetivo)
+```
+
+| Elemento | Valor | Qué es |
+|---|---|---|
+| `gddMinimo` (parámetro nuevo) | 1.700 | Mínimo de la triangular |
+| `gddObjetivo` | 1.900 | Ahora es la **moda** de la triangular |
+| `gddMaximo` (parámetro nuevo) | 2.100 | Máximo de la triangular |
+| `semillaMadurez` (parámetro nuevo) | 1 | Semilla del sorteo, aparte de la de las fallas |
+| `gddMeta` (variable nueva) | sorteada | Meta de la corrida. La usan la condición `Creciendo → Maduro` y `progresoCultivo()` |
+
+- **Qué representa.** Que no todos los cultivos necesitan la misma acumulación de calor (variedad, ambiente, densidad). Un año caluroso sigue madurando antes que uno fresco.
+- **`Maduro` significa que maduró todo el campo.** Los grados-día se cuentan desde que se cierra la siembra, es decir, desde el último lote sembrado. Los lotes anteriores ya llegaron a la meta. Es conservador: no se puede empezar a cosechar el primer lote hasta que madura el último.
+- **Todos los lotes comparten la meta sorteada.** Una meta por lote (cada lote madura por separado) obligaría a tener un estado de cultivo por lote: se descartó por el tamaño del cambio.
+- **Los valores 1.700 y 2.100 no tienen fuente.** Son los de la sensibilidad del plan y se declaran como supuesto.
+- **Solo mueve la cosecha.** No cambia la siembra (resultado #1) ni el rinde del paso 5, que depende solo de la fecha de siembra.
+- **Orden de los argumentos.** `triangular(minimo, maximo, moda, generador)`, el mismo que ya usaba la reparación: `triangular(0.5, 8.0, 2.0)` da reparaciones de hasta 6,7 h, imposible si el 8 fuera la moda.
+- **La semilla se mezcla** (`semillaMadurez * 0x9E3779B97F4A7C15L`). `java.util.Random` da casi el mismo primer número con semillas consecutivas: con 1, 2 y 3, el primer `nextDouble()` es 0,7309, 0,7311 y 0,7311. Sin la mezcla, las tres réplicas del barrido sortearían la misma meta.
+- **CSV:** dos columnas nuevas después de `semillaFallas`: `semillaMadurez` y `gddMeta` (57 en total). Los parámetros nuevos se agregaron a `Simulation` y a `ParametersVariation`.
+
+**Cómo verificarlo.** Con `semillaMadurez = 1`, la consola dice `madura al sumar N grados-dia` con N entre 1.700 y 2.100, y `Cultivo maduro ... gdd=` muestra una suma apenas mayor que N. Con otra semilla, N cambia y la siembra queda igual.
+
+**Resultado de la corrida del 28/10** (corrida C, `semillaMadurez = 1`, AnyLogic 8.9.10):
+
+- **La meta sorteada es 1.980.** Coincide con la cuenta a mano: el primer número del generador mezclado es 0,822, y la inversa de la triangular da 2.100 − √(0,178 × 400 × 200) = 1.980,7. Eso confirma el orden de los argumentos y la mezcla de la semilla.
+- **La siembra es idéntica** (día 42, 4 fallas, mismas paradas y la misma fila `s_` del CSV): el sorteo de la madurez no toca el generador de las fallas.
+- **Madura el día 187** (antes 181 con 1.900), con 1.985,5 grados-día y 145 días de ciclo.
+- **La cosecha se corre 4 días** y cierra el día 255. Las fallas caen en las mismas horas de trabajo, porque se cuentan en horas de operación: la 5 y la 6 se mueven en el calendario junto con la cosecha. 74 viajes y `FUGA` de 8,2e-9.
+
+**La semilla de las fallas también se mezcla (28/10).** `Combine.generadorFalla()` tenía el mismo problema: con `semillaFallas` 1, 2 y 3, el primer sorteo del tiempo hasta la falla daba 131,3, 131,4 y 131,3 h. El efecto real era chico: `reprogramarFalla()` vuelve a sortear cada vez que la máquina reanuda, así que ese primer sorteo solo cubría el primer tramo de trabajo (unas 6 h, sin falla en ninguna réplica) y los sorteos siguientes ya eran distintos. Se mezcla igual (`semillaFallas * 0x9E3779B97F4A7C15L`; el primer sorteo pasa a 172,6, 47,8 y 251,9 h) para que las réplicas no compartan nada. **Esto cambia las fallas de todas las corridas anteriores**, incluida la corrida C: los resultados de las secciones 12, 14 y 15 quedan como registro, pero ya no se repiten.
+
+**Corrida de verificación del 28/10** (corrida C con las dos semillas mezcladas, `semillaFallas = 1`, `semillaMadurez = 1`):
+
+- **Siembra:** cierra el día 41 (antes 42), con 3 fallas y 6,7 h de reparación (antes 4 y 15,7 h). Las paradas suman lo detenido (1e-11) y la `FUGA` de semilla es 3,6e-11.
+- **Madurez:** la meta sigue en 1.980 (no depende de las fallas). Madura el día 186, con 145 días de ciclo.
+- **Cosecha:** cierra el día 255, con 1 falla (3,6 h), 74 viajes y `FUGA` de grano de 8,5e-9. La espera del carro es 30,5 h.
+- **CSV:** 48 campos en la línea `CSV |`, días por lote crecientes y sin `NA`.
+
+Respaldo: `backups/2026-10-28-pre-madurez-triangular.alp`.

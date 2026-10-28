@@ -89,7 +89,7 @@ Ninguno de estos valores se puede inventar. Cada uno queda marcado en el modelo 
 | Densidad de siembra | 70 kg/ha | INTA, recomendación para soja |
 | Capacidad de la tolva de semilla | 4.000 kg | Ficha técnica de sembradora |
 | MTBF y reparación | A definir | ASABE D497.7 u otro estudio de confiabilidad |
-| Meta de grados-día | 1.900 | INTA o Bolsa de Cereales: fecha típica de cosecha de soja |
+| Meta de grados-día | Triangular (1.700; moda 1.900; 2.100), sorteada por corrida desde el 2026-10-28 | INTA o Bolsa de Cereales: fecha típica de cosecha de soja |
 | Pérdida de rinde por siembra tardía | A definir | INTA, ensayos de fecha de siembra |
 | Costos y precios | A definir | Ver paso 5 |
 
@@ -121,6 +121,7 @@ La superficie (`cantidadLotes`) es el tamaño del problema, no una decisión. Se
 |---|---|
 | Clima (`campaña`, 0 a 19) | Cada escenario se corre con los 20 años. De ahí sale la probabilidad de terminar a tiempo |
 | Fallas (`semillaFallas`) | Varias réplicas por escenario |
+| Madurez (`semillaMadurez`) | Meta de grados-día triangular, sorteada por corrida. Varias réplicas por escenario, con las mismas semillas en todos |
 | Suelo (`umbralPiso`, `lluviaBloqueante`, `capacidadSuperficie`) | Sensibilidad. Se puede presentar como "suelo pesado o liviano" |
 | Cultivo (`gddObjetivo`, `densidadSiembra`, `diaLimiteSiembra`) | Sensibilidad. `gddObjetivo` también podría ser una decisión (variedad de ciclo más corto), pero cambia el rinde y no hay datos para modelarlo |
 | Precios y costos (paso 5) | Sensibilidad del margen |
