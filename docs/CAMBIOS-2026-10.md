@@ -328,7 +328,7 @@ La etiqueta `ScaleCode` de una figura 3D no estaba en este modelo. Se tomó del 
 
 **Verificado el 27/10:** compila (el código generado llama a `shape.setScale(...)`) y la planta crece.
 
-**Pendiente: el color.** La planta cambia de tamaño, pero no de color. Se decidió dejarlo así por ahora. Lo que se averiguó:
+**Color: se resolvió el 28/10 con la opción 1** (ver más abajo, "Color del cultivo en el campo"). Lo que se había averiguado sobre colorear la planta:
 
 - **En 2D no se puede cambiar el color del ícono.** AnyLogic dibuja la figura 3D en 2D como una imagen ya renderizada (`3d_low_poly_wheat.dae_yzx_-6_-5_10_10.png` en la carpeta de compilación).
 - **La tabla de colores no admite código.** En los más de 1.000 ejemplos de AnyLogic, `ColorMapping` solo tiene colores fijos.
@@ -350,6 +350,22 @@ Respaldo: `backups/2026-10-27-pre-crecimiento-visual.alp`.
 - **Al cambiar de lote**, la parte trabajada vuelve a 0 (`XCompleted = 0` al empezar cada lote) y crece de nuevo, porque el dibujo es un solo lote que se repite. Es intencional: el avance total está en `rectLote`.
 
 Respaldo: `backups/2026-10-28-pre-colores-campo.alp`.
+
+**Color del cultivo en el campo (paso 6, 28/10).** Es la opción 1 de arriba: el color del campo sigue el estado del cultivo, con el barro y la lluvia como prioridad. La lógica está en tres funciones de `Main`, y las figuras solo las llaman (`field` usa `colorCampo()`; `rectangle`, `rectangle1` y `rectangle2` usan `colorTrabajada()`).
+
+| Estado (sin barro ni lluvia) | Campo sin trabajar (`colorCampo`) | Parte trabajada (`colorTrabajada`) |
+|---|---|---|
+| `SinSembrar` | Amarillo pálido: suelo sin sembrar | Verde claro (197, 225, 165): recién sembrado |
+| `Creciendo` | De verde claro a verde intenso (76, 175, 80) según `progresoCultivo()` (`colorCultivo`) | Igual |
+| `Maduro` | Ámbar (255, 193, 7): maduro sin cosechar | Ámbar antes de que arranque la cosecha; rastrojo (188, 170, 120) desde el primer lote cosechado |
+| `Cosechado` | Rastrojo | Rastrojo |
+
+- **Por qué `Maduro` distingue antes y después de arrancar.** Al terminar la siembra, `XCompleted` queda en el ancho del lote, así que la parte trabajada cubre el campo entero durante el crecimiento. Recién vuelve a 0 cuando empieza el primer lote de cosecha. Hasta entonces (`!combine.enCampo && lotesCompletados == 0`) se pinta del color del cultivo maduro.
+- **Barro y lluvia siguen primero**, con los mismos colores de antes.
+- Los cuadraditos de `rectLote` no cambian.
+- **Detalle visual sin resolver:** en la siembra, con la máquina parada, puede verse una línea clara de una hilera de ancho, a unas 3 hileras del borde de lo sembrado y de toda la altura del campo. Por el ancho parece la hilera en curso (`rectangle1`/`rectangle2`), pero esas figuras usan el mismo `XCompleted` que la parte trabajada y no se encontró la causa. No afecta resultados.
+
+Respaldo: `backups/2026-10-28-pre-color-cultivo.alp`.
 
 ---
 

@@ -6079,6 +6079,60 @@ return 0;]]></Body>
 				</Function>
 				<Function AccessType="default" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[java.awt.Color]]></ReturnType>
+					<Id>1796000000001</Id>
+					<Name><![CDATA[colorCampo]]></Name>
+					<X>1650</X><Y>-300</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[// color del campo que todavia no se trabajo en el lote actual (figura field).
+// Prioridad: barro sin piso, lluvia del dia (1 mm o mas), estado del cultivo. Solo presentacion.
+if ( !daPiso ) return new java.awt.Color( 121, 85, 72 );
+if ( lluviaHoy() >= 1 ) return new java.awt.Color( 161, 136, 127 );
+if ( inState( SinSembrar ) ) return new java.awt.Color( 255, 255, 153 );  // suelo sin sembrar
+if ( inState( Creciendo ) ) return colorCultivo();
+if ( inState( Maduro ) ) return new java.awt.Color( 255, 193, 7 );         // maduro, sin cosechar
+return new java.awt.Color( 188, 170, 120 );                               // rastrojo]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[java.awt.Color]]></ReturnType>
+					<Id>1796000000002</Id>
+					<Name><![CDATA[colorTrabajada]]></Name>
+					<X>1650</X><Y>-260</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[// color de la parte ya trabajada del lote y de la hilera en curso (rectangle, rectangle1, rectangle2).
+// Con barro o lluvia es mas oscura que el campo. Solo presentacion.
+if ( !daPiso ) return new java.awt.Color( 78, 52, 46 );
+if ( lluviaHoy() >= 1 ) return new java.awt.Color( 121, 85, 72 );
+if ( inState( SinSembrar ) ) return new java.awt.Color( 197, 225, 165 );  // recien sembrado
+if ( inState( Creciendo ) ) return colorCultivo();
+// antes de que arranque la cosecha la parte trabajada cubre el lote entero, que sigue maduro;
+// desde el primer lote cosechado, lo trabajado es rastrojo
+if ( inState( Maduro ) && !combine.enCampo && lotesCompletados == 0 ) return new java.awt.Color( 255, 193, 7 );
+return new java.awt.Color( 188, 170, 120 );]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[java.awt.Color]]></ReturnType>
+					<Id>1796000000003</Id>
+					<Name><![CDATA[colorCultivo]]></Name>
+					<X>1650</X><Y>-220</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[// verde del cultivo creciendo: de recien sembrado a verde intenso segun los grados-dia (progresoCultivo)
+double p = progresoCultivo();
+return new java.awt.Color( (int)( 197 + ( 76 - 197 ) * p ), (int)( 225 + ( 175 - 225 ) * p ), (int)( 165 + ( 80 - 165 ) * p ) );]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
 					<ReturnType><![CDATA[String]]></ReturnType>
 					<Id>1795000000005</Id>
 					<Name><![CDATA[filaPasada]]></Name>
@@ -6645,11 +6699,8 @@ return s + ";" + c;]]></Body>
 					<Height>320</Height>
 					<Rotation>0.0</Rotation>
 					<FillColor>-103</FillColor>
-					<FillColorCode><![CDATA[// sin piso: barro; llovio hoy (1 mm o mas) pero da piso: tierra mojada (marron claro); si no, el color original
-// la llovizna de menos de 1 mm no se dibuja: el umbral meteorologico de dia de lluvia es 1 mm
-!daPiso ? new java.awt.Color( 121, 85, 72 )
-: lluviaHoy() >= 1 ? new java.awt.Color( 161, 136, 127 )
-: new java.awt.Color( 255, 255, 153 )]]></FillColorCode>
+					<FillColorCode><![CDATA[// barro, lluvia (1 mm o mas) o estado del cultivo: ver Main.colorCampo()
+colorCampo()]]></FillColorCode>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle>
 				<Oval>
@@ -6779,10 +6830,8 @@ return s + ";" + c;]]></Body>
 					<WidthCode><![CDATA[combine.XCompleted]]></WidthCode>
 					<Rotation>0.0</Rotation>
 					<FillColor>-1638503</FillColor>
-					<FillColorCode><![CDATA[// parte ya trabajada del lote: mas oscura que el resto del campo con barro o lluvia
-!daPiso ? new java.awt.Color( 78, 52, 46 )
-: lluviaHoy() >= 1 ? new java.awt.Color( 121, 85, 72 )
-: new java.awt.Color( 230, 255, 153 )]]></FillColorCode>
+					<FillColorCode><![CDATA[// parte trabajada del lote: ver Main.colorTrabajada()
+colorTrabajada()]]></FillColorCode>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle>
 				<Rectangle>
@@ -6810,10 +6859,8 @@ return s + ";" + c;]]></Body>
 					<HeightCode><![CDATA[field.getHeight() - combine.YCompletedNow()]]></HeightCode>
 					<Rotation>0.0</Rotation>
 					<FillColor>-1638503</FillColor>
-					<FillColorCode><![CDATA[// parte ya trabajada del lote: mas oscura que el resto del campo con barro o lluvia
-!daPiso ? new java.awt.Color( 78, 52, 46 )
-: lluviaHoy() >= 1 ? new java.awt.Color( 121, 85, 72 )
-: new java.awt.Color( 230, 255, 153 )]]></FillColorCode>
+					<FillColorCode><![CDATA[// parte trabajada del lote: ver Main.colorTrabajada()
+colorTrabajada()]]></FillColorCode>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle>
 				<Rectangle>
@@ -6841,10 +6888,8 @@ return s + ";" + c;]]></Body>
 					<HeightCode><![CDATA[combine.YCompletedNow()]]></HeightCode>
 					<Rotation>0.0</Rotation>
 					<FillColor>-1638503</FillColor>
-					<FillColorCode><![CDATA[// parte ya trabajada del lote: mas oscura que el resto del campo con barro o lluvia
-!daPiso ? new java.awt.Color( 78, 52, 46 )
-: lluviaHoy() >= 1 ? new java.awt.Color( 121, 85, 72 )
-: new java.awt.Color( 230, 255, 153 )]]></FillColorCode>
+					<FillColorCode><![CDATA[// parte trabajada del lote: ver Main.colorTrabajada()
+colorTrabajada()]]></FillColorCode>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle>
 				<Rectangle>
