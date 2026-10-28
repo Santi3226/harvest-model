@@ -119,7 +119,7 @@ La superficie (`cantidadLotes`) es el tamaño del problema, no una decisión. Se
 
 | Factor | Cómo se usa |
 |---|---|
-| Clima (`campania`, 0 a 19) | Cada escenario se corre con los 20 años. De ahí sale la probabilidad de terminar a tiempo |
+| Clima (`campaña`, 0 a 19) | Cada escenario se corre con los 20 años. De ahí sale la probabilidad de terminar a tiempo |
 | Fallas (`semillaFallas`) | Varias réplicas por escenario |
 | Suelo (`umbralPiso`, `lluviaBloqueante`, `capacidadSuperficie`) | Sensibilidad. Se puede presentar como "suelo pesado o liviano" |
 | Cultivo (`gddObjetivo`, `densidadSiembra`, `diaLimiteSiembra`) | Sensibilidad. `gddObjetivo` también podría ser una decisión (variedad de ciclo más corto), pero cambia el rinde y no hay datos para modelarlo |
@@ -134,6 +134,11 @@ La superficie (`cantidadLotes`) es el tamaño del problema, no una decisión. Se
 La mejor elección para cada superficie es la combinación de **mayor margen que cumple una probabilidad mínima** de terminar a tiempo, por ejemplo 90%.
 
 **Propuesta.** El barrido principal (paso 7) cruza turnos (1 a 3) × máquinas (1 a 3) × superficie, más uno o dos tamaños de carro y de camión. Las demás variables de decisión y los factores inciertos van a la sensibilidad (paso 8), de a uno por vez. Cada factor que se agrega al barrido multiplica la cantidad de corridas. Por eso conviene elegir pocos y bien.
+
+**Reglas del Monte Carlo (decididas el 2026-10-28).**
+
+1. **Las mismas semillas para todos los escenarios.** Cada escenario se corre con los mismos 20 climas (`campaña` de 0 a 19) y con el mismo conjunto fijo de semillas de fallas (`semillaFallas` de 1 a R). Nunca se sortea una semilla distinta por escenario. Así, la diferencia entre dos escenarios se debe al escenario y no a que les tocaron fallas distintas, y se necesitan menos corridas para distinguirlos. Esta técnica se llama números aleatorios comunes. El modelo lo permite porque las fallas usan su propio generador y la madurez depende solo del clima. Hay un límite que se declara en el informe: la secuencia de tiempos entre fallas es la misma, pero cae en otro momento del calendario si el escenario cambia los turnos o la velocidad, porque se cuenta en horas de trabajo.
+2. **No se prueban todas las combinaciones.** El barrido principal cruza solo los factores más importantes. El resto se estudia en la sensibilidad (paso 8), de a un parámetro por vez y con los demás en su valor base.
 
 **Para decidir en el grupo.** Qué variables de decisión entran al barrido principal, qué tamaños de carro y de camión se comparan, y qué probabilidad mínima se exige. Hay que decidirlo antes del paso 7.
 
@@ -286,7 +291,7 @@ Que el trigo 3D crezca durante `Creciendo`: altura o escala proporcional a `gdd 
 **Objetivo.** Generar los resultados definitivos de los tres entregables.
 
 **Diseño.**
-- Experimento `ParametersVariation` con `campania` de 0 a 19, `cantidadLotes`, `turnos` y las variables de decisión que se elijan en la parte 4.4. Con el paso 2 hay aleatoriedad (las fallas), así que se hacen **varias réplicas** por combinación, con semillas distintas. La madurez por grados-día no suma aleatoriedad: depende solo del clima de la campaña.
+- Experimento `ParametersVariation` con `campaña` de 0 a 19, `cantidadLotes`, `turnos` y las variables de decisión que se elijan en la parte 4.4. Con el paso 2 hay aleatoriedad (las fallas), así que se hacen **varias réplicas** por combinación: `semillaFallas` de 1 a R, **el mismo conjunto en todas las combinaciones** (parte 4.4, reglas del Monte Carlo). Solo se cruzan los factores elegidos en la parte 4.4, no todas las combinaciones de parámetros. La madurez por grados-día no suma aleatoriedad: depende solo del clima de la campaña.
 - Se agregan al experimento los parámetros nuevos, como `mtbfHoras` y `densidadSiembra`. La lista de parámetros se congela al crear el experimento. Por eso hay que agregarlos al XML o recrearlo (aprendizaje 17 del contexto).
 - `herramientas/analizar_barrido.py` (nuevo) lee `resultados.csv` y arma las tablas: probabilidad de terminar antes del 15/11, medianas, causas de parada y margen. Así el análisis se puede repetir y auditar.
 - Las máquinas extra se calculan en el análisis (parte 4.1).
@@ -295,6 +300,7 @@ Que el trigo 3D crezca durante `Creciendo`: altura o escala proporcional a `gdd 
 - No hay corridas sin fila en el CSV: el número de filas es igual al esperado.
 - La tabla de probabilidad tiene sentido: sube con los turnos y baja con la superficie.
 - Con `mtbfHoras = 1e9`, el resultado coincide con el de antes de agregar fallas.
+- Todos los escenarios tienen las mismas filas de `campaña` × `semillaFallas`. Se comprueba en el script de análisis antes de comparar.
 
 ### Paso 8. Sensibilidad
 

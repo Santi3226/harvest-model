@@ -52,8 +52,8 @@ $AL/jre/bin/javap -classpath $AL/plugins/com.anylogic.engine_8.9.9.*/com.anylogi
 Usar el glob `com.anylogic.engine_8.9.9.*` y no `com.anylogic.engine_*`: en esta máquina conviven el plugin 8.9.8 y el 8.9.9 (la actualización se hizo encima de la instalación vieja), y el glob amplio expande a dos jars y rompe el `-classpath`. Algunas clases (`UtilitiesRandom`) no están en ese jar; para esas, armar el classpath desde el `.classpath` del proyecto del workspace.
 
 **Correr:** en el IDE. Dos experimentos:
-- `Simulation` — corrida única, termina al cerrar la cosecha (`terminarAlCerrarCampania = true`), modo *Real time with scale* (el statechart `cicloCultivo` cambia la escala de tiempo por estado: siembra 0,5 días/s, cosecha 0,05 días/s, crecimiento 1 semana/s). El dibujo del campo es **un lote**: la máquina lo repite `cantidadLotes` veces; el avance total se ve en `textAvance` y en la fila de cuadraditos `rectLote` (ver sección 6 bis de [docs/CAMBIOS-2026-10.md](docs/CAMBIOS-2026-10.md)).
-- `ParametersVariation` — Monte Carlo. Varía `campania` 0→19, `cantidadLotes` 6→30 paso 6, `turnos` 1→3. Stop at specified time = **52** (la unidad del modelo es **Week**; antes 31), start date 01/10/2005. *Before each experiment run* borra `resultados.csv` y escribe el encabezado (`lotes;turnos;campania;diaFinSiembra;diaMadurez;diaFinCosecha`); *After simulation run* appendea una fila. La ruta es relativa (`"resultados.csv"`) y los `catch` hacen `traceln` visible. ⚠️ El `resultados.csv` versionado es del **modelo anterior** (4 columnas, pasada de cosechadora en octubre): hay que rehacerlo, ver [docs/PLAN.md](docs/PLAN.md).
+- `Simulation` — corrida única, termina al cerrar la cosecha (`terminarAlCerrarCampaña = true`), modo *Real time with scale* (el statechart `cicloCultivo` cambia la escala de tiempo por estado: siembra 0,5 días/s, cosecha 0,05 días/s, crecimiento 1 semana/s). El dibujo del campo es **un lote**: la máquina lo repite `cantidadLotes` veces; el avance total se ve en `textAvance` y en la fila de cuadraditos `rectLote` (ver sección 6 bis de [docs/CAMBIOS-2026-10.md](docs/CAMBIOS-2026-10.md)).
+- `ParametersVariation` — Monte Carlo. Varía `campaña` 0→19, `cantidadLotes` 6→30 paso 6, `turnos` 1→3. Stop at specified time = **52** (la unidad del modelo es **Week**; antes 31), start date 01/10/2005. *Before each experiment run* borra `resultados.csv` y escribe el encabezado (`lotes;turnos;campaña;diaFinSiembra;diaMadurez;diaFinCosecha`); *After simulation run* appendea una fila. La ruta es relativa (`"resultados.csv"`) y los `catch` hacen `traceln` visible. ⚠️ El `resultados.csv` versionado es del **modelo anterior** (4 columnas, pasada de cosechadora en octubre): hay que rehacerlo, ver [docs/PLAN.md](docs/PLAN.md).
 
 ⚠️ Si se agregan parámetros a `Main` (por ejemplo los de fallas), hay que **recrear** `ParametersVariation`: su lista de parámetros quedó congelada al crearlo.
 
@@ -121,13 +121,13 @@ Series **reales de NASA POWER** (20 campañas 2005/06–2024/25, 365 o 366 días
 
 `Main.cicloCultivo` (desde 2026-10-05): `● ──> SinSembrar ──[siembraCompleta]──> Creciendo ──[timeout diasHastaMadurez]──> Maduro ──[cosechaCompleta]──> Cosechado`.
 
-**Una corrida = una campaña** (la serie de clima cubre 1/10 a 30/9, día 0 = 1/10). `Cosechado` es estado final: para otra campaña se cambia el parámetro `campania` (0–19), no se reinicia el ciclo.
+**Una corrida = una campaña** (la serie de clima cubre 1/10 a 30/9, día 0 = 1/10). `Cosechado` es estado final: para otra campaña se cambia el parámetro `campaña` (0–19), no se reinicia el ciclo.
 
 **Una sola máquina (`Combine`) con dos modos**, deducidos del estado del campo: `Main.sembrando()` = `inState( SinSembrar )`. Sembrando, `Combine.tasaCosechaActual()` da 0 (no entra grano, carro y camión quedan quietos) y la velocidad es `velocidadSiembra` (7 km/h); cosechando, `velocidadCosecha` (5,5 km/h). Sale del galpón con `Main.laborPendiente()` (hay campo por sembrar o maduro, y quedan lotes).
 
 `Main.onCompleted()` lo llama `Combine` por cada lote; al cerrar todos los lotes de la pasada fija `diaFinSiembra` (contra `diaLimiteSiembra` = 45, 15/11) o `diaFinCosecha`/`diaMadurez`, e imprime `reportarPasada()`.
 
-**Madurez por grados-día (paso 3, verificado 2026-10-27):** `Creciendo` pone `gdd = 0`; el tick suma `max(0, tmedia − tBase)` y `Creciendo → Maduro` es la condición `gdd >= gddObjetivo` (1.900). `diasHastaMadurez` ahora es salida (largo del ciclo); `diasMaduracionMin/Max/Moda` quedan sin uso hasta el paso 9. Medido con `campania = 0`, sin fallas: 1 lote madura el día 147, 12 lotes el día 177 (cosecha cierra el 243, 74 viajes, `FUGA` 5,9e-9). Sección 13 de [docs/CAMBIOS-2026-10.md](docs/CAMBIOS-2026-10.md).
+**Madurez por grados-día (paso 3, verificado 2026-10-27):** `Creciendo` pone `gdd = 0`; el tick suma `max(0, tmedia − tBase)` y `Creciendo → Maduro` es la condición `gdd >= gddObjetivo` (1.900). `diasHastaMadurez` ahora es salida (largo del ciclo); `diasMaduracionMin/Max/Moda` quedan sin uso hasta el paso 9. Medido con `campaña = 0`, sin fallas: 1 lote madura el día 147, 12 lotes el día 177 (cosecha cierra el 243, 74 viajes, `FUGA` 5,9e-9). Sección 13 de [docs/CAMBIOS-2026-10.md](docs/CAMBIOS-2026-10.md).
 
 Explicación completa y decisiones: [docs/CAMBIOS-2026-10.md](docs/CAMBIOS-2026-10.md). Verificado con `Simulation` (12 lotes, 1 turno, campaña 0) **antes del paso 3**: siembra cierra el día 40 (198,9 h, 0 viajes), maduro día 168, cosecha cierra el día 236 (253,1 h, 75 viajes), `FUGA` = 5e-9.
 
@@ -155,7 +155,7 @@ Las 23 completas están en la sección 5 de [docs/CONTEXTO-TRASPASO.md](docs/CON
 
 ## Convenciones
 
-- El modelo, los comentarios y los `traceln` están **en español sin tildes** (el código embebido en el `.alp`). Los docs sí llevan tildes.
+- El modelo, los comentarios y los `traceln` están **en español sin tildes** (el código embebido en el `.alp`), **pero con ñ**: `campaña`, `diaCampaña`, `tamaño`, nunca `campania` ni `tamano` (decidido el 2026-10-28; Java y AnyLogic aceptan la ñ en identificadores). Los docs sí llevan tildes.
 - Commits en español, formato `tipo: descripción` (`feat:`, `fix:`, `docs:`).
 - Preferencia del autor: aplicar los cambios mecánicos directamente sobre el `.alp`; guiar en el IDE cuando hay que dibujar elementos nuevos de statechart. Pide análisis previo cuando hay una decisión de modelado de por medio.
 

@@ -906,7 +906,7 @@ tUltimo = time();</div>
             </g>
             <g font-family="IBM Plex Mono, monospace" font-size="10" fill="currentColor" opacity=".8">
               <text x="308" y="228">cada hora  →  combine.moveControl.onChange()</text>
-              <text x="308" y="248">cada 24 h  →  diaCampania++ · humedadSuperficie · daPiso · gdd</text>
+              <text x="308" y="248">cada 24 h  →  diaCampaña++ · humedadSuperficie · daPiso · gdd</text>
               <text x="308" y="268">cada 24 h  →  cicloCultivo.onChange()</text>
             </g>
             <text x="308" y="288" font-family="IBM Plex Mono, monospace" font-size="9" fill="currentColor" opacity=".55">el tick horario existe porque las condiciones no se revisan solas</text>
@@ -1106,7 +1106,7 @@ return h &lt; horasDia;</div>
           <tbody>
             <tr><td><code>cantidadLotes</code></td><td class="num">40</td><td class="num">6 → 30 paso 6</td><td>Superficie a trabajar, en lotes de 104 ha</td></tr>
             <tr><td><code>turnos</code></td><td class="num">1</td><td class="num">1 → 3</td><td>Cuántos turnos de operario cubren la máquina</td></tr>
-            <tr><td><code>campania</code></td><td class="num">0</td><td class="num">0 → 19</td><td>Cuál de las 20 campañas históricas se usa</td></tr>
+            <tr><td><code>campaña</code></td><td class="num">0</td><td class="num">0 → 19</td><td>Cuál de las 20 campañas históricas se usa</td></tr>
           </tbody>
         </table>
       </div>
@@ -1125,7 +1125,7 @@ return h &lt; horasDia;</div>
             <tr><td><code>horaInicio</code></td><td class="num">6</td><td>Hora de arranque de la jornada</td></tr>
             <tr><td><code>diasMaduracionMin/Max/Moda</code></td><td class="num">90 / 150 / 120</td><td>Ciclo de soja — <em>ver Parte 13</em></td></tr>
             <tr><td><code>tBase</code> · <code>gddObjetivo</code></td><td class="num">10 °C · 1680</td><td>Grados-día base 10. Calibrados pero <strong>todavía sin usar</strong></td></tr>
-            <tr><td><code>terminarAlCerrarCampania</code></td><td class="num">true</td><td>Interruptor de experimento — <em>ver Parte 11</em></td></tr>
+            <tr><td><code>terminarAlCerrarCampaña</code></td><td class="num">true</td><td>Interruptor de experimento — <em>ver Parte 11</em></td></tr>
           </tbody>
         </table>
       </div>
@@ -1137,7 +1137,7 @@ return h &lt; horasDia;</div>
           <tbody>
             <tr><td><code>climaLluvia</code> · <code>climaTmedia</code> · <code>climaEt0</code></td><td>texto</td><td>Las series NASA POWER crudas, embebidas como texto</td></tr>
             <tr><td><code>lluviaDiaria</code> · <code>tmediaDiaria</code> · <code>et0Diaria</code></td><td>número [ ][ ]</td><td>Lo mismo ya convertido a números: <code>[campaña][día]</code>, 20 × 212</td></tr>
-            <tr><td><code>diaCampania</code></td><td>entero</td><td>Día actual dentro de la campaña. <strong>Se reinicia en cada campaña</strong></td></tr>
+            <tr><td><code>diaCampaña</code></td><td>entero</td><td>Día actual dentro de la campaña. <strong>Se reinicia en cada campaña</strong></td></tr>
             <tr><td><code>humedadSuperficie</code></td><td>número</td><td>Milímetros de agua en la capa superficial</td></tr>
             <tr><td><code>daPiso</code></td><td>sí/no</td><td>La bandera. Lo único que el resto del modelo mira</td></tr>
             <tr><td><code>gdd</code></td><td>número</td><td>Grados-día acumulados. Se calcula pero <strong>no se usa</strong></td></tr>
@@ -1236,7 +1236,7 @@ CLIMA dia 1 | lluvia=0.1 etc=4.62
           <div class="ann-note"><b>La noche.</b> Fin de jornada a las 12:17 con 8.560 kg en el tanque; reanuda al día siguiente a las 06:00 con <strong>los mismos 8.560 kg</strong>. Ese par de números idénticos es el chequeo de que la máquina no cosecha estando parada — la mecánica de la Parte 4.</div>
         </div>
         <div class="ann-row">
-          <div class="ann-code">=== CAMPANIA 1 CERRADA
+          <div class="ann-code">=== CAMPAÑA 1 CERRADA
     | superficie=104 ha
     | fin el dia 3 de la ventana
     | DENTRO del 15/nov</div>
@@ -1250,7 +1250,7 @@ CLIMA dia 1 | lluvia=0.1 etc=4.62
           <div class="ann-note"><b>Conservación de masa.</b> 313.200 kg contra los 312.000 teóricos (104 ha × 3 t/ha): +0,38%, porque la máquina hace 145 pasadas de 9 m sobre un lote de 1.300 m y sobra media pasada. La <code>FUGA</code> en 10⁻¹¹ es ruido de coma flotante. <em>Ojo: ese <code>t</code> está en semanas.</em></div>
         </div>
         <div class="ann-row">
-          <div class="ann-code">CAMPANIA 1 | cosechando=21.09 h
+          <div class="ann-code">CAMPAÑA 1 | cosechando=21.09 h
     | detenida=62.81 h | uso=25%
     | viajes camion=5
     | dias sin piso=0</div>
@@ -1291,7 +1291,7 @@ CLIMA dia 1 | lluvia=0.1 etc=4.62
             <tr><td><strong>Para qué</strong></td><td>Ver el modelo funcionando, depurar</td><td>Producir los resultados del entregable</td></tr>
             <tr><td><strong>Corridas</strong></td><td>1</td><td>300 · 5 superficies × 3 turnos × 20 campañas</td></tr>
             <tr><td><strong>Cuándo termina</strong></td><td>15/05/2026 (~421 semanas)</td><td>A las <strong>31 semanas</strong> (217 días)</td></tr>
-            <tr><td><strong><code>terminarAlCerrarCampania</code></strong></td><td><span class="ok">false</span> — deja correr el ciclo completo</td><td><span class="ok">true</span> — corta al cerrar la campaña</td></tr>
+            <tr><td><strong><code>terminarAlCerrarCampaña</code></strong></td><td><span class="ok">false</span> — deja correr el ciclo completo</td><td><span class="ok">true</span> — corta al cerrar la campaña</td></tr>
             <tr><td><strong>Modo</strong></td><td>Con animación, a velocidad escalada</td><td>Sin animación, lo más rápido posible</td></tr>
             <tr><td><strong>Salida</strong></td><td>La consola</td><td>Una fila por corrida en <code>resultados.csv</code></td></tr>
           </tbody>
@@ -1299,7 +1299,7 @@ CLIMA dia 1 | lluvia=0.1 etc=4.62
       </div>
 
       <div class="note">
-        <span class="tag">Por qué existe terminarAlCerrarCampania</span>
+        <span class="tag">Por qué existe terminarAlCerrarCampaña</span>
         <p>En el barrido, cada corrida tiene que ser <strong>una observación limpia</strong>: una campaña, un valor de <code>diaFinSiembra</code>. Con el interruptor en <code>true</code> el modelo se corta apenas cierra la campaña y no sigue simulando meses que nadie va a mirar. Si <em>no</em> cierra dentro de los 212 días de datos climáticos, <code>diaFinSiembra</code> queda en <strong>−1</strong>, que es la observación «no terminó» — no un error.</p>
         <p>En la corrida única querés lo contrario: ver el ciclo agronómico completo. Con el interruptor en <code>true</code>, los estados <code>Creciendo</code> y <code>Maduro</code> son literalmente inalcanzables.</p>
       </div>
@@ -1445,7 +1445,7 @@ CLIMA dia 1 | lluvia=0.1 etc=4.62
       <ul>
         <li>Crecimiento visual: ligar la altura de la figura del cultivo a un <code>progresoCultivo()</code> calculado desde <code>tInicioCrecimiento</code>.</li>
         <li>Contadores de ocio para el acoplado y el camión (solo está el de la máquina).</li>
-        <li>Avanzar <code>campania</code> entre campañas de una misma corrida, en vez de repetir la misma serie climática.</li>
+        <li>Avanzar <code>campaña</code> entre campañas de una misma corrida, en vez de repetir la misma serie climática.</li>
         <li>Corregir la ruta fija del código que escribe el CSV, que apunta a la máquina de otro integrante del equipo y falla en silencio.</li>
       </ul>
     </section>

@@ -133,13 +133,13 @@ Todos contradicen algún supuesto razonable y cada uno costó al menos una corri
 13. **Las transiciones por condición NO se re-evalúan cuando la variable la modifica otro agente.** AnyLogic las testea en momentos discretos, y uno garantizado es al entrar al estado de origen. Síntoma que costó una sesión: `Parked --[!main.siembraCompleta]--> GoingToField` disparaba en t=0 (porque al entrar a `Parked` la condición ya era verdadera) y **nunca más**, aunque `siembraCompleta` volviera a `false` 120 días después. La cosechadora quedaba estacionada para siempre. Solución: `Statechart.onChange()` (verificado con `javap`, es público) desde donde se modifica la variable. En el modelo hay dos: `combine.moveControl.onChange()` en la acción de `Maduro → SinSembrar`, y `cicloCultivo.onChange()` al final de `onCompleted()`. **Regla: toda condición que dependa de una variable de otro agente necesita su `onChange()` explícito.**
 14. **`SelectionModeForSimultaneousEvents` está en LIFO**, y eso rompe handshakes de dos mensajes emitidos en el mismo instante: el segundo enviado se procesa primero. Si el receptor todavía no está en el estado que escucha ese mensaje, **el mensaje se descarta en silencio** (una transición por mensaje no encola: si el estado no está activo, se pierde). Ver sección 8 para el caso concreto que fabricó 150 t de grano. **No cambiar a FIFO como arreglo**: sirve para confirmar un diagnóstico, pero tapa el handshake perdido y mueve el comportamiento de todo lo demás.
 15. **Validar que el XML parsea no alcanza** (complemento del aprendizaje 11). Un script previo insertó variables dentro de `<Variables>` con indentación disparatada: el archivo parseaba, AnyLogic lo aceptaba y lo normalizaba al re-serializar. Es inofensivo pero produce diffs de git ilegibles y confunde el próximo diagnóstico. Verificar además el **padre** en el que se inserta y la indentación.
-16. **No usar `return` en acciones de transición ni de estado.** AnyLogic no las compila como métodos propios: las despacha desde uno compartido (`executeActionOf`, visible en cualquier stack trace). Un `return` sale del **despachador**, no de la acción, y saltea el rearmado de la autotransición. Síntoma real: un tick horario con `if ( horaTick % 24 != 0 ) return;` se disparó **una sola vez**, `diaCampania` quedó clavado en 0 y **400 corridas de barrido devolvieron 0**. Envolver en `if` en vez de salir temprano. Dentro de una `Function` el `return` se usa normalmente.
+16. **No usar `return` en acciones de transición ni de estado.** AnyLogic no las compila como métodos propios: las despacha desde uno compartido (`executeActionOf`, visible en cualquier stack trace). Un `return` sale del **despachador**, no de la acción, y saltea el rearmado de la autotransición. Síntoma real: un tick horario con `if ( horaTick % 24 != 0 ) return;` se disparó **una sola vez**, `diaCampaña` quedó clavado en 0 y **400 corridas de barrido devolvieron 0**. Envolver en `if` en vez de salir temprano. Dentro de una `Function` el `return` se usa normalmente.
 17. **La lista de parámetros de un experimento Parameter Variation se congela al crearlo.** Los parámetros agregados a `Main` después **no aparecen** y las corridas usan su valor por defecto, en silencio. Si se agregan parámetros hay que refrescar la lista o recrear el experimento. Costó un barrido de 400 corridas en el que `turnos` nunca se varió.
 18. **Ningún ejemplo de los que trae AnyLogic tiene un experimento Parameter Variation**, así que no hay plantilla XML de la cual copiar el esquema: ese experimento hay que crearlo en el IDE.
 19. **Límite de 65.535 bytes de bytecode por método de la JVM.** AnyLogic mete la inicialización de **todas** las variables de un agente en un único método generado (`setupPlainVariables_Main_xjal`). Tres literales de arreglo con 4.240 valores cada uno lo desbordan. Solución: guardar los datos como **String** (una sola instrucción `ldc`) y parsearlos al arranque. El límite de una constante String es 64 KB y el mayor de los tres mide 20 KB.
 20. **`<Guard>` existe y es fácil pasarlo por alto.** `Cart.trImmedGotoUnloading` tiene `Trigger="timeout"` con timeout 0 **y** `<Guard>main.truck.atField()</Guard>`. Al auditar una transición hay que leer el `<Guard>` además del trigger, si no se razona sobre lógica que no es la real. Ojo: si la guarda es falsa al expirar el timeout, la transición no dispara y **no se reprograma** — por eso no conviene endurecer guardas sin verificar que exista otro camino de salida del estado (acá lo hay: `trTruckArrived` por mensaje).
 21. **Conservar masa no prueba que la fuente sea correcta** (commit `7e66a63`, 2026-08-27). `tankControl` rearmaba `harvestRate()` en los entry/exit del tanque sin mirar `puedeTrabajar()`: la tolva se llenaba de noche y con el lote embarrado. `auditarMasa()` no lo vio, porque `totalCosechado` crecía en paralelo al nivel y la `FUGA` seguía en 1e-11. Arreglo: la tasa pasó a ser **derivada y no latcheada**, con la bandera `Combine.trabajando` y la función `tasaCosechaActual()`, usadas en los tres entry/exit del tanque y en parar/reanudar.
-22. **`terminarAlCerrarCampania` y el ciclo de campaña.** En el modelo anterior, con `true`, `onCompleted()` llamaba a `finish()` al cerrar la primera pasada: `Creciendo` y `Maduro` eran inalcanzables y `gdd` quedaba en 0. Por eso `Simulation` usaba `false`. **Desde 2026-10-19 `Simulation` usa `true`**: `finish()` solo se llama al cerrar la **cosecha** (rama `else` de `onCompleted()`), así que la corrida termina en el momento justo. Con `false` el modelo quedaba en `Cosechado` avanzando de a una semana por segundo hasta mayo de 2026, y el editor se trababa recalculando el panel de propiedades (SWT sobre Wayland).
+22. **`terminarAlCerrarCampaña` y el ciclo de campaña.** En el modelo anterior, con `true`, `onCompleted()` llamaba a `finish()` al cerrar la primera pasada: `Creciendo` y `Maduro` eran inalcanzables y `gdd` quedaba en 0. Por eso `Simulation` usaba `false`. **Desde 2026-10-19 `Simulation` usa `true`**: `finish()` solo se llama al cerrar la **cosecha** (rama `else` de `onCompleted()`), así que la corrida termina en el momento justo. Con `false` el modelo quedaba en `Cosechado` avanzando de a una semana por segundo hasta mayo de 2026, y el editor se trababa recalculando el panel de propiedades (SWT sobre Wayland).
 23. **Un umbral comparado con `>` y alcanzado por un timeout arma un bucle en tiempo cero** (2026-10-19, semilla). El timeout `aPedida` dispara cuando la tolva llega a 800 kg, pero por redondeo queda en 800,0000001. La condición de vuelta `semilla > 800` es verdadera, vuelve a `Suficiente`, el timeout se recalcula en 0 s y se repite sin fin, con miles de `### PIDE SEMILLA` en el mismo instante. Arreglo: **histéresis** (`> umbral + 1 kg`), de modo que solo una entrega real saca de `Pedida`. Regla: toda condición que deshace lo que hizo un timeout necesita margen.
 
 ---
@@ -193,9 +193,9 @@ SinSembrar ──[condition siembraCompleta]──> Creciendo ──[timeout dia
 Lo que sí es de siembra es el **calendario y el nombre de las variables**:
 - El reloj arranca el 1/10 y el clima embebido cubre del 1/10 al 30/4.
 - `diaFinSiembra` se mide contra el día 45 (15/11), que es una ventana de siembra.
-- `Main.onCompleted()` cuenta lotes y, cuando `lotesCompletados == cantidadLotes`, pone `siembraCompleta = true` e imprime `CAMPANIA CERRADA`.
+- `Main.onCompleted()` cuenta lotes y, cuando `lotesCompletados == cantidadLotes`, pone `siembraCompleta = true` e imprime `CAMPAÑA CERRADA`.
 
-Una corrida del experimento `Simulation` (con `terminarAlCerrarCampania = false`) hace esto:
+Una corrida del experimento `Simulation` (con `terminarAlCerrarCampaña = false`) hace esto:
 
 1. **Pasada 1, desde el 1/10.** La cosechadora recorre todos los lotes. Se interpreta como "la siembra", pero mecánicamente es una cosecha de 3 t/ha.
 2. `siembraCompleta = true` → `Creciendo` durante `triangular(90,150,120)` días.
@@ -203,8 +203,8 @@ Una corrida del experimento `Simulation` (con `terminarAlCerrarCampania = false`
 4. **Pasada 2, a partir de febrero.** La misma cosechadora vuelve a salir. Esta sí es, por calendario, la cosecha real.
 
 Consecuencias:
-- **El entregable #1 mide la pasada 1.** El barrido corta ahí (`terminarAlCerrarCampania = true`). Por lo tanto la tabla de la sección 9 bis es la capacidad de **una cosechadora** (4,93 ha/h nominal) con el clima de octubre y noviembre. Una sembradora real tiene otro ancho de labor, otra velocidad y otra logística (semilla y fertilizante que entran, no grano que sale).
-- **Bug en la pasada 2:** la acción de `Maduro → SinSembrar` hace `diaCampania = 0`, así que la cosecha de febrero vuelve a leer el clima desde el 1/10. Además el clima termina el 30/4, que corta la cosecha de soja de primera (abril-mayo). No afecta al barrido, pero sí a cualquier medición de la cosecha.
+- **El entregable #1 mide la pasada 1.** El barrido corta ahí (`terminarAlCerrarCampaña = true`). Por lo tanto la tabla de la sección 9 bis es la capacidad de **una cosechadora** (4,93 ha/h nominal) con el clima de octubre y noviembre. Una sembradora real tiene otro ancho de labor, otra velocidad y otra logística (semilla y fertilizante que entran, no grano que sale).
+- **Bug en la pasada 2:** la acción de `Maduro → SinSembrar` hace `diaCampaña = 0`, así que la cosecha de febrero vuelve a leer el clima desde el 1/10. Además el clima termina el 30/4, que corta la cosecha de soja de primera (abril-mayo). No afecta al barrido, pero sí a cualquier medición de la cosecha.
 - La transición `SinSembrar → Creciendo` usa la bandera y no `inState()`.
 
 **Decisión abierta (2026-10-05).** El equipo acordó que por ahora el modelo debe ser **solo cosecha**, y la siembra se agrega después. Para que eso sea consistente hay que elegir entre:
@@ -326,11 +326,11 @@ Corrida 3 (+ tasas apareadas en Cart.Unloading):   <-- ESTADO ACTUAL, todo verde
 
 `detenida = 2631,6 h` en la campaña 2 son **109,65 días**: el período de maduración. `horasDetenida` acumula en el entry de `MoveHarvesting` todo el tiempo desde `tUltimoEstado`, así que los meses con la máquina en `Parked` se le imputan como tiempo parado. De ahí el `uso = 1%`.
 
-Además los dos contadores son **acumulados de por vida**: `cosechando = 42,18 h` de la campaña 2 es 2 × 21,09. El bloque rotulado `CAMPANIA` reporta totales históricos, no la campaña.
+Además los dos contadores son **acumulados de por vida**: `cosechando = 42,18 h` de la campaña 2 es 2 × 21,09. El bloque rotulado `CAMPAÑA` reporta totales históricos, no la campaña.
 
 **Corregido:** el entry de `Combine.GoingToField` ahora hace `tUltimoEstado = time();`, así la ventana de maduración deja de imputarse a la máquina. Verificado: `detenida` en la campaña 2 bajó de **2631,60 h a 3,57 h** y el uso quedó estable en 92% en ambas campañas.
 
-**Resuelto (verificado 2026-10-05):** `Main` guarda la foto de los contadores al inicio de cada campaña (`baseCosechando`, `baseDetenida`, `baseViajes`, `baseSinPiso`, en la acción de `Maduro → SinSembrar`) y `auditarMasa()` imprime el delta en la línea `CAMPANIA n`.
+**Resuelto (verificado 2026-10-05):** `Main` guarda la foto de los contadores al inicio de cada campaña (`baseCosechando`, `baseDetenida`, `baseViajes`, `baseSinPiso`, en la acción de `Maduro → SinSembrar`) y `auditarMasa()` imprime el delta en la línea `CAMPAÑA n`.
 
 ---
 
@@ -385,7 +385,7 @@ La jornada entró como **un término más de `puedeTrabajar()`**, sin mecanismos
 
 ### Resultado: P(terminar la siembra antes del 15/11)
 
-300 corridas: `cantidadLotes` 6→30 paso 6 × `turnos` 1→3 × `campania` 0→19.
+300 corridas: `cantidadLotes` 6→30 paso 6 × `turnos` 1→3 × `campaña` 0→19.
 
 > **Rehecho el 2026-08-27** (commit `7e66a63`), tras corregir que la tolva se llenaba con la máquina detenida (aprendizaje 21). Es el `resultados.csv` versionado; los números de abajo se recalcularon de ese archivo el 2026-10-05. Respecto de la tabla original, dos celdas bajaron: 624 ha con 1 turno (100% → 95%) y 1.872 ha con 2 turnos (65% → 55%). La tabla original subestimaba el costo logístico.
 
@@ -421,14 +421,14 @@ Celdas de transición sin resolver: 1.872 ha con 2 turnos (55%) y 3.120 ha con 3
 
 ### Cómo reproducirlo
 
-Experimento `ParametersVariation`. Model time: **Stop at specified time = 31** (semanas — la unidad del modelo es Week), start date 01/10/2005. Con `terminarAlCerrarCampania = true` el modelo llama a `finish()` al cerrar la siembra, así que **cada corrida es una observación limpia**; si no cierra dentro de los 212 días de datos, `diaFinSiembra` queda en **−1**, que es la observación "no terminó" y no un error.
+Experimento `ParametersVariation`. Model time: **Stop at specified time = 31** (semanas — la unidad del modelo es Week), start date 01/10/2005. Con `terminarAlCerrarCampaña = true` el modelo llama a `finish()` al cerrar la siembra, así que **cada corrida es una observación limpia**; si no cierra dentro de los 212 días de datos, `diaFinSiembra` queda en **−1**, que es la observación "no terminó" y no un error.
 
-El experimento `Simulation` tiene `terminarAlCerrarCampania = true` desde 2026-10-19: la corrida termina al cerrar la cosecha (aprendizaje 22).
+El experimento `Simulation` tiene `terminarAlCerrarCampaña = true` desde 2026-10-19: la corrida termina al cerrar la cosecha (aprendizaje 22).
 
-"Before each experiment run" borra `resultados.csv` y escribe el encabezado `lotes;turnos;campania;diaFinSiembra`. La ruta es relativa a la carpeta del modelo y los `catch` hacen `traceln` visible (antes apuntaba a `/home/renaiss/...` y fallaba en silencio en las otras máquinas). Una fila por corrida, desde "After simulation run":
+"Before each experiment run" borra `resultados.csv` y escribe el encabezado `lotes;turnos;campaña;diaFinSiembra`. La ruta es relativa a la carpeta del modelo y los `catch` hacen `traceln` visible (antes apuntaba a `/home/renaiss/...` y fallaba en silencio en las otras máquinas). Una fila por corrida, desde "After simulation run":
 
 ```java
-w.println( root.cantidadLotes + ";" + root.turnos + ";" + root.campania + ";" + root.diaFinSiembra );
+w.println( root.cantidadLotes + ";" + root.turnos + ";" + root.campaña + ";" + root.diaFinSiembra );
 ```
 
 Se escribe a archivo y no con `traceln` porque la consola de AnyLogic recorta el buffer y 300 filas no entran.

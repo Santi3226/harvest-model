@@ -58,7 +58,7 @@ Los números son aproximados. Los reales salen de la corrida.
 
 ### Por qué una corrida es una sola campaña
 
-Antes, el ciclo volvía de `Maduro` a `SinSembrar` y empezaba otra vuelta. Eso obligaba a reiniciar el contador de días (`diaCampania = 0`), y ese reinicio hacía que la cosecha leyera el clima de octubre. Con un estado final (`Cosechado`):
+Antes, el ciclo volvía de `Maduro` a `SinSembrar` y empezaba otra vuelta. Eso obligaba a reiniciar el contador de días (`diaCampaña = 0`), y ese reinicio hacía que la cosecha leyera el clima de octubre. Con un estado final (`Cosechado`):
 
 - El día del modelo coincide siempre con el día del calendario. El día 0 es el 1/10.
 - Cada corrida del barrido es una observación independiente: una campaña climática, de punta a punta.
@@ -134,17 +134,17 @@ lotesCompletados++;
 if ( lotesCompletados < cantidadLotes ) return;   // faltan lotes: la máquina vuelve a salir sola
 lotesCompletados = 0;                             // la próxima pasada cuenta desde cero
 if ( sembrando() ) {
-    diaFinSiembra = diaCampania;                  // ← respuesta del entregable #1
+    diaFinSiembra = diaCampaña;                  // ← respuesta del entregable #1
     traceln( "=== SIEMBRA TERMINADA | ... DENTRO/FUERA de la ventana ..." );
     reportarPasada();
     siembraCompleta = true;
 } else {
-    diaFinCosecha = diaCampania;
+    diaFinCosecha = diaCampaña;
     traceln( "=== COSECHA TERMINADA | ... dias desde la madurez ..." );
     reportarPasada();
     auditarMasa();                                // conservación del grano
     cosechaCompleta = true;
-    if ( terminarAlCerrarCampania ) { getEngine().finish(); return; }
+    if ( terminarAlCerrarCampaña ) { getEngine().finish(); return; }
 }
 cicloCultivo.onChange();                          // para que el ciclo vea la bandera nueva
 ```
@@ -250,7 +250,7 @@ Parámetro modificado: **`cantidadLotes`**, que por defecto pasó de 40 a **12**
 ### Experimento `ParametersVariation`
 
 - **Stop time: 52 semanas** (antes 31). La corrida ahora termina al cerrar la cosecha, y eso puede pasar en cualquier momento del año.
-- `resultados.csv` agrega dos columnas: `lotes;turnos;campania;diaFinSiembra;diaMadurez;diaFinCosecha`.
+- `resultados.csv` agrega dos columnas: `lotes;turnos;campaña;diaFinSiembra;diaMadurez;diaFinCosecha`.
 
 ---
 
@@ -287,7 +287,7 @@ El experimento `Simulation` corre en tiempo real con escala: cada segundo real e
 | `SinSembrar` | `0.5 * day()` (0,5 días por segundo) | Unos 80 s para 40 días de siembra |
 | `Creciendo` | `1 * week()` | Segundos: la máquina está quieta |
 | `Maduro` | `0.05 * day()` | Unos 15 minutos para 70 días de cosecha |
-| `Cosechado` | No aplica | La corrida termina al cerrar la cosecha (`terminarAlCerrarCampania = true` desde el 19/10) |
+| `Cosechado` | No aplica | La corrida termina al cerrar la cosecha (`terminarAlCerrarCampaña = true` desde el 19/10) |
 
 La siembra usaba `0.05 * day()` y tardaba unos 13 minutos. Se subió a `0.5 * day()` para poder verla completa. Si la cosecha se hace lenta, se sube de la misma forma en el entry de `Maduro`. Se puede cambiar también durante la corrida, con el control de velocidad de la ventana de simulación.
 
@@ -376,10 +376,10 @@ Siembra cerrada el dia ~35 — el cultivo crece ~120 dias
 Cultivo maduro el dia ~155 — listo para cosecha
 ### MAQUINA PARA ... tolvaLlena=true ...                  ← cosecha: ahora sí se llena la tolva
 VIAJE 1 | ...                                            ← y salen camiones
-=== COSECHA TERMINADA | campania 1 | dia ~200 | ~45 dias desde la madurez
+=== COSECHA TERMINADA | campaña 1 | dia ~200 | ~45 dias desde la madurez
 COSECHA | trabajando=~253 h | ... | viajes camion=~75 | ...
 AUDITORIA ... FUGA=~0                                    ← el grano se conserva
-Campo cosechado el dia ~200 — fin de campania
+Campo cosechado el dia ~200 — fin de campaña
 ```
 
 ### Resultado de la corrida de verificación (campaña 0, 12 lotes, 1 turno)
@@ -577,14 +577,14 @@ Que la máquina nunca espere semilla confirma la parte 4.2 del plan: con estos v
 | `FUGA` de grano | ~0 | −1,3 × 10⁻¹¹ kg |
 | Viajes de camión | 6 | **5** |
 
-Los 5 viajes no son un error. Antes, la corrida seguía después de cerrar la cosecha y el camión terminaba de llenarse y hacía el sexto viaje. Ahora `Simulation` se detiene al cerrar la cosecha (`terminarAlCerrarCampania`), así que los 63.200 kg que no llegaron al silo quedan en la cosechadora, el carro y el camión. La auditoría los cuenta como masa en el sistema y la `FUGA` da 0. Por la misma razón, con 12 lotes pueden salir 74 viajes en vez de los 75 de antes: depende de cuánto grano quede en la cadena al cerrar.
+Los 5 viajes no son un error. Antes, la corrida seguía después de cerrar la cosecha y el camión terminaba de llenarse y hacía el sexto viaje. Ahora `Simulation` se detiene al cerrar la cosecha (`terminarAlCerrarCampaña`), así que los 63.200 kg que no llegaron al silo quedan en la cosechadora, el carro y el camión. La auditoría los cuenta como masa en el sistema y la `FUGA` da 0. Por la misma razón, con 12 lotes pueden salir 74 viajes en vez de los 75 de antes: depende de cuánto grano quede en la cadena al cerrar.
 
 `viajesCamion` cuenta los viajes que llegaron al silo antes del cierre. Si el entregable #2 necesita los viajes totales, hay que sumar el grano que quedó en la cadena dividido por la capacidad del camión.
 
 ### Otros cambios del 19/10
 
 - **Memoria del experimento `Simulation`:** pasó de 64 MB a 512 MB, la misma que el barrido. Con 64 MB el margen era muy chico.
-- **`Simulation` termina al cerrar la cosecha** (`terminarAlCerrarCampania = true`). Antes quedaba en `Cosechado` avanzando hasta mayo de 2026 sin nada que hacer.
+- **`Simulation` termina al cerrar la cosecha** (`terminarAlCerrarCampaña = true`). Antes quedaba en `Cosechado` avanzando hasta mayo de 2026 sin nada que hacer.
 - **Diagnóstico:** cada lote de siembra imprime `### INICIO LOTE n`, con la semilla en la tolva, la velocidad, el ancho y el consumo.
 - **El editor de AnyLogic se trababa, no el modelo.** La herramienta `jstack` viene en la JRE de AnyLogic. Con ella se vio que el modelo seguía corriendo. El IDE, en cambio, recalculaba el panel de propiedades sin parar. Es un problema de SWT sobre Wayland. Mientras corre una simulación, conviene no tener seleccionado un elemento con muchas propiedades.
 
@@ -632,7 +632,7 @@ La falla es un motivo más de parada. Entra en `puedeTrabajar()`, que sigue sien
 
 ### Cómo verificarlo
 
-Tres corridas de `Simulation`, con `turnos = 1` y `campania = 0`:
+Tres corridas de `Simulation`, con `turnos = 1` y `campaña = 0`:
 
 | Corrida | Qué se espera |
 |---|---|
@@ -657,7 +657,7 @@ Con 1 lote y `mtbfHoras = 100` se espera una falla cada 2 o 3 corridas, así que
 
 ### Corrida de 12 lotes del 27/10
 
-Con `cantidadLotes = 12`, `mtbfHoras = 100`, `campania = 0` y `turnos = 1`. Ya incluye la madurez por grados-día (paso 3, sección 13).
+Con `cantidadLotes = 12`, `mtbfHoras = 100`, `campaña = 0` y `turnos = 1`. Ya incluye la madurez por grados-día (paso 3, sección 13).
 
 | Pasada | Medido |
 |---|---|
@@ -703,7 +703,7 @@ Con las 20 campañas y siembra cerrada el día 40, la meta de 1.680 hacía madur
 
 ### Cómo verificarlo
 
-Corridas de `Simulation` con `turnos = 1`, `campania = 0` y `mtbfHoras = 1e9` (sin fallas, para que el día de siembra sea el conocido). Los valores esperados salen de la serie embebida en el `.alp`, con la misma cuenta que hace el tick:
+Corridas de `Simulation` con `turnos = 1`, `campaña = 0` y `mtbfHoras = 1e9` (sin fallas, para que el día de siembra sea el conocido). Los valores esperados salen de la serie embebida en el `.alp`, con la misma cuenta que hace el tick:
 
 | Corrida | Qué se espera |
 |---|---|
@@ -724,7 +724,7 @@ Día de madurez esperado por campaña, con siembra cerrada el día 40:
 
 ### Resultado de las corridas del 27/10
 
-Las dos corridas usaron `campania = 0`, `turnos = 1` y `mtbfHoras = 1e9`.
+Las dos corridas usaron `campaña = 0`, `turnos = 1` y `mtbfHoras = 1e9`.
 
 | Corrida | Medido |
 |---|---|
@@ -813,7 +813,7 @@ El CSV del barrido no cambia todavía. Sus columnas se definen en el paso 7, jun
 
 ### Cómo verificarlo
 
-Una corrida de `Simulation` con los parámetros de la corrida C de la sección 12: `cantidadLotes = 12`, `mtbfHoras = 100`, `campania = 0` y `turnos = 1`.
+Una corrida de `Simulation` con los parámetros de la corrida C de la sección 12: `cantidadLotes = 12`, `mtbfHoras = 100`, `campaña = 0` y `turnos = 1`.
 
 | Qué | Qué se espera |
 |---|---|
@@ -829,7 +829,7 @@ Una corrida de `Simulation` con los parámetros de la corrida C de la sección 1
 
 ### Resultado de la corrida del 27/10
 
-Con los parámetros de la corrida C: 12 lotes, `mtbfHoras = 100`, `campania = 0` y `turnos = 1`.
+Con los parámetros de la corrida C: 12 lotes, `mtbfHoras = 100`, `campaña = 0` y `turnos = 1`.
 
 **Los eventos son idénticos a la corrida C:** siembra el día 42, 5 fallas, madurez el día 181, cosecha el día 249 y 74 viajes. La `FUGA` de grano (6,4337e-9) coincide al último dígito. Los contadores no cambian la dinámica.
 

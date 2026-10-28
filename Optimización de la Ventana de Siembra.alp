@@ -4,7 +4,7 @@
 	         AnyLogic Project File
 *************************************************
 -->
-<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.9.9.202607020720" AlpVersion="8.9.9">
+<AnyLogicWorkspace WorkspaceVersion="1.9" AnyLogicVersion="8.9.10.202609231424" AlpVersion="8.9.10">
 <Model>
 	<Id>1169735952464</Id>
 	<Name><![CDATA[Optimización de la Ventana de Siembra]]></Name>
@@ -50,6 +50,7 @@
 					<Unit Class="SpeedUnits"><![CDATA[KPH]]></Unit>
 				</VelocityCode>
 				<OnArrival><![CDATA[send( "ARRIVED", this );]]></OnArrival>
+				<MessageType><![CDATA[Object]]></MessageType>
 				<PhysicalLength Class="CodeUnitValue">
 					<Code><![CDATA[1]]></Code>
 					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
@@ -64,24 +65,30 @@
 				</PhysicalHeight>
 			</AgentProperties>
 			<EnvironmentProperties>
-					<EnableSteps>false</EnableSteps>
-					<StepDurationCode Class="CodeUnitValue">
-						<Code><![CDATA[1.0]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
-					</StepDurationCode>
-					<SpaceType>CONTINUOUS</SpaceType>
-					<WidthCode><![CDATA[500]]></WidthCode>
-					<HeightCode><![CDATA[500]]></HeightCode>
-					<ZHeightCode><![CDATA[0]]></ZHeightCode>
-					<ColumnsCountCode><![CDATA[100]]></ColumnsCountCode>
-					<RowsCountCode><![CDATA[100]]></RowsCountCode>
-					<NeigborhoodType>MOORE</NeigborhoodType>
-					<LayoutType>USER_DEF</LayoutType>
-					<NetworkType>USER_DEF</NetworkType>
-					<ConnectionsPerAgentCode><![CDATA[2]]></ConnectionsPerAgentCode>
-					<ConnectionsRangeCode><![CDATA[50]]></ConnectionsRangeCode>
-					<NeighborLinkFractionCode><![CDATA[0.95]]></NeighborLinkFractionCode>
-					<MCode><![CDATA[10]]></MCode>
+				<EnableSteps>false</EnableSteps>
+				<StepDurationCode Class="CodeUnitValue">
+					<Code><![CDATA[1.0]]></Code>
+					<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
+				</StepDurationCode>
+				<SpaceType>CONTINUOUS</SpaceType>
+				<WidthCode><![CDATA[500]]></WidthCode>
+				<HeightCode><![CDATA[500]]></HeightCode>
+				<ZHeightCode><![CDATA[0]]></ZHeightCode>
+				<ColumnsCountCode><![CDATA[100]]></ColumnsCountCode>
+				<RowsCountCode><![CDATA[100]]></RowsCountCode>
+				<NeigborhoodType>MOORE</NeigborhoodType>
+				<LayoutType>USER_DEF</LayoutType>
+				<NetworkType>USER_DEF</NetworkType>
+				<ConnectionsPerAgentCode><![CDATA[2]]></ConnectionsPerAgentCode>
+				<ConnectionsRangeCode><![CDATA[50]]></ConnectionsRangeCode>
+				<NeighborLinkFractionCode><![CDATA[0.95]]></NeighborLinkFractionCode>
+				<MCode><![CDATA[10]]></MCode>
+				<LineStyle>SOLID</LineStyle>
+				<LineWidth>1</LineWidth>
+				<LineColor>-16777216</LineColor>
+				<LineZOrder>UNDER_AGENTS</LineZOrder>
+				<LineArrow>NONE</LineArrow>
+				<LineArrowPosition>END</LineArrowPosition>
 			</EnvironmentProperties>
 			<DatasetsCreationProperties>
 				<AutoCreate>true</AutoCreate>
@@ -114,7 +121,6 @@
 				<InheritedFromParentAgentType>true</InheritedFromParentAgentType>
 			</ScaleRuler>
 			<CurrentLevel>1567517860766</CurrentLevel>
-			<ConnectionsId>1385550499631</ConnectionsId>
 			<Variables>
 				<Variable Class="PlainVariable">
 					<Id>1786000000101</Id>
@@ -180,6 +186,66 @@
 					<Id>1791000000302</Id>
 					<Name><![CDATA[ultimaCargaSemilla]]></Name>
 					<X>950</X><Y>300</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1793000000021</Id>
+					<Name><![CDATA[horasEstado]]></Name>
+					<X>1000</X><Y>100</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double[]]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[new double[ 6 ]]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1793000000022</Id>
+					<Name><![CDATA[baseEstado]]></Name>
+					<X>1000</X><Y>140</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double[]]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[new double[ 6 ]]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1793000000023</Id>
+					<Name><![CDATA[estado]]></Name>
+					<X>1000</X><Y>180</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[-1]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1793000000024</Id>
+					<Name><![CDATA[tEstado]]></Name>
+					<X>1000</X><Y>220</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -295,66 +361,6 @@
 							<DelimeterType>NO_DELIMETER</DelimeterType>
 						</ParameterEditor>
 					</Properties>                 
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1793000000021</Id>
-					<Name><![CDATA[horasEstado]]></Name>
-					<X>1000</X><Y>100</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double[]]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new double[ 6 ]]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1793000000022</Id>
-					<Name><![CDATA[baseEstado]]></Name>
-					<X>1000</X><Y>140</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double[]]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new double[ 6 ]]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1793000000023</Id>
-					<Name><![CDATA[estado]]></Name>
-					<X>1000</X><Y>180</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[int]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[-1]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1793000000024</Id>
-					<Name><![CDATA[tEstado]]></Name>
-					<X>1000</X><Y>220</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[0]]></Code>
-						</InitialValue>
-					</Properties>
 				</Variable>
 			</Variables>
 			<StatechartElements>
@@ -526,7 +532,7 @@ double falta = Capacity - semillaCarro;
 ultimaCargaSemilla = falta;
 main.semillaDespachada += falta;
 semillaCarro = Capacity;
-traceln( "### CARRO CARGA SEMILLA | dia " + main.diaCampania + " | " + (int) falta + " kg | t=" + time( DAY ) + " d" );]]></EntryAction>
+traceln( "### CARRO CARGA SEMILLA | dia " + main.diaCampaña + " | " + (int) falta + " kg | t=" + time( DAY ) + " d" );]]></EntryAction>
 						<FillColor>-5383962</FillColor>
 					</Properties>
 				</StatechartElement>
@@ -1071,7 +1077,7 @@ main.combine.actualizarSemilla();
 double lote = min( semillaCarro, main.capacidadSemilla - main.combine.semilla );
 semillaCarro -= lote;
 main.combine.semilla += lote;
-traceln( "### ENTREGA SEMILLA | dia " + main.diaCampania + " | " + (int) lote + " kg | t=" + time( DAY ) + " d" );
+traceln( "### ENTREGA SEMILLA | dia " + main.diaCampaña + " | " + (int) lote + " kg | t=" + time( DAY ) + " d" );
 main.combine.semillaEntregada();]]></Action>
 						<Timeout Class="CodeUnitValue">
 							<Code><![CDATA[1]]></Code>
@@ -1214,32 +1220,6 @@ iniciarPasada();
 return txt;]]></Body>
 				</Function>
 			</Functions>
-			<AgentLinks>
-				<AgentLink>
-					<Id>1385550499631</Id>
-					<Name><![CDATA[agentLink]]></Name>
-					<X>50</X><Y>-50</Y>
-					<Label><X>15</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<HandleReceiveInConnections>false</HandleReceiveInConnections>
-					<AgentLinkType>COLLECTION_OF_LINKS</AgentLinkType>
-					<AgentLinkBidirectional>true</AgentLinkBidirectional>
-					<MessageType><![CDATA[Object]]></MessageType>
-					<StatechartReference>
-						<PackageName><![CDATA[harvest_simulator]]></PackageName>
-						<ClassName><![CDATA[Cart]]></ClassName>
-						<ItemName><![CDATA[moveControl]]></ItemName>
-					</StatechartReference>
-					<LineStyle>SOLID</LineStyle>
-					<LineWidth>1</LineWidth>
-					<LineColor>-16777216</LineColor>
-					<LineZOrder>UNDER_AGENTS</LineZOrder>
-					<LineArrow>NONE</LineArrow>
-					<LineArrowPosition>END</LineArrowPosition>
-				</AgentLink>
-			</AgentLinks>
 
 			<ContainerLinks>
 				<ContainerLink>
@@ -1656,6 +1636,7 @@ final static CellDirection NOTSTARTED = null;
 					<Unit Class="SpeedUnits"><![CDATA[KPH]]></Unit>
 				</VelocityCode>
 				<OnArrival><![CDATA[send( "ARRIVED", this );]]></OnArrival>
+				<MessageType><![CDATA[Object]]></MessageType>
 				<PhysicalLength Class="CodeUnitValue">
 					<Code><![CDATA[1]]></Code>
 					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
@@ -1670,24 +1651,30 @@ final static CellDirection NOTSTARTED = null;
 				</PhysicalHeight>
 			</AgentProperties>
 			<EnvironmentProperties>
-					<EnableSteps>false</EnableSteps>
-					<StepDurationCode Class="CodeUnitValue">
-						<Code><![CDATA[1.0]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
-					</StepDurationCode>
-					<SpaceType>CONTINUOUS</SpaceType>
-					<WidthCode><![CDATA[500]]></WidthCode>
-					<HeightCode><![CDATA[500]]></HeightCode>
-					<ZHeightCode><![CDATA[0]]></ZHeightCode>
-					<ColumnsCountCode><![CDATA[100]]></ColumnsCountCode>
-					<RowsCountCode><![CDATA[100]]></RowsCountCode>
-					<NeigborhoodType>MOORE</NeigborhoodType>
-					<LayoutType>USER_DEF</LayoutType>
-					<NetworkType>USER_DEF</NetworkType>
-					<ConnectionsPerAgentCode><![CDATA[2]]></ConnectionsPerAgentCode>
-					<ConnectionsRangeCode><![CDATA[50]]></ConnectionsRangeCode>
-					<NeighborLinkFractionCode><![CDATA[0.95]]></NeighborLinkFractionCode>
-					<MCode><![CDATA[10]]></MCode>
+				<EnableSteps>false</EnableSteps>
+				<StepDurationCode Class="CodeUnitValue">
+					<Code><![CDATA[1.0]]></Code>
+					<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
+				</StepDurationCode>
+				<SpaceType>CONTINUOUS</SpaceType>
+				<WidthCode><![CDATA[500]]></WidthCode>
+				<HeightCode><![CDATA[500]]></HeightCode>
+				<ZHeightCode><![CDATA[0]]></ZHeightCode>
+				<ColumnsCountCode><![CDATA[100]]></ColumnsCountCode>
+				<RowsCountCode><![CDATA[100]]></RowsCountCode>
+				<NeigborhoodType>MOORE</NeigborhoodType>
+				<LayoutType>USER_DEF</LayoutType>
+				<NetworkType>USER_DEF</NetworkType>
+				<ConnectionsPerAgentCode><![CDATA[2]]></ConnectionsPerAgentCode>
+				<ConnectionsRangeCode><![CDATA[50]]></ConnectionsRangeCode>
+				<NeighborLinkFractionCode><![CDATA[0.95]]></NeighborLinkFractionCode>
+				<MCode><![CDATA[10]]></MCode>
+				<LineStyle>SOLID</LineStyle>
+				<LineWidth>1</LineWidth>
+				<LineColor>-16777216</LineColor>
+				<LineZOrder>UNDER_AGENTS</LineZOrder>
+				<LineArrow>NONE</LineArrow>
+				<LineArrowPosition>END</LineArrowPosition>
 			</EnvironmentProperties>
 			<DatasetsCreationProperties>
 				<AutoCreate>true</AutoCreate>
@@ -1720,7 +1707,6 @@ final static CellDirection NOTSTARTED = null;
 				<InheritedFromParentAgentType>true</InheritedFromParentAgentType>
 			</ScaleRuler>
 			<CurrentLevel>1567517860767</CurrentLevel>
-			<ConnectionsId>1385550499637</ConnectionsId>
 			<Variables>
 				<Variable Class="PlainVariable">
 					<Id>1169819500111</Id>
@@ -1986,6 +1972,51 @@ final static CellDirection NOTSTARTED = null;
 						</InitialValue>
 					</Properties>
 				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1793000000011</Id>
+					<Name><![CDATA[causaParada]]></Name>
+					<X>1300</X><Y>600</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1793000000012</Id>
+					<Name><![CDATA[tCausa]]></Name>
+					<X>1300</X><Y>640</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1793000000013</Id>
+					<Name><![CDATA[enCampo]]></Name>
+					<X>1300</X><Y>680</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[boolean]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[false]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
 				<Variable Class="Parameter">
 					<Id>1169735952567</Id>
 					<Name><![CDATA[Capacity]]></Name>
@@ -2138,51 +2169,6 @@ final static CellDirection NOTSTARTED = null;
 							<DelimeterType>NO_DELIMETER</DelimeterType>
 						</ParameterEditor>
 					</Properties>                 
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1793000000011</Id>
-					<Name><![CDATA[causaParada]]></Name>
-					<X>1300</X><Y>600</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[int]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[0]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1793000000012</Id>
-					<Name><![CDATA[tCausa]]></Name>
-					<X>1300</X><Y>640</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[0]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1793000000013</Id>
-					<Name><![CDATA[enCampo]]></Name>
-					<X>1300</X><Y>680</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[boolean]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[false]]></Code>
-						</InitialValue>
-					</Properties>
 				</Variable>
 			</Variables>
 			<StatechartElements>
@@ -2369,7 +2355,7 @@ setSpeed( main.sembrando() ? main.velocidadSiembra : main.velocidadCosecha, KPH 
 double x = Field.getX() + RowWidth / 2; //half width of combine
 double y = Field.getY() + Field.getHeight();
 moveTo( x, y );
-// arranca la campania: los meses de maduracion con la maquina en Parked
+// arranca la campaña: los meses de maduracion con la maquina en Parked
 // no son tiempo detenido, no se le imputan al uso
 tUltimoEstado = time();
 // el viaje al lote si cuenta como detenido (igual que horasDetenida): causa traslado
@@ -2456,7 +2442,7 @@ main.cart.tasaActual = 0;]]></ExitAction>
 // pide semilla al carro. Si el carro esta ocupado el mensaje se pierde (aprendizaje 14):
 // por eso Cart.WaitCommand vuelve a mirar si hay un pedido pendiente al quedar libre.
 actualizarSemilla();
-traceln( "### PIDE SEMILLA | dia " + main.diaCampania + " | semilla=" + (int) semilla + " kg | t=" + time( DAY ) + " d" );
+traceln( "### PIDE SEMILLA | dia " + main.diaCampaña + " | semilla=" + (int) semilla + " kg | t=" + time( DAY ) + " d" );
 if ( main.autoControl ) send( "NEED_SEED", main.cart );]]></EntryAction>
 						<FillColor>-5383962</FillColor>
 					</Properties>
@@ -2476,7 +2462,7 @@ main.semillaSembrada += semilla;   // resto de punto flotante del instante exact
 semilla = 0;
 sinSemilla = true;
 tInicioSinSemilla = time();
-traceln( "### SIN SEMILLA | dia " + main.diaCampania + " | t=" + time( DAY ) + " d" );
+traceln( "### SIN SEMILLA | dia " + main.diaCampaña + " | t=" + time( DAY ) + " d" );
 moveControl.onChange();]]></EntryAction>
 						<ExitAction><![CDATA[sinSemilla = false;
 registrarCausa();
@@ -2511,7 +2497,7 @@ main.fallas++;
 reparando = true;
 tInicioReparacion = time();
 duracionReparacion = duracionReparacionHoras();
-traceln( "### FALLA " + main.fallas + " | dia " + main.diaCampania + " | repara " + duracionReparacion + " h | t=" + time( DAY ) + " d" );
+traceln( "### FALLA " + main.fallas + " | dia " + main.diaCampaña + " | repara " + duracionReparacion + " h | t=" + time( DAY ) + " d" );
 moveControl.onChange();]]></EntryAction>
 						<FillColor>-5383962</FillColor>
 					</Properties>
@@ -2737,7 +2723,7 @@ if ( inState( WithCart ) ) {
 	tUltimo = time();
 	if ( inState( Loading ) ) { Full.cancel(); Full.start(); }
 }
-traceln( "### MAQUINA REANUDA | dia " + main.diaCampania
+traceln( "### MAQUINA REANUDA | dia " + main.diaCampaña
          + " | tasa=" + tasaCosecha + " nivelTolva=" + (int) nivel
          + " | t=" + time( DAY ) + " d" );]]></Action>
 						<Timeout Class="CodeUnitValue">
@@ -2787,7 +2773,7 @@ if ( inState( WithCart ) ) {
 	tasaActual = 0;
 	if ( inState( Loading ) ) { Full.cancel(); Full.start(); }
 }
-traceln( "### MAQUINA PARA | dia " + main.diaCampania
+traceln( "### MAQUINA PARA | dia " + main.diaCampaña
          + " | piso=" + main.daPiso
          + " jornada=" + main.dentroDeJornada()
          + " tolvaLlena=" + inState( FullWaitCart )
@@ -2937,7 +2923,7 @@ enCampo = true;
 registrarCausa();
 // diagnostico: semilla al empezar cada lote y consumo teorico sembrando [kg/h]
 if ( main.sembrando() )
-	traceln( "### INICIO LOTE " + ( main.lotesCompletados + 1 ) + " | dia " + main.diaCampania
+	traceln( "### INICIO LOTE " + ( main.lotesCompletados + 1 ) + " | dia " + main.diaCampaña
 	         + " | semilla=" + (int) semilla + " kg | velocidad=" + getSpeed( KPH ) + " km/h | ancho="
 	         + scale.toLengthUnits( RowWidth, METER ) + " m | consumo="
 	         + getSpeed( MPS ) * scale.toLengthUnits( RowWidth, METER ) * main.densidadSiembra / 10000.0 * 3600 + " kg/h" );
@@ -3295,7 +3281,7 @@ reparando = false;
 // si sigue parada (por ejemplo, fuera de jornada) la causa cambia ahora
 registrarCausa();
 main.horasReparando += ( time() - tInicioReparacion ) / hour();
-traceln( "### REPARADA | dia " + main.diaCampania + " | t=" + time( DAY ) + " d" );
+traceln( "### REPARADA | dia " + main.diaCampaña + " | t=" + time( DAY ) + " d" );
 moveControl.onChange();]]></Action>
 						<Timeout Class="CodeUnitValue">
 							<Code><![CDATA[duracionReparacion]]></Code>
@@ -3595,37 +3581,6 @@ tCausa = time();
 if ( enCampo ) causaParada = causaActual();]]></Body>
 				</Function>
 			</Functions>
-			<AgentLinks>
-				<AgentLink>
-					<Id>1385550499637</Id>
-					<Name><![CDATA[agentLink]]></Name>
-					<X>50</X><Y>-50</Y>
-					<Label><X>15</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<HandleReceiveInConnections>false</HandleReceiveInConnections>
-					<AgentLinkType>COLLECTION_OF_LINKS</AgentLinkType>
-					<AgentLinkBidirectional>true</AgentLinkBidirectional>
-					<MessageType><![CDATA[Object]]></MessageType>
-					<StatechartReference>
-						<PackageName><![CDATA[harvest_simulator]]></PackageName>
-						<ClassName><![CDATA[Combine]]></ClassName>
-						<ItemName><![CDATA[tankControl]]></ItemName>
-					</StatechartReference>
-					<StatechartReference>
-						<PackageName><![CDATA[harvest_simulator]]></PackageName>
-						<ClassName><![CDATA[Combine]]></ClassName>
-						<ItemName><![CDATA[moveControl]]></ItemName>
-					</StatechartReference>
-					<LineStyle>SOLID</LineStyle>
-					<LineWidth>1</LineWidth>
-					<LineColor>-16777216</LineColor>
-					<LineZOrder>UNDER_AGENTS</LineZOrder>
-					<LineArrow>NONE</LineArrow>
-					<LineArrowPosition>END</LineArrowPosition>
-				</AgentLink>
-			</AgentLinks>
 
 			<ContainerLinks>
 				<ContainerLink>
@@ -3988,7 +3943,7 @@ if ( enCampo ) causaParada = causaActual();]]></Body>
 			<Name><![CDATA[Main]]></Name>
 			<StartupCode><![CDATA[// series climaticas NASA POWER embebidas: se parsean una sola vez
 cargarClima();
-// la maquina arranca la campania con la tolva de semilla llena (cuenta como semilla despachada)
+// la maquina arranca la campaña con la tolva de semilla llena (cuenta como semilla despachada)
 combine.semilla = capacidadSemilla;
 semillaDespachada = capacidadSemilla;
 
@@ -4039,6 +3994,7 @@ for (int i = 0; i < n; i++) {
 					<Code><![CDATA[10]]></Code>
 					<Unit Class="SpeedUnits"><![CDATA[MPS]]></Unit>
 				</VelocityCode>
+				<MessageType><![CDATA[Object]]></MessageType>
 				<PhysicalLength Class="CodeUnitValue">
 					<Code><![CDATA[1]]></Code>
 					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
@@ -4053,24 +4009,30 @@ for (int i = 0; i < n; i++) {
 				</PhysicalHeight>
 			</AgentProperties>
 			<EnvironmentProperties>
-					<EnableSteps>false</EnableSteps>
-					<StepDurationCode Class="CodeUnitValue">
-						<Code><![CDATA[1.0]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
-					</StepDurationCode>
-					<SpaceType>CONTINUOUS</SpaceType>
-					<WidthCode><![CDATA[500]]></WidthCode>
-					<HeightCode><![CDATA[500]]></HeightCode>
-					<ZHeightCode><![CDATA[0]]></ZHeightCode>
-					<ColumnsCountCode><![CDATA[100]]></ColumnsCountCode>
-					<RowsCountCode><![CDATA[100]]></RowsCountCode>
-					<NeigborhoodType>MOORE</NeigborhoodType>
-					<LayoutType>USER_DEF</LayoutType>
-					<NetworkType>USER_DEF</NetworkType>
-					<ConnectionsPerAgentCode><![CDATA[2]]></ConnectionsPerAgentCode>
-					<ConnectionsRangeCode><![CDATA[50]]></ConnectionsRangeCode>
-					<NeighborLinkFractionCode><![CDATA[0.95]]></NeighborLinkFractionCode>
-					<MCode><![CDATA[10]]></MCode>
+				<EnableSteps>false</EnableSteps>
+				<StepDurationCode Class="CodeUnitValue">
+					<Code><![CDATA[1.0]]></Code>
+					<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
+				</StepDurationCode>
+				<SpaceType>CONTINUOUS</SpaceType>
+				<WidthCode><![CDATA[500]]></WidthCode>
+				<HeightCode><![CDATA[500]]></HeightCode>
+				<ZHeightCode><![CDATA[0]]></ZHeightCode>
+				<ColumnsCountCode><![CDATA[100]]></ColumnsCountCode>
+				<RowsCountCode><![CDATA[100]]></RowsCountCode>
+				<NeigborhoodType>MOORE</NeigborhoodType>
+				<LayoutType>USER_DEF</LayoutType>
+				<NetworkType>USER_DEF</NetworkType>
+				<ConnectionsPerAgentCode><![CDATA[2]]></ConnectionsPerAgentCode>
+				<ConnectionsRangeCode><![CDATA[50]]></ConnectionsRangeCode>
+				<NeighborLinkFractionCode><![CDATA[0.95]]></NeighborLinkFractionCode>
+				<MCode><![CDATA[10]]></MCode>
+				<LineStyle>SOLID</LineStyle>
+				<LineWidth>1</LineWidth>
+				<LineColor>-16777216</LineColor>
+				<LineZOrder>UNDER_AGENTS</LineZOrder>
+				<LineArrow>NONE</LineArrow>
+				<LineArrowPosition>END</LineArrowPosition>
 			</EnvironmentProperties>
 			<DatasetsCreationProperties>
 				<AutoCreate>true</AutoCreate>
@@ -4103,7 +4065,6 @@ for (int i = 0; i < n; i++) {
 				<InheritedFromParentAgentType>true</InheritedFromParentAgentType>
 			</ScaleRuler>
 			<CurrentLevel>1567517860768</CurrentLevel>
-			<ConnectionsId>1385550499655</ConnectionsId>
 			<Variables>
 				<Variable Class="PlainVariable">
 					<Id>1169735952665</Id>
@@ -4434,7 +4395,7 @@ for (int i = 0; i < n; i++) {
 				</Variable>
 				<Variable Class="PlainVariable">
 					<Id>1786000000604</Id>
-					<Name><![CDATA[diaCampania]]></Name>
+					<Name><![CDATA[diaCampaña]]></Name>
 					<X>1200</X><Y>-480</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -4779,7 +4740,7 @@ for (int i = 0; i < n; i++) {
 				</Variable>
 				<Variable Class="PlainVariable">
 					<Id>1786000001305</Id>
-					<Name><![CDATA[campaniaNro]]></Name>
+					<Name><![CDATA[campañaNro]]></Name>
 					<X>1200</X><Y>320</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -4804,6 +4765,36 @@ for (int i = 0; i < n; i++) {
 						<Type><![CDATA[int]]></Type>        
 						<InitialValue Class="CodeValue">
 							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1793000000001</Id>
+					<Name><![CDATA[horasParada]]></Name>
+					<X>1450</X><Y>-460</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double[]]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[new double[ 8 ]]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1793000000002</Id>
+					<Name><![CDATA[baseParada]]></Name>
+					<X>1450</X><Y>-420</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double[]]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[new double[ 8 ]]]></Code>
 						</InitialValue>
 					</Properties>
 				</Variable>
@@ -5147,7 +5138,7 @@ for (int i = 0; i < n; i++) {
 				</Variable>
 				<Variable Class="Parameter">
 					<Id>1786000000701</Id>
-					<Name><![CDATA[campania]]></Name>
+					<Name><![CDATA[campaña]]></Name>
 					<X>1200</X><Y>-240</Y>
 					<Label><X>20</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -5163,7 +5154,7 @@ for (int i = 0; i < n; i++) {
 						<ParameterEditor>
 							<Id>1786000000801</Id>
 							<Name><![CDATA[null]]></Name>
-							<Label><![CDATA[Campania climatica (0-19)]]></Label>
+							<Label><![CDATA[Campaña climatica (0-19)]]></Label>
 							<EditorContolType>TEXT_BOX</EditorContolType>
 							<MinSliderValue><![CDATA[0]]></MinSliderValue>
 							<MaxSliderValue><![CDATA[19]]></MaxSliderValue>
@@ -5355,7 +5346,7 @@ for (int i = 0; i < n; i++) {
 				</Variable>
 				<Variable Class="Parameter">
 					<Id>1786000001401</Id>
-					<Name><![CDATA[terminarAlCerrarCampania]]></Name>
+					<Name><![CDATA[terminarAlCerrarCampaña]]></Name>
 					<X>1200</X><Y>360</Y>
 					<Label><X>20</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
@@ -5371,7 +5362,7 @@ for (int i = 0; i < n; i++) {
 						<ParameterEditor>
 							<Id>1786000001402</Id>
 							<Name><![CDATA[null]]></Name>
-							<Label><![CDATA[Terminar al cerrar la campania]]></Label>
+							<Label><![CDATA[Terminar al cerrar la campaña]]></Label>
 							<EditorContolType>CHECK_BOX</EditorContolType>
 							<MinSliderValue><![CDATA[0]]></MinSliderValue>
 							<MaxSliderValue><![CDATA[1]]></MaxSliderValue>
@@ -5457,36 +5448,6 @@ for (int i = 0; i < n; i++) {
 						</ParameterEditor>
 					</Properties>                 
 				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1793000000001</Id>
-					<Name><![CDATA[horasParada]]></Name>
-					<X>1450</X><Y>-460</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double[]]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new double[ 8 ]]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1793000000002</Id>
-					<Name><![CDATA[baseParada]]></Name>
-					<X>1450</X><Y>-420</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double[]]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new double[ 8 ]]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
 			</Variables>
 			<StatechartElements>
 				<StatechartElement Class="State" ParentState="ROOT_NODE">
@@ -5498,7 +5459,7 @@ for (int i = 0; i < n; i++) {
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="100" Height="30">
-						<EntryAction><![CDATA[// arranca la campania: el campo esta sin sembrar y la maquina sale a sembrar
+						<EntryAction><![CDATA[// arranca la campaña: el campo esta sin sembrar y la maquina sale a sembrar
 // (Combine Parked -> GoingToField espera a Main.laborPendiente(); el tick horario la reevalua).
 // ritmo de presentacion: 0.5 dias por segundo real, la siembra (~40 dias) dura ~80 s
 getEngine().setRealTimeScale( 0.5 * day() );]]></EntryAction>
@@ -5514,12 +5475,12 @@ getEngine().setRealTimeScale( 0.5 * day() );]]></EntryAction>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="100" Height="30">
-						<EntryAction><![CDATA[// la madurez depende del clima de la campania: el tick diario suma grados-dia
+						<EntryAction><![CDATA[// la madurez depende del clima de la campaña: el tick diario suma grados-dia
 // mientras se este en este estado y la salida es la condicion gdd >= gddObjetivo
 // (diasMaduracionMin/Max/Moda quedan obsoletos: eran el sorteo triangular de antes)
 gdd = 0;
 tInicioCrecimiento = time();
-traceln( "Siembra cerrada el dia " + diaCampania + " — el cultivo madura al sumar " + (int) gddObjetivo + " grados-dia" );
+traceln( "Siembra cerrada el dia " + diaCampaña + " — el cultivo madura al sumar " + (int) gddObjetivo + " grados-dia" );
 // ritmo de presentacion: la maduracion son meses sin nada que ver
 getEngine().setRealTimeScale( 1 * week() );]]></EntryAction>
 						<FillColor>-10496</FillColor>
@@ -5534,7 +5495,7 @@ getEngine().setRealTimeScale( 1 * week() );]]></EntryAction>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="100" Height="30">
-						<EntryAction><![CDATA[diaMadurez = diaCampania;
+						<EntryAction><![CDATA[diaMadurez = diaCampaña;
 // largo del ciclo medido (antes era el sorteo): dias desde el cierre de la siembra
 diasHastaMadurez = diaMadurez - diaFinSiembra;
 traceln( "Cultivo maduro el dia " + diaMadurez + " — " + (int) diasHastaMadurez + " dias de ciclo, gdd=" + gdd + " — listo para cosecha" );
@@ -5560,8 +5521,8 @@ combine.moveControl.onChange();]]></EntryAction>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="100" Height="30">
-						<EntryAction><![CDATA[// fin de campania: el campo quedo cosechado. Es el estado final (una corrida = una campania).
-traceln( "Campo cosechado el dia " + diaCampania + " — fin de campania" );
+						<EntryAction><![CDATA[// fin de campaña: el campo quedo cosechado. Es el estado final (una corrida = una campaña).
+traceln( "Campo cosechado el dia " + diaCampaña + " — fin de campaña" );
 // ritmo de presentacion: ya no hay nada que mirar
 getEngine().setRealTimeScale( 1 * week() );]]></EntryAction>
 						<FillColor>-10496</FillColor>
@@ -5721,33 +5682,33 @@ horaTick++;
 combine.moveControl.onChange();
 // OJO: nada de 'return' en una accion de transicion. AnyLogic las despacha desde
 // un metodo compartido (executeActionOf) y el return saltea el rearmado de la
-// autotransicion: el tick corria una sola vez y diaCampania quedaba clavado en 0.
+// autotransicion: el tick corria una sola vez y diaCampaña quedaba clavado en 0.
 if ( horaTick % 24 == 0 ) {
 	// el balance hidrico solo avanza mientras haya serie; el resto del dia
 	// (onChange del ciclo de cultivo) tiene que seguir corriendo igual, si no
-	// la campania se congela al agotarse la serie (365 dias, 1/oct a 30/sep).
-	if ( diaCampania < lluviaDiaria[ campania ].length - 1 ) {
-		diaCampania++;
-		double lluvia = lluviaDiaria[ campania ][ diaCampania ];
-		double etc    = kc * et0Diaria[ campania ][ diaCampania ];
+	// la campaña se congela al agotarse la serie (365 dias, 1/oct a 30/sep).
+	if ( diaCampaña < lluviaDiaria[ campaña ].length - 1 ) {
+		diaCampaña++;
+		double lluvia = lluviaDiaria[ campaña ][ diaCampaña ];
+		double etc    = kc * et0Diaria[ campaña ][ diaCampaña ];
 		humedadSuperficie = max( 0, min( capacidadSuperficie, humedadSuperficie + lluvia - etc ) );
-		if ( inState( Creciendo ) ) gdd += max( 0, tmediaDiaria[ campania ][ diaCampania ] - tBase );
+		if ( inState( Creciendo ) ) gdd += max( 0, tmediaDiaria[ campaña ][ diaCampaña ] - tBase );
 		// piso: superficie seca Y que no haya llovido fuerte hoy
 		boolean piso = humedadSuperficie <= umbralPiso && lluvia < lluviaBloqueante;
 		if ( !piso ) diasSinPiso++;
-		if ( diaCampania <= diasLogClima )
-			traceln( "CLIMA dia " + diaCampania + " | lluvia=" + lluvia + " etc=" + etc
+		if ( diaCampaña <= diasLogClima )
+			traceln( "CLIMA dia " + diaCampaña + " | lluvia=" + lluvia + " etc=" + etc
 			         + " humedad=" + humedadSuperficie + " piso=" + piso );
 		if ( piso != daPiso ) {
 			daPiso = piso;
-			traceln( ( piso ? ">>> PISO RECUPERADO" : ">>> PISO PERDIDO" ) + " dia " + diaCampania
+			traceln( ( piso ? ">>> PISO RECUPERADO" : ">>> PISO PERDIDO" ) + " dia " + diaCampaña
 			         + " | humedad=" + humedadSuperficie + " lluvia=" + lluvia );
 			combine.moveControl.onChange();
 		}
 	} else if ( daPiso == false ) {
 		// serie agotada: no dejar la maquina clavada por un piso congelado
 		daPiso = true;
-		traceln( ">>> SERIE CLIMATICA AGOTADA dia " + diaCampania + " — se libera el piso" );
+		traceln( ">>> SERIE CLIMATICA AGOTADA dia " + diaCampaña + " — se libera el piso" );
 		combine.moveControl.onChange();
 	}
 	cicloCultivo.onChange();
@@ -5793,7 +5754,7 @@ if ( lotesCompletados < cantidadLotes ) return;
 lotesCompletados = 0;
 if ( sembrando() ) {
 	// ---- fin de la SIEMBRA: el dia de fin es la variable de respuesta del entregable #1
-	diaFinSiembra = diaCampania;
+	diaFinSiembra = diaCampaña;
 	traceln( "=== SIEMBRA TERMINADA | superficie=" + (int)( cantidadLotes * 104 )
 	         + " ha | dia " + diaFinSiembra + " | "
 	         + ( diaFinSiembra <= diaLimiteSiembra ? "DENTRO" : "FUERA" )
@@ -5802,15 +5763,15 @@ if ( sembrando() ) {
 	reportarPasada();
 	siembraCompleta = true;
 } else {
-	// ---- fin de la COSECHA: cierra la campania
-	diaFinCosecha = diaCampania;
-	campaniaNro++;
-	traceln( "=== COSECHA TERMINADA | campania " + campaniaNro + " | dia " + diaFinCosecha
+	// ---- fin de la COSECHA: cierra la campaña
+	diaFinCosecha = diaCampaña;
+	campañaNro++;
+	traceln( "=== COSECHA TERMINADA | campaña " + campañaNro + " | dia " + diaFinCosecha
 	         + " | " + ( diaFinCosecha - diaMadurez ) + " dias desde la madurez (dia " + diaMadurez + ")" );
 	reportarPasada();
 	auditarMasa();
 	cosechaCompleta = true;
-	if ( terminarAlCerrarCampania ) { getEngine().finish(); return; }
+	if ( terminarAlCerrarCampaña ) { getEngine().finish(); return; }
 }
 // la salida del estado actual de cicloCultivo depende de las banderas de arriba,
 // y una condicion no se reevalua sola cuando cambia la variable (aprendizaje 13)
@@ -5863,7 +5824,7 @@ traceln( "AUDITORIA t=" + time() + " | cosechado=" + totalCosechado + " enSistem
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[// series NASA POWER embebidas como texto: campanias separadas por ; y dias por ,
+					<Body><![CDATA[// series NASA POWER embebidas como texto: campañas separadas por ; y dias por ,
 // se guardan como String y no como literal de arreglo porque un metodo de la JVM
 // no puede pasar de 65535 bytes de bytecode
 String[] fuentes = { climaLluvia, climaTmedia, climaEt0 };
@@ -6014,7 +5975,7 @@ traceln( "AUDITORIA SEMILLA | despachada=" + semillaDespachada + " sembrada=" + 
 					<Body><![CDATA[// lluvia del dia en curso [mm], para la animacion. 0 si el clima todavia no se cargo.
 // Solo lee: la usan el color del campo, el indicador de suelo y las gotas.
 if ( lluviaDiaria == null ) return 0;
-return lluviaDiaria[ campania ][ diaCampania ];]]></Body>
+return lluviaDiaria[ campaña ][ diaCampaña ];]]></Body>
 				</Function>
 				<Function AccessType="default" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
@@ -6026,39 +5987,13 @@ return lluviaDiaria[ campania ][ diaCampania ];]]></Body>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[// tamano relativo del cultivo para la animacion: 0 sin sembrar, gdd / gddObjetivo creciendo, 1 maduro.
+					<Body><![CDATA[// tamaño relativo del cultivo para la animacion: 0 sin sembrar, gdd / gddObjetivo creciendo, 1 maduro.
 // Solo lee: la usa la escala de crop3D.
 if ( inState( Creciendo ) ) return min( 1, gdd / gddObjetivo );
 if ( inState( Maduro ) || inState( Cosechado ) ) return 1;
 return 0;]]></Body>
 				</Function>
 			</Functions>
-			<AgentLinks>
-				<AgentLink>
-					<Id>1385550499655</Id>
-					<Name><![CDATA[agentLink]]></Name>
-					<X>50</X><Y>-50</Y>
-					<Label><X>15</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<HandleReceiveInConnections>false</HandleReceiveInConnections>
-					<AgentLinkType>COLLECTION_OF_LINKS</AgentLinkType>
-					<AgentLinkBidirectional>true</AgentLinkBidirectional>
-					<MessageType><![CDATA[Object]]></MessageType>
-					<StatechartReference>
-						<PackageName><![CDATA[harvest_simulator]]></PackageName>
-						<ClassName><![CDATA[Main]]></ClassName>
-						<ItemName><![CDATA[cicloCultivo]]></ItemName>
-					</StatechartReference>
-					<LineStyle>SOLID</LineStyle>
-					<LineWidth>1</LineWidth>
-					<LineColor>-16777216</LineColor>
-					<LineZOrder>UNDER_AGENTS</LineZOrder>
-					<LineArrow>NONE</LineArrow>
-					<LineArrowPosition>END</LineArrowPosition>
-				</AgentLink>
-			</AgentLinks>
 
 			<EmbeddedObjects>
 				<EmbeddedObject>
@@ -6853,9 +6788,9 @@ return 0;]]></Body>
 					<ReplicationCode Class="CodeValue">
 						<Code><![CDATA[Xunits.length]]></Code>
 					</ReplicationCode>
-					<ScaleCode><![CDATA[// crece con los grados-dia: 15% recien sembrado, tamano completo al madurar (escala base 8)
+					<ScaleCode><![CDATA[// crece con los grados-dia: 15% recien sembrado, tamaño completo al madurar (escala base 8)
 8.0 * ( 0.15 + 0.85 * progresoCultivo() )]]></ScaleCode>
-</Figure3D>
+				</Figure3D>
 			</Presentation>
 
 				</Group>
@@ -7055,7 +6990,7 @@ de la Cosechadora]]></Text>
   : inState( Maduro ) ? "COSECHA: lote " + min( lotesCompletados + 1, cantidadLotes )
   : "CAMPO COSECHADO" )
 + ( inState( Creciendo ) || inState( Cosechado ) ? "" : " de " + cantidadLotes )
-+ "  |  dia " + diaCampania + " (" + (int) ( cantidadLotes * 104 ) + " ha)"]]></TextCode>
++ "  |  dia " + diaCampaña + " (" + (int) ( cantidadLotes * 104 ) + " ha)"]]></TextCode>
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>11</Size>
@@ -7380,6 +7315,7 @@ de la Cosechadora]]></Text>
 				<Light3D>
 					<Id>1256807904216</Id>
 					<Name><![CDATA[light]]></Name>
+					<PublicFlag>true</PublicFlag>
 					<X>-150</X><Y>-150</Y><Z>500</Z>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<ShowLabel>false</ShowLabel>
@@ -7894,7 +7830,7 @@ de la Cosechadora]]></Text>
 					<Rotation>0.0</Rotation>
 
 			<Presentation>
-				<EmbeddedObjectPresentation>
+                <EmbeddedObjectPresentation>
 					<Id>1169735952598</Id>
 					<Name><![CDATA[combine_presentation]]></Name>
 					<X>0</X><Y>0</Y>
@@ -7911,7 +7847,7 @@ de la Cosechadora]]></Text>
 					<GISScaleForFixedEmbeddedObjectPresentationSize>1000000000</GISScaleForFixedEmbeddedObjectPresentationSize>
 					<Latitude>0.0</Latitude>
 					<Longitude>0.0</Longitude>
-				</EmbeddedObjectPresentation>
+                </EmbeddedObjectPresentation>
 			</Presentation>
 
 				</Group>
@@ -7929,7 +7865,7 @@ de la Cosechadora]]></Text>
 					<Rotation>0.0</Rotation>
 
 			<Presentation>
-				<EmbeddedObjectPresentation>
+                <EmbeddedObjectPresentation>
 					<Id>1169735952597</Id>
 					<Name><![CDATA[cart_presentation]]></Name>
 					<X>0</X><Y>0</Y>
@@ -7946,7 +7882,7 @@ de la Cosechadora]]></Text>
 					<GISScaleForFixedEmbeddedObjectPresentationSize>1000000000</GISScaleForFixedEmbeddedObjectPresentationSize>
 					<Latitude>0.0</Latitude>
 					<Longitude>0.0</Longitude>
-				</EmbeddedObjectPresentation>
+                </EmbeddedObjectPresentation>
 			</Presentation>
 
 				</Group>
@@ -7964,7 +7900,7 @@ de la Cosechadora]]></Text>
 					<Rotation>0.0</Rotation>
 
 			<Presentation>
-				<EmbeddedObjectPresentation>
+                <EmbeddedObjectPresentation>
 					<Id>1169735952596</Id>
 					<Name><![CDATA[truck_presentation]]></Name>
 					<X>0</X><Y>0</Y>
@@ -7981,7 +7917,7 @@ de la Cosechadora]]></Text>
 					<GISScaleForFixedEmbeddedObjectPresentationSize>1000000000</GISScaleForFixedEmbeddedObjectPresentationSize>
 					<Latitude>0.0</Latitude>
 					<Longitude>0.0</Longitude>
-				</EmbeddedObjectPresentation>
+                </EmbeddedObjectPresentation>
 			</Presentation>
 
 				</Group>
@@ -8053,6 +7989,7 @@ de la Cosechadora]]></Text>
 					<Unit Class="SpeedUnits"><![CDATA[KPH]]></Unit>
 				</VelocityCode>
 				<OnArrival><![CDATA[send( "ARRIVED", this );]]></OnArrival>
+				<MessageType><![CDATA[Object]]></MessageType>
 				<PhysicalLength Class="CodeUnitValue">
 					<Code><![CDATA[1]]></Code>
 					<Unit Class="LengthUnits"><![CDATA[METER]]></Unit>
@@ -8067,24 +8004,30 @@ de la Cosechadora]]></Text>
 				</PhysicalHeight>
 			</AgentProperties>
 			<EnvironmentProperties>
-					<EnableSteps>false</EnableSteps>
-					<StepDurationCode Class="CodeUnitValue">
-						<Code><![CDATA[1.0]]></Code>
-						<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
-					</StepDurationCode>
-					<SpaceType>CONTINUOUS</SpaceType>
-					<WidthCode><![CDATA[500]]></WidthCode>
-					<HeightCode><![CDATA[500]]></HeightCode>
-					<ZHeightCode><![CDATA[0]]></ZHeightCode>
-					<ColumnsCountCode><![CDATA[100]]></ColumnsCountCode>
-					<RowsCountCode><![CDATA[100]]></RowsCountCode>
-					<NeigborhoodType>MOORE</NeigborhoodType>
-					<LayoutType>USER_DEF</LayoutType>
-					<NetworkType>USER_DEF</NetworkType>
-					<ConnectionsPerAgentCode><![CDATA[2]]></ConnectionsPerAgentCode>
-					<ConnectionsRangeCode><![CDATA[50]]></ConnectionsRangeCode>
-					<NeighborLinkFractionCode><![CDATA[0.95]]></NeighborLinkFractionCode>
-					<MCode><![CDATA[10]]></MCode>
+				<EnableSteps>false</EnableSteps>
+				<StepDurationCode Class="CodeUnitValue">
+					<Code><![CDATA[1.0]]></Code>
+					<Unit Class="TimeUnits"><![CDATA[MINUTE]]></Unit>
+				</StepDurationCode>
+				<SpaceType>CONTINUOUS</SpaceType>
+				<WidthCode><![CDATA[500]]></WidthCode>
+				<HeightCode><![CDATA[500]]></HeightCode>
+				<ZHeightCode><![CDATA[0]]></ZHeightCode>
+				<ColumnsCountCode><![CDATA[100]]></ColumnsCountCode>
+				<RowsCountCode><![CDATA[100]]></RowsCountCode>
+				<NeigborhoodType>MOORE</NeigborhoodType>
+				<LayoutType>USER_DEF</LayoutType>
+				<NetworkType>USER_DEF</NetworkType>
+				<ConnectionsPerAgentCode><![CDATA[2]]></ConnectionsPerAgentCode>
+				<ConnectionsRangeCode><![CDATA[50]]></ConnectionsRangeCode>
+				<NeighborLinkFractionCode><![CDATA[0.95]]></NeighborLinkFractionCode>
+				<MCode><![CDATA[10]]></MCode>
+				<LineStyle>SOLID</LineStyle>
+				<LineWidth>1</LineWidth>
+				<LineColor>-16777216</LineColor>
+				<LineZOrder>UNDER_AGENTS</LineZOrder>
+				<LineArrow>NONE</LineArrow>
+				<LineArrowPosition>END</LineArrowPosition>
 			</EnvironmentProperties>
 			<DatasetsCreationProperties>
 				<AutoCreate>true</AutoCreate>
@@ -8117,7 +8060,6 @@ de la Cosechadora]]></Text>
 				<InheritedFromParentAgentType>true</InheritedFromParentAgentType>
 			</ScaleRuler>
 			<CurrentLevel>1567517860769</CurrentLevel>
-			<ConnectionsId>1385550499657</ConnectionsId>
 			<Variables>
 				<Variable Class="PlainVariable">
 					<Id>1786000000201</Id>
@@ -8153,6 +8095,66 @@ de la Cosechadora]]></Text>
 					<Id>1786000000203</Id>
 					<Name><![CDATA[tUltimo]]></Name>
 					<X>750</X><Y>340</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1793000000031</Id>
+					<Name><![CDATA[horasEstado]]></Name>
+					<X>1000</X><Y>100</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double[]]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[new double[ 4 ]]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1793000000032</Id>
+					<Name><![CDATA[baseEstado]]></Name>
+					<X>1000</X><Y>140</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double[]]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[new double[ 4 ]]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1793000000033</Id>
+					<Name><![CDATA[estado]]></Name>
+					<X>1000</X><Y>180</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[-1]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1793000000034</Id>
+					<Name><![CDATA[tEstado]]></Name>
+					<X>1000</X><Y>220</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -8263,66 +8265,6 @@ de la Cosechadora]]></Text>
 							<DelimeterType>NO_DELIMETER</DelimeterType>
 						</ParameterEditor>
 					</Properties>                 
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1793000000031</Id>
-					<Name><![CDATA[horasEstado]]></Name>
-					<X>1000</X><Y>100</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double[]]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new double[ 4 ]]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1793000000032</Id>
-					<Name><![CDATA[baseEstado]]></Name>
-					<X>1000</X><Y>140</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double[]]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new double[ 4 ]]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1793000000033</Id>
-					<Name><![CDATA[estado]]></Name>
-					<X>1000</X><Y>180</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[int]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[-1]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1793000000034</Id>
-					<Name><![CDATA[tEstado]]></Name>
-					<X>1000</X><Y>220</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[double]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[0]]></Code>
-						</InitialValue>
-					</Properties>
 				</Variable>
 			</Variables>
 			<StatechartElements>
@@ -8788,32 +8730,6 @@ iniciarPasada();
 return txt;]]></Body>
 				</Function>
 			</Functions>
-			<AgentLinks>
-				<AgentLink>
-					<Id>1385550499657</Id>
-					<Name><![CDATA[agentLink]]></Name>
-					<X>50</X><Y>-50</Y>
-					<Label><X>15</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<HandleReceiveInConnections>false</HandleReceiveInConnections>
-					<AgentLinkType>COLLECTION_OF_LINKS</AgentLinkType>
-					<AgentLinkBidirectional>true</AgentLinkBidirectional>
-					<MessageType><![CDATA[Object]]></MessageType>
-					<StatechartReference>
-						<PackageName><![CDATA[harvest_simulator]]></PackageName>
-						<ClassName><![CDATA[Truck]]></ClassName>
-						<ItemName><![CDATA[moveControl]]></ItemName>
-					</StatechartReference>
-					<LineStyle>SOLID</LineStyle>
-					<LineWidth>1</LineWidth>
-					<LineColor>-16777216</LineColor>
-					<LineZOrder>UNDER_AGENTS</LineZOrder>
-					<LineArrow>NONE</LineArrow>
-					<LineArrowPosition>END</LineArrowPosition>
-				</AgentLink>
-			</AgentLinks>
 
 			<ContainerLinks>
 				<ContainerLink>
@@ -9506,7 +9422,7 @@ de Operaciones Agricolas]]></Text>
 					<ParameterName><![CDATA[diasMaduracionModa]]></ParameterName>
 				</Parameter>
 				<Parameter>
-					<ParameterName><![CDATA[campania]]></ParameterName>
+					<ParameterName><![CDATA[campaña]]></ParameterName>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[cantidadLotes]]></ParameterName>
@@ -9533,7 +9449,7 @@ de Operaciones Agricolas]]></Text>
 					<ParameterName><![CDATA[gddObjetivo]]></ParameterName>
 				</Parameter>
 				<Parameter>
-					<ParameterName><![CDATA[terminarAlCerrarCampania]]></ParameterName>
+					<ParameterName><![CDATA[terminarAlCerrarCampaña]]></ParameterName>
 					<ParameterValue Class="CodeValue">
 						<Code><![CDATA[true]]></Code>
 					</ParameterValue>
@@ -9603,7 +9519,7 @@ java.io.File f = new java.io.File( "resultados.csv" );
 if ( f.exists() ) f.delete();
 try {
     java.io.PrintWriter w = new java.io.PrintWriter( f );
-    w.println( "lotes;turnos;campania;diaFinSiembra;diaMadurez;diaFinCosecha" );
+    w.println( "lotes;turnos;campaña;diaFinSiembra;diaMadurez;diaFinCosecha" );
     w.close();
 } catch ( Exception e ) {
     traceln( "!!! NO SE PUDO INICIAR resultados.csv: " + e );
@@ -9612,7 +9528,7 @@ try {
     java.io.PrintWriter w = new java.io.PrintWriter(
         new java.io.FileWriter( "resultados.csv", true ) );
     w.println( root.cantidadLotes + ";" + root.turnos + ";"
-             + root.campania + ";" + root.diaFinSiembra
+             + root.campaña + ";" + root.diaFinSiembra
              + ";" + root.diaMadurez + ";" + root.diaFinCosecha );
     w.close();
 } catch ( Exception e ) {
@@ -10035,7 +9951,7 @@ try {
 					<Z>0</Z>
 					<Rotation>0.0</Rotation>
 					<Color>-12171190</Color>
-					<Text><![CDATA[Campania climatica (0-19)]]></Text>
+					<Text><![CDATA[Campaña climatica (0-19)]]></Text>
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>12</Size>
@@ -10058,7 +9974,7 @@ try {
 					<Rotation>0.0</Rotation>
 					<Color>-12042869</Color>
 					<Text><![CDATA[?]]></Text>
-					<TextCode><![CDATA[format( campania )]]></TextCode>
+					<TextCode><![CDATA[format( campaña )]]></TextCode>
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>12</Size>
@@ -10475,7 +10391,7 @@ try {
 					<Z>0</Z>
 					<Rotation>0.0</Rotation>
 					<Color>-12171190</Color>
-					<Text><![CDATA[Terminar al cerrar la campania]]></Text>
+					<Text><![CDATA[Terminar al cerrar la campaña]]></Text>
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>12</Size>
@@ -10498,7 +10414,7 @@ try {
 					<Rotation>0.0</Rotation>
 					<Color>-12042869</Color>
 					<Text><![CDATA[?]]></Text>
-					<TextCode><![CDATA[format( terminarAlCerrarCampania )]]></TextCode>
+					<TextCode><![CDATA[format( terminarAlCerrarCampaña )]]></TextCode>
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>12</Size>
@@ -10835,7 +10751,14 @@ try {
 	<Uuid>0a27038a-0f3a-48bb-b235-4a44066a1402</Uuid>
 	<Uuid>0a9ec2c3-5e18-4c0a-a183-fd86d9d9a08b</Uuid>
 	<Uuid>2216cdd0-177c-5678-9e88-dd8b95313334</Uuid>
+	<Uuid>92afa9c7-cb47-45df-8559-1b947cbeacee</Uuid>
+	<Uuid>896f4ff2-c039-43e1-8c65-183592ba63e2</Uuid>
+	<Uuid>eada5e9c-56b7-4492-b3b1-03f1eb36a209</Uuid>
 	<Uuid>2216cdd0-177c-5678-9e88-dd8b95313335</Uuid>
 	<Uuid>5b8ebeed-6b58-4c3a-8d5f-0958b1a90ce6</Uuid>
+	<Uuid>c39ae7a6-edcf-4673-923a-96829a5df80c</Uuid>
+	<Uuid>af233c46-2e37-4dd0-a79f-cc6184140b1c</Uuid>
+	<Uuid>53a0a65d-9a11-4cd9-8e3a-c6852af4d6e3</Uuid>
+	<Uuid>01593659-ae66-4c89-b2b6-9a95d1c1f509</Uuid>
 </ConvertersApplied>
 </AnyLogicWorkspace>
