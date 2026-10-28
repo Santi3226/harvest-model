@@ -293,6 +293,55 @@ La siembra usaba `0.05 * day()` y tardaba unos 13 minutos. Se subió a `0.5 * da
 
 Respaldo previo al cambio visual: `backups/2026-10-05-pre-visual-lotes.alp`. Posterior: `backups/2026-10-05-visual-lotes.alp`.
 
+### Lluvia y piso (27/10)
+
+La animación muestra por qué la máquina no entra al lote. Es solo presentación: no cambia ningún resultado.
+
+| Elemento | Qué muestra |
+|---|---|
+| `field` y `rectangle` (campo y parte trabajada, 2D y 3D) | Sin piso: marrón de barro (la parte trabajada, más oscura). Llovió ese día pero da piso: gris azulado. Si no, el color original |
+| `textSueloPiso` (verde) y `textSueloSinPiso` (rojo), debajo de `textAvance` | La lluvia del día, si da piso, la humedad de la capa superficial y el umbral. Se ve uno u otro según `daPiso` |
+| `gotaLluvia3D` (línea replicada, solo 3D) | Las mismas gotas en la vista 3D. Caen en el eje Z (altura), de 120 al suelo: en 3D el eje Y del dibujo es el suelo, así que la línea de 2D quedaría acostada sobre el campo |
+| `gotaLluvia` (línea replicada, solo 2D) | Gotas que caen sobre el campo los días de lluvia. Son más cuanta más lluvia hay: `25 + 6 × mm`, hasta 150. Azul oscuro sobre el campo claro o gris, celeste sobre el barro |
+
+- **`Main.lluviaHoy()`** devuelve la lluvia del día en curso, o 0 si el clima todavía no se cargó. Solo lee: la usan las tres figuras.
+- **La lluvia es un dato diario.** Las gotas duran todo el día del modelo, porque la serie no dice a qué hora llovió.
+- **Las gotas caen con el reloj real, no con el del modelo.** Así se mueven igual con cualquier escala de tiempo. Con la escala de la siembra (medio día por segundo), un día de lluvia se ve unos 2 segundos. El barro dura más, porque la capa superficial tarda días en secarse.
+- **Lluvia fuerte = sin piso.** Una lluvia de 5 mm o más (`lluviaBloqueante`) corta el piso ese mismo día. Los días de lluvia con piso son lluvias chicas, sobre el campo gris azulado. Por eso las gotas cambian de color según el fondo: con un solo color celeste no se veían esos días.
+- **El color dinámico nunca devuelve `null`:** una figura con relleno `null` queda transparente. Por eso el caso normal repite el color original.
+
+Para verlo, en la campaña 0: el día 22 llueven 22,2 mm y el campo queda sin piso hasta el día 26. Con la escala de la siembra, eso pasa entre los 44 y los 52 segundos de corrida.
+
+Respaldo: `backups/2026-10-27-pre-lluvia-visual.alp`.
+
+### El cultivo crece (27/10, paso 6 del plan)
+
+`crop3D` (una figura por planta, unas 4.000) tenía escala fija 8. Ahora tiene una escala dinámica (`ScaleCode`):
+
+```
+8.0 * ( 0.15 + 0.85 * progresoCultivo() )
+```
+
+`Main.progresoCultivo()` vale 0 sin sembrar, `gdd / gddObjetivo` mientras crece y 1 desde la madurez. Las plantas aparecen al 15% detrás de la sembradora, crecen con los grados-día y llegan al tamaño completo al madurar. Es solo presentación.
+
+La etiqueta `ScaleCode` de una figura 3D no estaba en este modelo. Se tomó del ejemplo "Agent Based Population Model" que trae AnyLogic, donde un agente crece según su edad. Va después de `ReplicationCode`, como el tamaño dinámico de las figuras replicadas de los ejemplos.
+
+**Verificado el 27/10:** compila (el código generado llama a `shape.setScale(...)`) y la planta crece.
+
+**Pendiente: el color.** La planta cambia de tamaño, pero no de color. Se decidió dejarlo así por ahora. Lo que se averiguó:
+
+- **En 2D no se puede cambiar el color del ícono.** AnyLogic dibuja la figura 3D en 2D como una imagen ya renderizada (`3d_low_poly_wheat.dae_yzx_-6_-5_10_10.png` en la carpeta de compilación).
+- **La tabla de colores no admite código.** En los más de 1.000 ejemplos de AnyLogic, `ColorMapping` solo tiene colores fijos.
+- **En 3D hay un método, sin garantía.** `Shape3DObject.setColor(String material, Color)` existe, pero la tabla de colores de `crop3D` no guarda nombres de material (el código generado los tiene como `"null"`). El `.dae` tiene `mat_0` y `mat_1`, y no se sabe si `setColor` los reconoce por ese identificador.
+
+Opciones, si se retoma:
+
+1. **El campo cambia de color con el cultivo** (recomendada): verde claro recién sembrado, verde intenso creciendo y amarillo al madurar, con el barro y la lluvia con prioridad. Sirve en 2D y 3D, usa el `FillColorCode` que ya tiene `field` y no agrega figuras.
+2. **Círculos en lugar de íconos en 2D**, con radio (`RadiusXCode`) y color dinámicos. Es color en la planta, pero se pierde el dibujo de la espiga y se suman unas 4.000 figuras.
+3. **Probar `setColor` en 3D**, recorriendo `crop3D.get( i )` (`ReplicatedShape` tiene `get(int)` y `size()`). Es experimental.
+
+Respaldo: `backups/2026-10-27-pre-crecimiento-visual.alp`.
+
 ---
 
 ## 7. Decisiones de modelado (para la defensa)
