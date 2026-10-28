@@ -1219,6 +1219,23 @@ for ( int k = 0; k < nombres.length; k++ ) {
 iniciarPasada();
 return txt;]]></Body>
 				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[String]]></ReturnType>
+					<Id>1795000000007</Id>
+					<Name><![CDATA[csvEstados]]></Name>
+					<X>1000</X><Y>380</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[// horas en cada estado desde el inicio de la pasada, separadas por ';' para el CSV del barrido.
+// No reinicia la pasada: eso lo hace reporteEstados(), que se llama despues.
+cerrarEstado();
+String txt = "";
+for ( int k = 0; k < horasEstado.length; k++ ) txt += ( k > 0 ? ";" : "" ) + ( horasEstado[ k ] - baseEstado[ k ] );
+return txt;]]></Body>
+				</Function>
 			</Functions>
 
 			<ContainerLinks>
@@ -4798,6 +4815,66 @@ for (int i = 0; i < n; i++) {
 						</InitialValue>
 					</Properties>
 				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1795000000001</Id>
+					<Name><![CDATA[diaSiembraLote]]></Name>
+					<X>1650</X><Y>-540</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double[]]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[new double[ cantidadLotes ]]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1795000000002</Id>
+					<Name><![CDATA[diaCosechaLote]]></Name>
+					<X>1650</X><Y>-500</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double[]]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[new double[ cantidadLotes ]]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1795000000003</Id>
+					<Name><![CDATA[csvSiembra]]></Name>
+					<X>1650</X><Y>-460</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[String]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[String.join( ";", java.util.Collections.nCopies( 23, "NA" ) )]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1795000000004</Id>
+					<Name><![CDATA[csvCosecha]]></Name>
+					<X>1650</X><Y>-420</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[String]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[String.join( ";", java.util.Collections.nCopies( 23, "NA" ) )]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
 				<Variable Class="Parameter">
 					<Id>1790500000001</Id>
 					<Name><![CDATA[velocidadSiembra]]></Name>
@@ -5531,12 +5608,12 @@ getEngine().setRealTimeScale( 1 * week() );]]></EntryAction>
 				<StatechartElement Class="State" ParentState="ROOT_NODE">
 					<Id>1786000001002</Id>
 					<Name><![CDATA[Dia]]></Name>
-					<X>420</X><Y>420</Y>
-					<Label><X>10</X><Y>10</Y></Label>
+					<X>420</X><Y>769.675</Y>
+					<Label><X>35</X><Y>20.325</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Properties Width="100" Height="30">
+					<Properties Width="100" Height="40.325">
 						<FillColor>-7288071</FillColor>
 					</Properties>
 				</StatechartElement>
@@ -5648,14 +5725,14 @@ getEngine().setRealTimeScale( 1 * week() );]]></EntryAction>
 				<StatechartElement Class="EntryPoint" ParentState="ROOT_NODE">
 					<Id>1786000001001</Id>
 					<Name><![CDATA[climaControl]]></Name>
-					<X>340</X><Y>435</Y>
+					<X>340</X><Y>784.675</Y>
 					<Label><X>-20</X><Y>25</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Points>
 						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>60</X><Y>0</Y></Point>
+						<Point><X>80</X><Y>-5</Y></Point>
 					</Points>
 					<Properties Target="1786000001002">
 					</Properties>	
@@ -5663,15 +5740,15 @@ getEngine().setRealTimeScale( 1 * week() );]]></EntryAction>
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1786000001003</Id>
 					<Name><![CDATA[tickDiario]]></Name>
-					<X>470</X><Y>420</Y>
-					<Label><X>10</X><Y>0</Y></Label>
+					<X>470</X><Y>769.675</Y>
+					<Label><X>25</X><Y>-24.675</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Points>
 						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>40</X><Y>-40</Y></Point>
-						<Point><X>-40</X><Y>-40</Y></Point>
+						<Point><X>40</X><Y>-77.332</Y></Point>
+						<Point><X>-40</X><Y>-77.332</Y></Point>
 						<Point><X>-30</X><Y>0</Y></Point>
 					</Points>
 					<IconOffset>20.0</IconOffset>
@@ -5748,6 +5825,9 @@ int min = (int)( ( time() % hour() ) / minute() );
 textTimeCompleted.setText( "Completed in " + hrs + " hours " + min + " minutes" );
 // Lo llama Combine al terminar UN lote. Si faltan lotes, la maquina vuelve a salir
 // sola: laborPendiente() sigue en true y la condicion de Parked -> GoingToField la deja pasar.
+// dia (con fraccion) en que termina cada lote: el rinde depende de la fecha de siembra de cada uno (paso 5)
+if ( sembrando() ) diaSiembraLote[ lotesCompletados ] = time( DAY );
+else diaCosechaLote[ lotesCompletados ] = time( DAY );
 lotesCompletados++;
 if ( lotesCompletados < cantidadLotes ) return;
 // pasada completa (todos los lotes): la proxima pasada cuenta lotes desde cero
@@ -5770,6 +5850,8 @@ if ( sembrando() ) {
 	         + " | " + ( diaFinCosecha - diaMadurez ) + " dias desde la madurez (dia " + diaMadurez + ")" );
 	reportarPasada();
 	auditarMasa();
+	// la misma fila que escribe ParametersVariation (sin las 7 primeras columnas), para verificar desde Simulation
+	traceln( "CSV | " + csvSiembra + ";" + csvCosecha + ";" + csvLotes() );
 	cosechaCompleta = true;
 	if ( terminarAlCerrarCampaña ) { getEngine().finish(); return; }
 }
@@ -5909,6 +5991,8 @@ return ( inState( SinSembrar ) && !siembraCompleta )
 					<Body><![CDATA[// Imprime los contadores de la pasada que termina (siembra o cosecha) y toma la
 // foto de los acumulados, asi la pasada siguiente reporta solo lo suyo.
 String pasada = sembrando() ? "SIEMBRA" : "COSECHA";
+// fila del CSV del barrido: se arma antes de que los reportes de abajo reinicien las bases
+if ( sembrando() ) csvSiembra = filaPasada(); else csvCosecha = filaPasada();
 double dTrab = horasTrabajando - baseTrabajando;
 double dDet  = horasDetenida   - baseDetenida;
 traceln( pasada + " | trabajando=" + dTrab + " h | detenida=" + dDet
@@ -5992,6 +6076,44 @@ return lluviaDiaria[ campaña ][ diaCampaña ];]]></Body>
 if ( inState( Creciendo ) ) return min( 1, gdd / gddObjetivo );
 if ( inState( Maduro ) || inState( Cosechado ) ) return 1;
 return 0;]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[String]]></ReturnType>
+					<Id>1795000000005</Id>
+					<Name><![CDATA[filaPasada]]></Name>
+					<X>1650</X><Y>-380</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[// contadores de la pasada que termina, separados por ';' para el CSV del barrido.
+// El orden tiene que coincidir con el encabezado que escribe ParametersVariation (23 columnas).
+String f = ( horasTrabajando - baseTrabajando ) + ";" + ( horasDetenida - baseDetenida )
+         + ";" + ( viajesCamion - baseViajes ) + ";" + ( diasSinPiso - baseSinPiso )
+         + ";" + ( fallas - baseFallas ) + ";" + ( horasReparando - baseReparando );
+for ( int k = 1; k < horasParada.length; k++ ) f += ";" + ( horasParada[ k ] - baseParada[ k ] );
+return f + ";" + cart.csvEstados() + ";" + truck.csvEstados();]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[String]]></ReturnType>
+					<Id>1795000000006</Id>
+					<Name><![CDATA[csvLotes]]></Name>
+					<X>1650</X><Y>-340</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[// dia (con fraccion, dia 0 = 1/10) en que termino cada lote, separados por '|', como "siembra;cosecha"
+// para el CSV. NA si el lote no llego a terminarse en la campaña. El rinde depende de la fecha de siembra (paso 5).
+String s = "", c = "";
+for ( int k = 0; k < cantidadLotes; k++ ) {
+	if ( k > 0 ) { s += "|"; c += "|"; }
+	s += diaSiembraLote[ k ] > 0 ? "" + round( diaSiembraLote[ k ] * 100 ) / 100.0 : "NA";
+	c += diaCosechaLote[ k ] > 0 ? "" + round( diaCosechaLote[ k ] * 100 ) / 100.0 : "NA";
+}
+return s + ";" + c;]]></Body>
 				</Function>
 			</Functions>
 
@@ -6287,7 +6409,7 @@ return 0;]]></Body>
 				<Rectangle>
 					<Id>1256808074605</Id>
 					<Name><![CDATA[rectangle5]]></Name>
-					<X>-500</X><Y>-200</Y>
+					<X>-410</X><Y>-90</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -6331,7 +6453,7 @@ return 0;]]></Body>
 				<Rectangle>
 					<Id>1269852529517</Id>
 					<Name><![CDATA[rectangle7]]></Name>
-					<X>470</X><Y>499</Y>
+					<X>600</X><Y>500</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -6414,14 +6536,14 @@ return 0;]]></Body>
 					<BeginArrowStyle>0</BeginArrowStyle>
 					<EndArrowSize>1</EndArrowSize>
 					<EndArrowStyle>0</EndArrowStyle>
-					<Dx>280</Dx>
+					<Dx>410</Dx>
 					<Dy>0</Dy>
 					<Dz>0</Dz>
 				</Line>
 				<Text>
 					<Id>1170017443568</Id>
 					<Name><![CDATA[text6]]></Name>
-					<X>540</X><Y>510</Y>
+					<X>670</X><Y>510</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -6431,7 +6553,7 @@ return 0;]]></Body>
 					<Z>0</Z>
 					<Rotation>0.0</Rotation>
 					<Color>-9404272</Color>
-					<Text><![CDATA[[P] truck]]></Text>
+					<Text><![CDATA[Truck]]></Text>
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>16</Size>
@@ -6452,7 +6574,7 @@ return 0;]]></Body>
 					<Z>0</Z>
 					<Rotation>0.0</Rotation>
 					<Color>-9404272</Color>
-					<Text><![CDATA[[P] combine]]></Text>
+					<Text><![CDATA[Combine]]></Text>
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>16</Size>
@@ -6473,7 +6595,7 @@ return 0;]]></Body>
 					<Z>0</Z>
 					<Rotation>0.0</Rotation>
 					<Color>-9404272</Color>
-					<Text><![CDATA[[P] cart]]></Text>
+					<Text><![CDATA[Cart]]></Text>
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>16</Size>
@@ -6494,7 +6616,7 @@ return 0;]]></Body>
 					<Z>0</Z>
 					<Rotation>0.0</Rotation>
 					<Color>-9404272</Color>
-					<Text><![CDATA[[P] truck]]></Text>
+					<Text><![CDATA[Truck]]></Text>
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>16</Size>
@@ -6555,7 +6677,7 @@ return 0;]]></Body>
 				<Oval>
 					<Id>1169814245917</Id>
 					<Name><![CDATA[truckUnloading]]></Name>
-					<X>540</X><Y>520</Y>
+					<X>670</X><Y>521</Y>
 					<Label><X>-90</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -6887,7 +7009,7 @@ return 0;]]></Body>
 				<Text>
 					<Id>1170016454954</Id>
 					<Name><![CDATA[text5]]></Name>
-					<X>690</X><Y>545</Y>
+					<X>820</X><Y>550</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -6974,7 +7096,7 @@ de la Cosechadora]]></Text>
 				<Text>
 					<Id>1790500000041</Id>
 					<Name><![CDATA[textAvance]]></Name>
-					<X>510</X><Y>412</Y>
+					<X>460</X><Y>400</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7001,7 +7123,7 @@ de la Cosechadora]]></Text>
 				<Text>
 					<Id>1794000000002</Id>
 					<Name><![CDATA[textSueloPiso]]></Name>
-					<X>510</X><Y>430</Y>
+					<X>460</X><Y>420</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7024,7 +7146,7 @@ de la Cosechadora]]></Text>
 				<Text>
 					<Id>1794000000003</Id>
 					<Name><![CDATA[textSueloSinPiso]]></Name>
-					<X>510</X><Y>430</Y>
+					<X>460</X><Y>418</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7142,7 +7264,7 @@ de la Cosechadora]]></Text>
 				<Group>
 					<Id>1256807869888</Id>
 					<Name><![CDATA[group]]></Name>
-					<X>670</X><Y>470</Y>
+					<X>800</X><Y>471</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7616,7 +7738,7 @@ de la Cosechadora]]></Text>
 				<StorageTank>
 					<Id>1527596980055</Id>
 					<Name><![CDATA[storageTank]]></Name>
-					<X>690</X><Y>490</Y>
+					<X>820</X><Y>491</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7628,27 +7750,6 @@ de la Cosechadora]]></Text>
 					<Diameter>80</Diameter>				
 					<Height>100</Height>				
 				</StorageTank>
-				<Pipe>
-					<Id>1527597137621</Id>
-					<Name><![CDATA[pipe1]]></Name>
-					<X>600</X><Y>520</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_3D</DrawMode>
-					<Z>2</Z>
-					<LineColor>1077952576</LineColor>
-					<LineMaterial>null</LineMaterial>
-					<Diameter>8</Diameter>
-					<Points>
-						<Point><X>0</X><Y>0</Y><Z>0</Z></Point>
-						<Point><X>30</X><Y>0</Y><Z>0</Z></Point>
-						<Point><X>30</X><Y>0</Y><Z>120</Z></Point>
-						<Point><X>90</X><Y>-30</Y><Z>100</Z></Point>
-						<Point><X>90</X><Y>-30</Y><Z>80</Z></Point>
-					</Points>
-				</Pipe>
 				<Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
 					<Id>1169819928737</Id>
@@ -7754,7 +7855,7 @@ de la Cosechadora]]></Text>
 					</BasicProperties>
 					<ExtendedProperties>
 						<Font Name="Dialog" Size="11" Style="0"/>
-						<LabelText><![CDATA[Automatic control]]></LabelText>
+						<LabelText><![CDATA[Control Automatico ]]></LabelText>
 						<DefaultValueCode><![CDATA[true]]></DefaultValueCode>
 						<LinkTo>true</LinkTo>
 						<Link>autoControl</Link>
@@ -8729,6 +8830,23 @@ for ( int k = 0; k < nombres.length; k++ ) {
 iniciarPasada();
 return txt;]]></Body>
 				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[String]]></ReturnType>
+					<Id>1795000000008</Id>
+					<Name><![CDATA[csvEstados]]></Name>
+					<X>1000</X><Y>380</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[// horas en cada estado desde el inicio de la pasada, separadas por ';' para el CSV del barrido.
+// No reinicia la pasada: eso lo hace reporteEstados(), que se llama despues.
+cerrarEstado();
+String txt = "";
+for ( int k = 0; k < horasEstado.length; k++ ) txt += ( k > 0 ? ";" : "" ) + ( horasEstado[ k ] - baseEstado[ k ] );
+return txt;]]></Body>
+				</Function>
 			</Functions>
 
 			<ContainerLinks>
@@ -9426,9 +9544,6 @@ de Operaciones Agricolas]]></Text>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[cantidadLotes]]></ParameterName>
-					<ParameterValue Class="CodeValue">
-						<Code><![CDATA[1]]></Code>
-					</ParameterValue>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[capacidadSuperficie]]></ParameterName>
@@ -9518,18 +9633,26 @@ de Operaciones Agricolas]]></Text>
 java.io.File f = new java.io.File( "resultados.csv" );
 if ( f.exists() ) f.delete();
 try {
-    java.io.PrintWriter w = new java.io.PrintWriter( f );
-    w.println( "lotes;turnos;campaña;diaFinSiembra;diaMadurez;diaFinCosecha" );
+    java.io.PrintWriter w = new java.io.PrintWriter( f, "UTF-8" );
+    // columnas por pasada (prefijo s_ siembra, c_ cosecha), en el orden de Main.filaPasada()
+    String[] porPasada = { "trabajando", "detenida", "viajes", "diasSinPiso", "fallas", "horasReparando",
+        "falla", "sinSemilla", "jornada", "sinPiso", "esperaCarro", "traslado", "otra",
+        "carroOcioso", "carroViajando", "carroConLaMaquina", "carroEsperaCamion", "carroDescargando", "carroCargaSemilla",
+        "camionEsperaCarro", "camionCargando", "camionViajando", "camionDescargando" };
+    String enc = "lotes;turnos;campaña;semillaFallas;diaFinSiembra;diaMadurez;diaFinCosecha";
+    for ( String p : new String[] { "s_", "c_" } )
+        for ( String c : porPasada ) enc += ";" + p + c;
+    w.println( enc + ";diasSiembraLote;diasCosechaLote" );
     w.close();
 } catch ( Exception e ) {
     traceln( "!!! NO SE PUDO INICIAR resultados.csv: " + e );
 }]]></BeforeEachExperimentRunCode>
 			<AfterSimulationRunCode><![CDATA[try {
-    java.io.PrintWriter w = new java.io.PrintWriter(
-        new java.io.FileWriter( "resultados.csv", true ) );
-    w.println( root.cantidadLotes + ";" + root.turnos + ";"
-             + root.campaña + ";" + root.diaFinSiembra
-             + ";" + root.diaMadurez + ";" + root.diaFinCosecha );
+    java.io.PrintWriter w = new java.io.PrintWriter( new java.io.OutputStreamWriter(
+        new java.io.FileOutputStream( "resultados.csv", true ), java.nio.charset.StandardCharsets.UTF_8 ) );
+    w.println( root.cantidadLotes + ";" + root.turnos + ";" + root.campaña + ";" + root.semillaFallas
+             + ";" + root.diaFinSiembra + ";" + root.diaMadurez + ";" + root.diaFinCosecha
+             + ";" + root.csvSiembra + ";" + root.csvCosecha + ";" + root.csvLotes() );
     w.close();
 } catch ( Exception e ) {
     // el catch mudo era el problema: el barrido corria, no escribia nada

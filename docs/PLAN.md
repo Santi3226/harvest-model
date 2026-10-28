@@ -1,6 +1,6 @@
 # Plan de trabajo
 
-Estado al 2026-10-27 (última actualización: paso 4). Este documento es el plan vigente del proyecto: qué falta, en qué orden, cómo se decide cada cosa y cómo se comprueba que quedó bien. Cada paso tiene un criterio de aceptación que se verifica con una corrida, y un estado que se actualiza al terminarlo.
+Estado al 2026-10-28 (última actualización: paso 5). Este documento es el plan vigente del proyecto: qué falta, en qué orden, cómo se decide cada cosa y cómo se comprueba que quedó bien. Cada paso tiene un criterio de aceptación que se verifica con una corrida, y un estado que se actualiza al terminarlo.
 
 Para entender el modelo actual, leer primero [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md). Para la historia completa y los aprendizajes de AnyLogic, [CONTEXTO-TRASPASO.md](CONTEXTO-TRASPASO.md).
 
@@ -43,7 +43,7 @@ Todos los pasos siguen el mismo protocolo, para que cualquiera del grupo pueda r
 | 2 | Fallas de máquina | #1, #2, #3 | Ninguna | **Hecho** (verificado con 1 y 12 lotes) |
 | 3 | Madurez por grados-día (`gdd`) | #1 | Ninguna | **Hecho** (verificado con 1 y 12 lotes) |
 | 4 | Causas de parada y contadores de carro y camión | #2 | 1, 2 | **Hecho** (verificado con 12 lotes) |
-| 5 | Rinde según la fecha de siembra y costos | #3 | 1, 3, 4 | Pendiente |
+| 5 | Rinde según la fecha de siembra y costos | #3 | 1, 3, 4 | **Salidas del modelo verificadas**. El cálculo de rinde y costos va en el paso 7 |
 | 6 | Crecimiento visual del cultivo | Ninguno | 3 | **Hecho el tamaño**. El color queda pendiente |
 | 7 | Barrido final de Monte Carlo | #1, #2, #3 | 1 a 5 | Pendiente |
 | 8 | Sensibilidad de los parámetros inciertos | #1, #3 | 7 | Pendiente |
@@ -262,20 +262,26 @@ El sorteo actual tiene un rango de 60 días y la meta de 1.900 da un rango de 54
 
 **Objetivo.** Responder el resultado #3: cuánto cuesta sembrar tarde y cuánto cuesta evitarlo.
 
-**Diseño del rinde.**
-- Cada lote tiene su propio día de siembra: `diaSiembraLote[k]`. Se guarda en `onCompleted()`.
-- `penalizacionPorFecha(dia)` devuelve el rinde relativo (1,0 hasta cierta fecha y menor después), armada como tabla de búsqueda a partir de ensayos de INTA.
-- `rindeEfectivo = Σ rindePotencial × superficieLote × penalizacion(diaSiembraLote[k])`.
-- También una pérdida por demora de cosecha: cada día que el grano queda en el campo después de la madurez pierde un porcentaje. El valor se toma de una fuente.
+**Decisiones (2026-10-28).**
 
-**Diseño de los costos** (por campaña):
-- Máquinas: alquiler por hectárea o por hora, por N trenes (parte 4.1).
-- Operarios: salario por turno según el régimen agrario (Ley 26.727), por los días trabajados.
-- Combustible y reparaciones: costo por hora y costo por falla.
-- Ingreso: `rindeEfectivo × precio de pizarra`.
+1. **El modelo calcula lo físico y el script de análisis calcula la plata.** El modelo exporta al CSV el día en que termina cada lote, las horas trabajadas y detenidas por causa, las fallas y las horas del carro y del camión (sección 15 de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md)). El rinde, los costos y el margen los calcula `herramientas/analizar_barrido.py` (paso 7). Así la sensibilidad a precios y costos (paso 8) se recalcula sin volver a simular, y el cálculo de N máquinas (parte 4.1) usa los mismos datos.
+2. **Costo fijo por máquina y por campaña.** Si la maquinaria se pagara por hectárea, como cobran los contratistas, el costo sería el mismo con 1, 2 o 3 máquinas y no habría nada que comparar. Por eso cada máquina tiene un costo fijo por campaña, más un costo por hora trabajada (combustible) y por falla (reparación). Es una simplificación declarada.
+3. **Los valores sin fuente se asumen.** Se eligen para que el margen dé positivo en general, se declaran como supuestos en el informe y se varían en la sensibilidad.
+4. **La pérdida por cosechar tarde no entra en el margen base.** No hay un valor por día publicado. El CSV igual trae los días de cosecha de cada lote, así que se puede agregar en la sensibilidad.
+
+**Rinde.**
+- `rindeLote(k) = rindePotencial − perdidaDiaria × max(0, diaSiembraLote[k] − diaLimiteSiembra)`, por la superficie del lote (104,4 ha).
+- Valores base: `rindePotencial` = 41 qq/ha (BCR GEA, soja de primera en zona núcleo, 2025/26) y `perdidaDiaria` = 25 kg/ha por día después del 15/11 (dato de zona núcleo sin publicación de INTA). En la sensibilidad: 15 y 36 kg/ha por día (INTA Córdoba e INTA Rafaela).
+
+**Costos por campaña** (solo los que cambian entre escenarios; los que son iguales en todos, como la semilla o la cosecha por contratista, se cancelan al comparar):
+- Máquinas: N × costo fijo por campaña.
+- Operarios: N × `turnos` × salario mensual con cargas × meses que dura la siembra. Referencia: maquinista de cosecha, CCT UATRE, $1.892.406 por mes desde octubre 2026.
+- Combustible: horas trabajadas × costo por hora.
+- Reparaciones: fallas × costo por falla.
+- Ingreso: `Σ rindeLote × precio`. Referencia: ~$560.000/t en la pizarra de Rosario, octubre 2026 (a confirmar con la BCR).
 - Resultado: `margen = ingreso − costos`. Para cada superficie se busca la combinación de turnos y máquinas con mayor margen que cumpla la probabilidad objetivo. Por ejemplo, 90% de terminar antes del 15/11.
 
-**Qué hay que conseguir antes** (parte 4.3): curva de rinde contra fecha de siembra, precio de la soja, costo de alquiler de siembra y cosecha, salario del operario y costo de combustible. Los datos los pone el grupo o se buscan en fuentes públicas (sección 11 del contexto: INTA, Bolsa de Comercio de Rosario, consiagro).
+**Qué falta conseguir o asumir** (parte 4.3): costo fijo de una máquina por campaña, costo por hora de combustible, costo por falla y cargas sociales del salario.
 
 **Criterio de aceptación.**
 - Una siembra que termina antes del 15/11 tiene penalización 1,0.
@@ -334,7 +340,7 @@ Se actualiza al terminar cada paso, con la fecha y el commit.
 - [x] Paso 2. Fallas de máquina. **Implementado el 2026-10-19** en `feat/fallas`, con generador propio (`semillaFallas`). **Verificado con 1 lote** (sin fallas idéntico al de antes; con `mtbfHoras = 5`, 9 fallas y `FUGA` ~0) y **con 12 lotes el 2026-10-27** (`mtbfHoras = 100`: 5 fallas, 19,6 h de reparación, siembra el día 42, `FUGA` ~0). La media de fallas se mide en el barrido. Detalle en la sección 12 de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md).
 - [x] Paso 3. Madurez por grados-día. **Verificado el 2026-10-27** en `feat/gdd` (sale de `feat/fallas`), con meta 1.900: 1 lote madura el día 147 y 12 lotes el día 177, como se calculó. La cosecha de 12 lotes cierra el día 243, con `FUGA` 5,9e-9. Detalle en la sección 13 de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md).
 - [x] Paso 4. Causas de parada y contadores. **Verificado el 2026-10-27** en `feat/causas-parada`: con los parámetros de la corrida C repite los mismos eventos, las causas suman `horasDetenida` (diferencia 1e-11) y `otra` da 0. En la cosecha, la jornada es el 91% de lo detenido y la espera del carro, 21 h. Detalle en la sección 14 de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md).
-- [ ] Paso 5. Rinde y costos.
+- [ ] Paso 5. Rinde y costos. **Diseño decidido el 2026-10-28** (costo fijo por máquina y por campaña; el modelo calcula lo físico y el script la plata). **Salidas del modelo implementadas** en `feat/rinde-costos`: días por lote y CSV de 55 columnas en UTF-8. **Verificado el 2026-10-28**: la fila es correcta y la siembra repite la corrida C. La cosecha cierra el día 251 por una falla más, y se asume que es por el cambio a AnyLogic 8.9.10. Todo el barrido tiene que correrse con una sola versión. Detalle en la sección 15 de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md).
 - [ ] Paso 6. Crecimiento visual (opcional). **Tamaño hecho el 2026-10-27** en `feat/lluvia-visual`: escala de `crop3D` según `gdd / gddObjetivo`. **El color (verde a amarillo) queda pendiente**, con tres opciones anotadas en la sección 6 bis de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md). En la misma rama: color del campo con lluvia y sin piso, indicador de suelo y gotas en 2D y 3D (sección 6 bis de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md)).
 - [ ] Paso 7. Barrido final.
 - [ ] Paso 8. Sensibilidad.
