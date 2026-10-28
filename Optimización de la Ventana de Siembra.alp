@@ -3397,7 +3397,7 @@ return main.daPiso && main.dentroDeJornada() && !inState( FullWaitCart ) && !sin
 // agregar fallas no mueva los demas sorteos del modelo y para repetir con semillas distintas.
 // la semilla se mezcla con una constante: java.util.Random da casi el mismo primer numero con semillas
 // consecutivas (1, 2, 3 -> 0,731) y la primera falla caeria a la misma hora de trabajo en todas las replicas
-if ( rngFalla == null ) rngFalla = new java.util.Random( main.semillaFallas * 0x9E3779B97F4A7C15L );
+if ( rngFalla == null ) rngFalla = new java.util.Random( main.semillaFallasUsada() * 0x9E3779B97F4A7C15L );
 return rngFalla;]]></Body>
 				</Function>
 				<Function AccessType="default" StaticFunction="false">
@@ -5020,12 +5020,12 @@ for (int i = 0; i < n; i++) {
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[1]]></Code>
+							<Code><![CDATA[0]]></Code>
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1792000000062</Id>
 							<Name><![CDATA[null]]></Name>
-							<Label><![CDATA[Semilla del generador de fallas]]></Label>
+							<Label><![CDATA[Semilla de fallas (0 = replica + 10 x (tren - 1))]]></Label>
 							<EditorContolType>TEXT_BOX</EditorContolType>
 							<MinSliderValue><![CDATA[0]]></MinSliderValue>
 							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
@@ -5098,12 +5098,64 @@ for (int i = 0; i < n; i++) {
 						<UnitType><![CDATA[NONE]]></UnitType>
 						<SdArray>false</SdArray>
 						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[1]]></Code>
+							<Code><![CDATA[0]]></Code>
 						</DefaultValue>
 						<ParameterEditor>
 							<Id>1797000000013</Id>
 							<Name><![CDATA[null]]></Name>
-							<Label><![CDATA[Semilla del sorteo de la madurez]]></Label>
+							<Label><![CDATA[Semilla de la madurez (0 = replica)]]></Label>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1798000000001</Id>
+					<Name><![CDATA[replica]]></Name>
+					<X>2100</X><Y>-380</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[int]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA[1]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1798000000011</Id>
+							<Name><![CDATA[null]]></Name>
+							<Label><![CDATA[Replica del barrido (1 a 5): fija las semillas]]></Label>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1798000000002</Id>
+					<Name><![CDATA[tren]]></Name>
+					<X>2100</X><Y>-340</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[int]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA[1]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1798000000012</Id>
+							<Name><![CDATA[null]]></Name>
+							<Label><![CDATA[Tren (1 o 2) del sistema alternativo]]></Label>
 							<EditorContolType>TEXT_BOX</EditorContolType>
 							<MinSliderValue><![CDATA[0]]></MinSliderValue>
 							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
@@ -5655,7 +5707,7 @@ tInicioCrecimiento = time();
 // meta de la corrida: triangular( minimo, maximo, moda ) con generador propio, un solo sorteo.
 // La semilla se mezcla con una constante: java.util.Random da casi el mismo primer numero
 // con semillas consecutivas (1, 2, 3 -> 0,731) y el sorteo saldria igual en todas las replicas.
-gddMeta = triangular( gddMinimo, gddMaximo, gddObjetivo, new java.util.Random( semillaMadurez * 0x9E3779B97F4A7C15L ) );
+gddMeta = triangular( gddMinimo, gddMaximo, gddObjetivo, new java.util.Random( semillaMadurezUsada() * 0x9E3779B97F4A7C15L ) );
 traceln( "Siembra cerrada el dia " + diaCampaña + " — el cultivo madura al sumar " + (int) gddMeta + " grados-dia" );
 // ritmo de presentacion: la maduracion son meses sin nada que ver
 getEngine().setRealTimeScale( 1 * week() );]]></EntryAction>
@@ -6175,6 +6227,34 @@ return lluviaDiaria[ campaña ][ diaCampaña ];]]></Body>
 if ( inState( Creciendo ) ) return min( 1, gdd / gddMeta );
 if ( inState( Maduro ) || inState( Cosechado ) ) return 1;
 return 0;]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[int]]></ReturnType>
+					<Id>1798000000003</Id>
+					<Name><![CDATA[semillaFallasUsada]]></Name>
+					<X>1650</X><Y>-180</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[// semilla de las fallas de esta corrida: semillaFallas si se fija a mano; si vale 0, se deriva de
+// replica y tren para que el barrido use las mismas semillas en los dos sistemas (PLAN.md, parte 4.5).
+// Con replica = 1 y tren = 1 da 1, la semilla de la ultima corrida verificada.
+return semillaFallas > 0 ? semillaFallas : replica + 10 * ( tren - 1 );]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[int]]></ReturnType>
+					<Id>1798000000004</Id>
+					<Name><![CDATA[semillaMadurezUsada]]></Name>
+					<X>1650</X><Y>-140</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[// semilla de la madurez: los dos trenes del sistema alternativo son el mismo cultivo, asi que solo depende de la replica
+return semillaMadurez > 0 ? semillaMadurez : replica;]]></Body>
 				</Function>
 				<Function AccessType="default" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
@@ -9759,6 +9839,12 @@ de Operaciones Agricolas]]></Text>
 					<ParameterName><![CDATA[semillaMadurez]]></ParameterName>
 				</Parameter>
 				<Parameter>
+					<ParameterName><![CDATA[replica]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[tren]]></ParameterName>
+				</Parameter>
+				<Parameter>
 					<ParameterName><![CDATA[capacidadSemilla]]></ParameterName>
 				</Parameter>
 				<Parameter>
@@ -9801,7 +9887,7 @@ try {
         "falla", "sinSemilla", "jornada", "sinPiso", "esperaCarro", "traslado", "otra",
         "carroOcioso", "carroViajando", "carroConLaMaquina", "carroEsperaCamion", "carroDescargando", "carroCargaSemilla",
         "camionEsperaCarro", "camionCargando", "camionViajando", "camionDescargando" };
-    String enc = "lotes;turnos;campaña;semillaFallas;semillaMadurez;gddMeta;diaFinSiembra;diaMadurez;diaFinCosecha";
+    String enc = "lotes;turnos;campaña;replica;tren;semillaFallas;semillaMadurez;gddMeta;diaFinSiembra;diaMadurez;diaFinCosecha";
     for ( String p : new String[] { "s_", "c_" } )
         for ( String c : porPasada ) enc += ";" + p + c;
     w.println( enc + ";diasSiembraLote;diasCosechaLote" );
@@ -9812,8 +9898,8 @@ try {
 			<AfterSimulationRunCode><![CDATA[try {
     java.io.PrintWriter w = new java.io.PrintWriter( new java.io.OutputStreamWriter(
         new java.io.FileOutputStream( "resultados.csv", true ), java.nio.charset.StandardCharsets.UTF_8 ) );
-    w.println( root.cantidadLotes + ";" + root.turnos + ";" + root.campaña + ";" + root.semillaFallas
-             + ";" + root.semillaMadurez + ";" + root.gddMeta
+    w.println( root.cantidadLotes + ";" + root.turnos + ";" + root.campaña + ";" + root.replica + ";" + root.tren
+             + ";" + root.semillaFallasUsada() + ";" + root.semillaMadurezUsada() + ";" + root.gddMeta
              + ";" + root.diaFinSiembra + ";" + root.diaMadurez + ";" + root.diaFinCosecha
              + ";" + root.csvSiembra + ";" + root.csvCosecha + ";" + root.csvLotes() );
     w.close();
@@ -10797,6 +10883,12 @@ try {
 			<FreeformParamValue>	
 				<Id>1797000000003</Id>
 			</FreeformParamValue>
+			<FreeformParamValue>	
+				<Id>1798000000001</Id>
+			</FreeformParamValue>
+			<FreeformParamValue>	
+				<Id>1798000000002</Id>
+			</FreeformParamValue>
 			<RangeVariationParamValue>	
 				<Id>1169735952668</Id>
 				<Type>FIXED</Type>
@@ -10834,13 +10926,13 @@ try {
 				<Id>1786000000702</Id>
 				<Type>RANGE</Type>
 				<From Class="CodeValue">
-					<Code><![CDATA[6]]></Code>
+					<Code><![CDATA[9]]></Code>
 				</From>
 				<To Class="CodeValue">
-					<Code><![CDATA[30]]></Code>
+					<Code><![CDATA[12]]></Code>
 				</To>
 				<Step Class="CodeValue">
-					<Code><![CDATA[6]]></Code>
+					<Code><![CDATA[3]]></Code>
 				</Step>
 			</RangeVariationParamValue>
 			<RangeVariationParamValue>	
@@ -10877,16 +10969,7 @@ try {
 			</RangeVariationParamValue>
 			<RangeVariationParamValue>	
 				<Id>1786000001503</Id>
-				<Type>RANGE</Type>
-				<From Class="CodeValue">
-					<Code><![CDATA[1]]></Code>
-				</From>
-				<To Class="CodeValue">
-					<Code><![CDATA[3]]></Code>
-				</To>
-				<Step Class="CodeValue">
-					<Code><![CDATA[1]]></Code>
-				</Step>
+				<Type>FIXED</Type>
 			</RangeVariationParamValue>
 			<RangeVariationParamValue>	
 				<Id>1786000001505</Id>
@@ -10935,6 +11018,32 @@ try {
 			<RangeVariationParamValue>	
 				<Id>1797000000003</Id>
 				<Type>FIXED</Type>
+			</RangeVariationParamValue>
+			<RangeVariationParamValue>	
+				<Id>1798000000001</Id>
+				<Type>RANGE</Type>
+				<From Class="CodeValue">
+					<Code><![CDATA[1]]></Code>
+				</From>
+				<To Class="CodeValue">
+					<Code><![CDATA[5]]></Code>
+				</To>
+				<Step Class="CodeValue">
+					<Code><![CDATA[1]]></Code>
+				</Step>
+			</RangeVariationParamValue>
+			<RangeVariationParamValue>	
+				<Id>1798000000002</Id>
+				<Type>RANGE</Type>
+				<From Class="CodeValue">
+					<Code><![CDATA[1]]></Code>
+				</From>
+				<To Class="CodeValue">
+					<Code><![CDATA[2]]></Code>
+				</To>
+				<Step Class="CodeValue">
+					<Code><![CDATA[1]]></Code>
+				</Step>
 			</RangeVariationParamValue>
 			<ModelTimeProperties>
 				<StopOption><![CDATA[Stop at specified time]]></StopOption>

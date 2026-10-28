@@ -971,3 +971,23 @@ Hasta acá la madurez no tenía distribución: el cultivo maduraba al sumar 1.90
 - **CSV:** 48 campos en la línea `CSV |`, días por lote crecientes y sin `NA`.
 
 Respaldo: `backups/2026-10-28-pre-madurez-triangular.alp`.
+
+## 17. Réplica y tren: semillas para comparar base contra alternativo (28/10)
+
+El barrido compara el sistema base (12 lotes, 1 tren) contra el alternativo C (18 lotes, 2 trenes de 9). El diseño está en la parte 4.5 de [PLAN.md](PLAN.md). Para que los dos sistemas usen las mismas semillas sin cargarlas a mano, se agregaron dos parámetros a `Main`:
+
+| Elemento | Qué hace |
+|---|---|
+| `replica` (1 por defecto) | Número de réplica del barrido, de 1 a 5 |
+| `tren` (1 por defecto) | Tren del sistema alternativo, 1 o 2. El base usa siempre el 1 |
+| `semillaFallasUsada()` | `semillaFallas` si es mayor que 0; si no, `replica + 10 × (tren − 1)`. La usa `Combine.generadorFalla()` |
+| `semillaMadurezUsada()` | `semillaMadurez` si es mayor que 0; si no, `replica`. Los dos trenes comparten la madurez: es el mismo cultivo |
+
+- **`semillaFallas` y `semillaMadurez` pasan a 0 por defecto** (derivar). Con `replica = 1` y `tren = 1` las semillas valen 1, así que `Simulation` repite la corrida de verificación de la sección 16.
+- **El tren 1 del alternativo usa las mismas fallas que el base** en cada réplica; el tren 2, otras (semillas 11 a 15).
+- **`ParametersVariation`:** `campaña` 0 a 19, `cantidadLotes` 9 y 12, `replica` 1 a 5, `tren` 1 y 2, y `turnos` fijo en 1. Son 400 corridas; las 100 de 12 lotes con `tren = 2` no se usan.
+- **CSV:** columnas `replica` y `tren` después de `campaña`, y `semillaFallas`/`semillaMadurez` pasan a ser las semillas usadas (59 columnas).
+
+**Cómo verificarlo.** `Simulation` con los valores por defecto tiene que repetir la sección 16: siembra el día 41 con 3 fallas, meta de 1.980 grados-día, madurez el día 186 y cosecha el día 255. Con `tren = 2` cambian las fallas pero no la meta de madurez.
+
+Respaldo: `backups/2026-10-28-pre-sistema-alternativo.alp`.

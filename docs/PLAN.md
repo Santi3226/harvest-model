@@ -1,6 +1,6 @@
 # Plan de trabajo
 
-Estado al 2026-10-28 (última actualización: paso 5). Este documento es el plan vigente del proyecto: qué falta, en qué orden, cómo se decide cada cosa y cómo se comprueba que quedó bien. Cada paso tiene un criterio de aceptación que se verifica con una corrida, y un estado que se actualiza al terminarlo.
+Estado al 2026-10-28 (última actualización: paso 7, diseño). Este documento es el plan vigente del proyecto: qué falta, en qué orden, cómo se decide cada cosa y cómo se comprueba que quedó bien. Cada paso tiene un criterio de aceptación que se verifica con una corrida, y un estado que se actualiza al terminarlo.
 
 Para entender el modelo actual, leer primero [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md). Para la historia completa y los aprendizajes de AnyLogic, [CONTEXTO-TRASPASO.md](CONTEXTO-TRASPASO.md).
 
@@ -45,7 +45,7 @@ Todos los pasos siguen el mismo protocolo, para que cualquiera del grupo pueda r
 | 4 | Causas de parada y contadores de carro y camión | #2 | 1, 2 | **Hecho** (verificado con 12 lotes) |
 | 5 | Rinde según la fecha de siembra y costos | #3 | 1, 3, 4 | **Salidas del modelo verificadas**. El cálculo de rinde y costos va en el paso 7 |
 | 6 | Crecimiento visual del cultivo | Ninguno | 3 | **Hecho** (tamaño el 27/10; color del campo según el cultivo el 28/10, verificado en el IDE) |
-| 7 | Barrido final de Monte Carlo | #1, #2, #3 | 1 a 5 | Pendiente |
+| 7 | Barrido final de Monte Carlo | #1, #2, #3 | 1 a 5 | **En curso**: diseño decidido (parte 4.5) y modelo preparado, sin verificar; falta el script de análisis |
 | 8 | Sensibilidad de los parámetros inciertos | #1, #3 | 7 | Pendiente |
 | 9 | Informe, regenerar el HTML y limpiar el repo | Ninguno | Todos | Pendiente |
 
@@ -93,7 +93,7 @@ Ninguno de estos valores se puede inventar. Cada uno queda marcado en el modelo 
 | Pérdida de rinde por siembra tardía | A definir | INTA, ensayos de fecha de siembra |
 | Costos y precios | A definir | Ver paso 5 |
 
-### 4.4 Escenarios a comparar (**a discutir con el grupo**)
+### 4.4 Escenarios a comparar (**decidido el 2026-10-28: base contra un sistema alternativo, ver 4.5**)
 
 La consigna pide comparar alternativas y elegir la mejor. Para eso hay que separar dos tipos de factores:
 
@@ -138,10 +138,43 @@ La mejor elección para cada superficie es la combinación de **mayor margen que
 
 **Reglas del Monte Carlo (decididas el 2026-10-28).**
 
-1. **Las mismas semillas para todos los escenarios.** Cada escenario se corre con los mismos 20 climas (`campaña` de 0 a 19) y con el mismo conjunto fijo de semillas de fallas (`semillaFallas` de 1 a R). Nunca se sortea una semilla distinta por escenario. Así, la diferencia entre dos escenarios se debe al escenario y no a que les tocaron fallas distintas, y se necesitan menos corridas para distinguirlos. Esta técnica se llama números aleatorios comunes. El modelo lo permite porque las fallas usan su propio generador y la madurez depende solo del clima. Hay un límite que se declara en el informe: la secuencia de tiempos entre fallas es la misma, pero cae en otro momento del calendario si el escenario cambia los turnos o la velocidad, porque se cuenta en horas de trabajo.
+1. **Las mismas semillas para todos los escenarios.** Cada escenario se corre con los mismos 20 climas (`campaña` de 0 a 19) y con el mismo conjunto fijo de semillas de fallas (`semillaFallas` de 1 a R). Nunca se sortea una semilla distinta por escenario. Así, la diferencia entre dos escenarios se debe al escenario y no a que les tocaron fallas distintas, y se necesitan menos corridas para distinguirlos. Esta técnica se llama números aleatorios comunes. El modelo lo permite porque las fallas y la madurez usan generadores propios, con semillas que se derivan de `replica` y `tren` (parte 4.5). Hay un límite que se declara en el informe: la secuencia de tiempos entre fallas es la misma, pero cae en otro momento del calendario si el escenario cambia los turnos o la velocidad, porque se cuenta en horas de trabajo.
 2. **No se prueban todas las combinaciones.** El barrido principal cruza solo los factores más importantes. El resto se estudia en la sensibilidad (paso 8), de a un parámetro por vez y con los demás en su valor base.
 
-**Para decidir en el grupo.** Qué variables de decisión entran al barrido principal, qué tamaños de carro y de camión se comparan, y qué probabilidad mínima se exige. Hay que decidirlo antes del paso 7.
+**Decisión (2026-10-28).** La cátedra pide comparar el sistema base contra **un** modelo alternativo, no una grilla de escenarios. La propuesta de cruzar turnos × máquinas × superficie queda descartada. El diseño está en la parte 4.5. Las variables de decisión que no entran ahí van a la sensibilidad (paso 8).
+
+### 4.5 Sistema base contra sistema alternativo C (decidido el 2026-10-28)
+
+**Los dos sistemas.** El alternativo cambia varias cosas a la vez. La pregunta es si conviene agrandarse.
+
+| | Base | Alternativo C: arrendar más campo |
+|---|---|---|
+| Superficie | 12 lotes (1.253 ha), campo **propio** | 18 lotes (1.880 ha): los 12 propios y **6 arrendados** |
+| Máquinas | 1 tren (máquina, carro y camión) | 2 trenes de 9 lotes |
+| Jornada | 1 turno | 1 turno por máquina |
+
+**Por qué no es obvio.** El alternativo tiene más campo, pero cada máquina siembra 9 lotes en vez de 12, así que puede terminar antes y perder menos rinde. A cambio paga arrendamiento, una segunda máquina y un segundo operario.
+
+**Cómo se simula.**
+- Dos parámetros nuevos en `Main`: `replica` (1 a 5) y `tren` (1 o 2). Las semillas se derivan de ellos: fallas = `replica + 10 × (tren − 1)` y madurez = `replica`. Con los valores por defecto (1 y 1) las semillas valen 1, como en la última corrida verificada. `semillaFallas` y `semillaMadurez` en 0 significan "derivar"; con otro valor lo fijan a mano.
+- **Base:** 12 lotes, `tren = 1`. **Alternativo:** dos corridas de 9 lotes, `tren = 1` y `tren = 2`. Los dos trenes comparten el clima y la semilla de madurez (es el mismo cultivo) y tienen fallas distintas. El tren 1 del alternativo usa las mismas fallas que el base.
+- El alternativo termina la siembra cuando termina el tren más lento, y su rinde suma los 18 lotes de los dos trenes.
+- `ParametersVariation`: `campaña` 0 a 19 × `replica` 1 a 5 × `tren` 1 a 2 × `cantidadLotes` 9 y 12 = **400 corridas**. Las 100 de 12 lotes con `tren = 2` no se usan, a cambio de que sea un solo experimento. Quedan **100 observaciones por sistema**, emparejadas por (`campaña`, `replica`).
+
+**Costos por campaña, en US$** (los calcula `herramientas/analizar_barrido.py` a partir del CSV; los supuestos se calibran para que el base dé margen positivo y se declaran en el informe):
+
+| Rubro | Cálculo | Referencia |
+|---|---|---|
+| Ingreso | Σ rinde del lote × 104,4 ha × precio | 41 qq/ha, menos 25 kg/ha por día de atraso después del 15/11; 331 US$/t |
+| Arrendamiento | qq/ha × ha arrendadas × precio | ~15 qq/ha, solo en el alternativo (626 ha) |
+| Insumos por hectárea | US$/ha × superficie | ~350 US$/ha, supuesto |
+| Flete y comercialización | % del ingreso | ~10%, supuesto |
+| Costo fijo por tren | US$/campaña × trenes | Supuesto a calibrar (amortización, interés y seguro de máquina, carro y camión) |
+| Operarios | salario anual × trenes | Escala UATRE en dólares |
+| Combustible y mantenimiento | horas trabajadas × US$/h | ~25 l/h de gasoil más mantenimiento, supuesto |
+| Reparaciones | fallas × US$/falla | Supuesto |
+
+**Qué se compara.** El margen total y por hectárea, la probabilidad de terminar la siembra antes del 15/11 y, para decidir, la **diferencia de margen par a par** (misma `campaña` y `replica`) con su intervalo de confianza del 95%. Gana el sistema con mayor margen si el intervalo de la diferencia no incluye el 0.
 
 ---
 
@@ -298,16 +331,16 @@ Que el trigo 3D crezca durante `Creciendo`: altura o escala proporcional a `gdd 
 **Objetivo.** Generar los resultados definitivos de los tres entregables.
 
 **Diseño.**
-- Experimento `ParametersVariation` con `campaña` de 0 a 19, `cantidadLotes`, `turnos` y las variables de decisión que se elijan en la parte 4.4. Con el paso 2 hay aleatoriedad (las fallas), así que se hacen **varias réplicas** por combinación: `semillaFallas` de 1 a R, **el mismo conjunto en todas las combinaciones** (parte 4.4, reglas del Monte Carlo). Solo se cruzan los factores elegidos en la parte 4.4, no todas las combinaciones de parámetros. La madurez por grados-día no suma aleatoriedad: depende solo del clima de la campaña.
+- Experimento `ParametersVariation` con el diseño de la parte 4.5: `campaña` 0 a 19 × `replica` 1 a 5 × `tren` 1 y 2 × `cantidadLotes` 9 y 12, con `turnos = 1`. Son 400 corridas, de las que se usan 300.
 - Se agregan al experimento los parámetros nuevos, como `mtbfHoras` y `densidadSiembra`. La lista de parámetros se congela al crear el experimento. Por eso hay que agregarlos al XML o recrearlo (aprendizaje 17 del contexto).
 - `herramientas/analizar_barrido.py` (nuevo) lee `resultados.csv` y arma las tablas: probabilidad de terminar antes del 15/11, medianas, causas de parada y margen. Así el análisis se puede repetir y auditar.
-- Las máquinas extra se calculan en el análisis (parte 4.1).
+- El script arma los dos sistemas: el base con las corridas de 12 lotes y `tren = 1`; el alternativo uniendo las dos corridas de 9 lotes de la misma `campaña` y `replica`.
 
 **Criterio de aceptación.**
 - No hay corridas sin fila en el CSV: el número de filas es igual al esperado.
-- La tabla de probabilidad tiene sentido: sube con los turnos y baja con la superficie.
+- Hay 100 pares (`campaña`, `replica`) completos: una corrida del base y dos del alternativo cada uno.
 - Con `mtbfHoras = 1e9`, el resultado coincide con el de antes de agregar fallas.
-- Todos los escenarios tienen las mismas filas de `campaña` × `semillaFallas`. Se comprueba en el script de análisis antes de comparar.
+- El tren 1 del alternativo y el base tienen la misma semilla de fallas en cada par. Se comprueba en el script con las columnas `semillaFallas` y `semillaMadurez` del CSV.
 
 ### Paso 8. Sensibilidad
 
@@ -343,6 +376,6 @@ Se actualiza al terminar cada paso, con la fecha y el commit.
 - [x] Paso 4. Causas de parada y contadores. **Verificado el 2026-10-27** en `feat/causas-parada`: con los parámetros de la corrida C repite los mismos eventos, las causas suman `horasDetenida` (diferencia 1e-11) y `otra` da 0. En la cosecha, la jornada es el 91% de lo detenido y la espera del carro, 21 h. Detalle en la sección 14 de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md).
 - [ ] Paso 5. Rinde y costos. **Diseño decidido el 2026-10-28** (costo fijo por máquina y por campaña; el modelo calcula lo físico y el script la plata). **Salidas del modelo implementadas** en `feat/rinde-costos`: días por lote y CSV de 55 columnas en UTF-8. **Verificado el 2026-10-28**: la fila es correcta y la siembra repite la corrida C. La cosecha cierra el día 251 por una falla más, y se asume que es por el cambio a AnyLogic 8.9.10. Todo el barrido tiene que correrse con una sola versión. Detalle en la sección 15 de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md).
 - [x] Paso 6. Crecimiento visual (opcional). **Tamaño hecho el 2026-10-27** en `feat/lluvia-visual`: escala de `crop3D` según `gdd / gddObjetivo`. **Color hecho el 2026-10-28** en `feat/color-cultivo`: el campo pasa de suelo sin sembrar a verde claro, verde intenso, ámbar maduro y rastrojo (opción 1 de la sección 6 bis de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md)). En la misma rama: color del campo con lluvia y sin piso, indicador de suelo y gotas en 2D y 3D (sección 6 bis de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md)).
-- [ ] Paso 7. Barrido final.
+- [ ] Paso 7. Barrido final. **2026-10-28:** se decidió comparar el sistema base contra el alternativo C (parte 4.5). En `feat/sistema-alternativo`: parámetros `replica` y `tren`, `ParametersVariation` de 400 corridas y CSV de 59 columnas (sección 17 de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md)). **Pendiente:** verificar con `Simulation` que los valores por defecto repiten la sección 16, escribir `herramientas/analizar_barrido.py`, asumir los costos sin fuente y correr el barrido.
 - [ ] Paso 8. Sensibilidad.
 - [ ] Paso 9. Informe y cierre.
