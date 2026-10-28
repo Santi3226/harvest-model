@@ -326,7 +326,19 @@ Respaldo: `backups/2026-10-27-pre-lluvia-visual.alp`.
 
 La etiqueta `ScaleCode` de una figura 3D no estaba en este modelo. Se tomó del ejemplo "Agent Based Population Model" que trae AnyLogic, donde un agente crece según su edad. Va después de `ReplicationCode`, como el tamaño dinámico de las figuras replicadas de los ejemplos.
 
-**Falta ver** si la escala cambia también el ícono en la vista 2D o solo en la 3D. Si en 2D no crece, la alternativa es un círculo por planta con radio dinámico (`RadiusXCode`, también verificado en los ejemplos).
+**Verificado el 27/10:** compila (el código generado llama a `shape.setScale(...)`) y la planta crece.
+
+**Pendiente: el color.** La planta cambia de tamaño, pero no de color. Se decidió dejarlo así por ahora. Lo que se averiguó:
+
+- **En 2D no se puede cambiar el color del ícono.** AnyLogic dibuja la figura 3D en 2D como una imagen ya renderizada (`3d_low_poly_wheat.dae_yzx_-6_-5_10_10.png` en la carpeta de compilación).
+- **La tabla de colores no admite código.** En los más de 1.000 ejemplos de AnyLogic, `ColorMapping` solo tiene colores fijos.
+- **En 3D hay un método, sin garantía.** `Shape3DObject.setColor(String material, Color)` existe, pero la tabla de colores de `crop3D` no guarda nombres de material (el código generado los tiene como `"null"`). El `.dae` tiene `mat_0` y `mat_1`, y no se sabe si `setColor` los reconoce por ese identificador.
+
+Opciones, si se retoma:
+
+1. **El campo cambia de color con el cultivo** (recomendada): verde claro recién sembrado, verde intenso creciendo y amarillo al madurar, con el barro y la lluvia con prioridad. Sirve en 2D y 3D, usa el `FillColorCode` que ya tiene `field` y no agrega figuras.
+2. **Círculos en lugar de íconos en 2D**, con radio (`RadiusXCode`) y color dinámicos. Es color en la planta, pero se pierde el dibujo de la espiga y se suman unas 4.000 figuras.
+3. **Probar `setColor` en 3D**, recorriendo `crop3D.get( i )` (`ReplicatedShape` tiene `get(int)` y `size()`). Es experimental.
 
 Respaldo: `backups/2026-10-27-pre-crecimiento-visual.alp`.
 
