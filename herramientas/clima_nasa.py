@@ -8,14 +8,14 @@ Que hace:
 1. Baja de NASA POWER (reanalisis MERRA-2, punto -33,0 / -61,0, zona Rosario) la lluvia
    diaria corregida y las temperaturas maxima y minima, del 1/10/2005 al 30/9/2025.
    El CSV crudo queda en datos/ para que cualquiera pueda auditar el origen.
-2. Arma 20 campanias. La campania c va del 1/10/(2005+c) al 30/9/(2006+c): 365 dias,
+2. Arma 20 campañas. La campaña c va del 1/10/(2005+c) al 30/9/(2006+c): 365 dias,
    o 366 si incluye un 29 de febrero. El dia 0 del modelo es siempre el 1 de octubre.
-3. Calcula tres series por campania:
+3. Calcula tres series por campaña:
    - lluvia [mm/dia], redondeada a 1 decimal.
    - temperatura media [C] = (Tmax + Tmin) / 2, redondeada a 1 decimal.
    - ET0 [mm/dia] por Hargreaves (FAO-56, ec. 52), redondeada a 2 decimales.
 4. Reemplaza el valor inicial de las variables String climaLluvia, climaTmedia y climaEt0
-   de Main. Formato: dias separados por "," y campanias separadas por ";".
+   de Main. Formato: dias separados por "," y campañas separadas por ";".
    Main.cargarClima() las parsea al arrancar.
 
 Por que String y no un arreglo: AnyLogic mete la inicializacion de todas las variables de
@@ -36,7 +36,7 @@ URL = ("https://power.larc.nasa.gov/api/temporal/daily/point"
        "?parameters=PRECTOTCORR,T2M_MAX,T2M_MIN&community=ag"
        "&longitude=-61.0&latitude=-33.0&start=20051001&end=20250930&format=CSV")
 LATITUD = math.radians(-33.0)
-CAMPANIAS = 20
+CAMPAÑAS = 20
 
 
 def bajar():
@@ -50,8 +50,8 @@ def leer():
     for linea in open(CSV):
         if not linea[:2] == "20":          # salta el encabezado de NASA
             continue
-        anio, doy, lluvia, tmax, tmin = linea.strip().split(",")[:5]
-        fecha = dt.date(int(anio), 1, 1) + dt.timedelta(int(doy) - 1)
+        año, doy, lluvia, tmax, tmin = linea.strip().split(",")[:5]
+        fecha = dt.date(int(año), 1, 1) + dt.timedelta(int(doy) - 1)
         valores = (float(lluvia), float(tmax), float(tmin))
         if -999 in valores:
             sys.exit(f"dato faltante en {fecha}")
@@ -83,7 +83,7 @@ def texto(x, decimales):
 
 def series(datos):
     lluvias, tmedias, et0s = [], [], []
-    for c in range(CAMPANIAS):
+    for c in range(CAMPAÑAS):
         inicio, fin = dt.date(2005 + c, 10, 1), dt.date(2006 + c, 9, 30)
         ll, tm, et = [], [], []
         for i in range((fin - inicio).days + 1):
@@ -115,7 +115,7 @@ def main():
             sys.exit(f"{nombre}: se esperaba 1 coincidencia y hay {len(coincidencias)}")
         actual = coincidencias[0][1]
         dias = [len(f.split(",")) for f in valor.split(";")]
-        print(f"{nombre}: {len(valor.encode())} bytes, {len(dias)} campanias, {min(dias)}-{max(dias)} dias"
+        print(f"{nombre}: {len(valor.encode())} bytes, {len(dias)} campañas, {min(dias)}-{max(dias)} dias"
               + ("  (sin cambios)" if actual == valor else ""))
         if len(valor.encode()) > 65535:
             sys.exit(f"{nombre} supera el limite de 65.535 bytes de una constante String")
