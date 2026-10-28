@@ -53,7 +53,7 @@ Usar el glob `com.anylogic.engine_8.9.9.*` y no `com.anylogic.engine_*`: en esta
 
 **Correr:** en el IDE. Dos experimentos:
 - `Simulation` — corrida única, termina al cerrar la cosecha (`terminarAlCerrarCampaña = true`), modo *Real time with scale* (el statechart `cicloCultivo` cambia la escala de tiempo por estado: siembra 0,5 días/s, cosecha 0,05 días/s, crecimiento 1 semana/s). El dibujo del campo es **un lote**: la máquina lo repite `cantidadLotes` veces; el avance total se ve en `textAvance` y en la fila de cuadraditos `rectLote` (ver sección 6 bis de [docs/CAMBIOS-2026-10.md](docs/CAMBIOS-2026-10.md)).
-- `ParametersVariation` — Monte Carlo. Varía `campaña` 0→19, `cantidadLotes` 6→30 paso 6, `turnos` 1→3. Stop at specified time = **52** (la unidad del modelo es **Week**; antes 31), start date 01/10/2005. *Before each experiment run* borra `resultados.csv` y escribe el encabezado (`lotes;turnos;campaña;diaFinSiembra;diaMadurez;diaFinCosecha`); *After simulation run* appendea una fila. La ruta es relativa (`"resultados.csv"`) y los `catch` hacen `traceln` visible. ⚠️ El `resultados.csv` versionado es del **modelo anterior** (4 columnas, pasada de cosechadora en octubre): hay que rehacerlo, ver [docs/PLAN.md](docs/PLAN.md).
+- `ParametersVariation` — Monte Carlo. Varía `campaña` 0→19, `cantidadLotes` 6→30 paso 6, `turnos` 1→3. Stop at specified time = **52** (la unidad del modelo es **Week**; antes 31), start date 01/10/2005. *Before each experiment run* borra `resultados.csv` y escribe el encabezado; *After simulation run* appendea una fila. Desde el paso 5 son 55 columnas en UTF-8: parámetros y días de fin, 23 contadores por pasada (`s_` siembra, `c_` cosecha, de `Main.filaPasada()`) y los días de cada lote separados por `|` (sección 15 de [docs/CAMBIOS-2026-10.md](docs/CAMBIOS-2026-10.md)). La ruta es relativa (`"resultados.csv"`) y los `catch` hacen `traceln` visible. ⚠️ El `resultados.csv` versionado es del **modelo anterior** (4 columnas, pasada de cosechadora en octubre): hay que rehacerlo, ver [docs/PLAN.md](docs/PLAN.md).
 
 ⚠️ Si se agregan parámetros a `Main` (por ejemplo los de fallas), hay que **recrear** `ParametersVariation`: su lista de parámetros quedó congelada al crearlo.
 
@@ -63,12 +63,12 @@ El proyecto se comparte entre tres máquinas. **Verificar en cuál estás antes 
 
 | | Esta máquina (Luca) | Otro integrante (Ubuntu) | Santiago (Windows) |
 |---|---|---|---|
-| AnyLogic | `/home/lucaolivieri/Downloads/anylogic` (8.9.9) | `/home/renaiss/Descargas/anylogic` (8.9.9) | `C:\Program Files\AnyLogic 8.9 Personal Learning Edition\` (8.9.9) |
+| AnyLogic | `/home/lucaolivieri/Downloads/anylogic` (8.9.9) | `/home/renaiss/Descargas/anylogic` (8.9.9) | `C:\Program Files\AnyLogic 8.9 Personal Learning Edition\` (**8.9.10** desde el 2026-10-28) |
 | Modelo | `~/Desktop/facultad/simulacion/harvest-model` (este repo) | `/home/renaiss/Models/Harvest Simulator/` | `C:\Users\Santiago\Models\Optimización de la Ventana de Siembra\` |
 
 `~/Models` en esta máquina tiene otros modelos de la cursada, **no** este.
 
-Las tres máquinas tienen 8.9.9 PLE (verificado en esta el 2026-10-05: `.eclipseproduct` dice `version=8.9.9.202607020720`). Queda el plugin 8.9.8 residual en `plugins/`, ver el `javap` de arriba.
+⚠️ Santiago pasó a **8.9.10** el 2026-10-28: el `.alp` queda guardado con `AlpVersion="8.9.10"`, y con la misma semilla la cosecha de la corrida C dio una falla más (sección 15 de [docs/CAMBIOS-2026-10.md](docs/CAMBIOS-2026-10.md)). El barrido se corre todo con una sola versión. Las otras dos máquinas tienen 8.9.9 PLE (verificado en esta el 2026-10-05: `.eclipseproduct` dice `version=8.9.9.202607020720`). Queda el plugin 8.9.8 residual en `plugins/`, ver el `javap` de arriba.
 
 En Ubuntu, AnyLogic (SWT) sobre GNOME/Wayland **no permite arrastrar bloques de la paleta al canvas** y pierde caracteres al tipear (culpa de `ibus-daemon`). Solución verificada: sesión **Xfce**, o lanzar con `GTK_IM_MODULE=xim`.
 

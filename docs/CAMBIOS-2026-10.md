@@ -851,3 +851,51 @@ Con los parámetros de la corrida C: 12 lotes, `mtbfHoras = 100`, `campaña = 0`
 - **Cuidado al leer `conLaMaquina`.** Incluye las noches en que el carro queda estacionado al lado de la máquina parada. No es tiempo útil.
 
 Respaldo: `backups/2026-10-27-pre-causas-parada.alp`.
+
+## 15. Salidas para el rinde y los costos (paso 5, 28/10)
+
+El paso 5 se divide en dos partes. **El modelo calcula lo físico** (cuándo termina cada lote, cuántas horas trabaja y se detiene la máquina, cuántas fallas tiene) y **el script de análisis calcula la plata** (rinde, costos y margen). Así la sensibilidad a precios, costos y curva de pérdida se recalcula sin volver a simular, y el cálculo de N máquinas (parte 4.1 del plan), que también se hace en el script, usa los mismos datos. Las decisiones de diseño están en el paso 5 de [PLAN.md](PLAN.md).
+
+### Qué cambió en el modelo
+
+| Elemento | Qué hace |
+|---|---|
+| `Main.diaSiembraLote[]`, `Main.diaCosechaLote[]` | Día (con fracción, día 0 = 1/10) en que termina cada lote. Se llenan en `onCompleted()`, antes de contar el lote |
+| `Main.filaPasada()` | Arma 23 columnas con los contadores de la pasada que termina, en el mismo orden que el encabezado del CSV |
+| `Main.csvSiembra`, `Main.csvCosecha` | Guardan esa fila. `reportarPasada()` la arma **antes** de que los reportes reinicien las bases. Valen `NA` si la pasada no termina |
+| `Main.csvLotes()` | Días por lote separados por `\|`, como `siembra;cosecha`. `NA` para un lote que no terminó |
+| `Cart.csvEstados()`, `Truck.csvEstados()` | Horas por estado desde el inicio de la pasada. A diferencia de `reporteEstados()`, no reinicia la pasada |
+| `onCompleted()`, al cerrar la cosecha | Imprime `CSV \| ...` con la misma fila, para verificar desde `Simulation` |
+
+### El CSV del barrido
+
+Pasa de 6 a 55 columnas y se escribe en **UTF-8** (el encabezado lleva ñ; el `FileWriter` anterior usaba el encoding de la plataforma y en Windows la rompía).
+
+1. `lotes;turnos;campaña;semillaFallas;diaFinSiembra;diaMadurez;diaFinCosecha`. `semillaFallas` hace falta para comparar escenarios con las mismas semillas.
+2. 23 columnas de la siembra con prefijo `s_` y 23 de la cosecha con prefijo `c_`: `trabajando`, `detenida`, `viajes`, `diasSinPiso`, `fallas`, `horasReparando`, las 7 causas de parada (`falla` a `otra`), 6 estados del carro y 4 del camión.
+3. `diasSiembraLote;diasCosechaLote`: los días de cada lote separados por `|`.
+
+El encabezado lo arma `BeforeEachExperimentRunCode` con un bucle sobre los nombres por pasada. Si se agrega un contador a `filaPasada()`, hay que agregar su nombre ahí y cambiar el 23 del valor inicial de `csvSiembra` y `csvCosecha`.
+
+### Cómo verificarlo
+
+Con los parámetros de la corrida C de la sección 14 (12 lotes, `mtbfHoras = 100`, `campaña = 0`, `turnos = 1`) los eventos tienen que ser idénticos: siembra el día 42, cosecha el día 249, 74 viajes y la misma `FUGA`. En la línea `CSV |`:
+
+- Las columnas de la siembra coinciden con las líneas `SIEMBRA`, `SIEMBRA PARADAS`, `SIEMBRA CARRO` y `SIEMBRA CAMION`, y las de la cosecha con las de `COSECHA`.
+- Hay 46 valores separados por `;` antes de los días por lote.
+- Los 12 días de siembra son crecientes y el último coincide con el día de fin de siembra (42). Lo mismo con la cosecha (249).
+- No aparece ningún `NA`.
+
+### Resultado de la corrida del 28/10
+
+Corrida de Santiago con AnyLogic **8.9.10**, con los parámetros de la corrida C.
+
+- **La línea `CSV |` es correcta.** Tiene 48 campos (23 + 23 + 2), y sus valores coinciden con los reportes de cada pasada. Las causas suman `detenida` (diferencia de 1e-11 en la siembra y 3e-12 en la cosecha), las horas del carro y del camión suman la duración de la pasada, y los 12 días de siembra (2,45 a 42,39) y de cosecha (188,37 a 251,38) son crecientes. No hay `NA`.
+- **La siembra y la madurez son idénticas a la corrida C:** siembra el día 42, 4 fallas y 15,65 h de reparación, las mismas paradas y madurez el día 181.
+- **La cosecha difiere.** Cierra el día 251, no el 249: aparece una falla más el día 241 (6 fallas en total, no 5), lo detenido sube de 1.386 a 1.432 h y la espera del carro de 21,3 a 28,3 h. Los viajes siguen en 74 y la `FUGA` es 7,9e-9.
+
+**Se asume que la diferencia viene del cambio de versión de AnyLogic** (8.9.9 en la corrida C, 8.9.10 en esta). Las funciones de fallas no cambiaron, y el código nuevo solo lee contadores. Con `SelectionModeForSimultaneousEvents` en LIFO, un motor que ordene distinto los eventos simultáneos cambia cuántas veces se vuelve a sortear la próxima falla, y desde ahí la secuencia se separa. No se verificó corriendo `main` con 8.9.10.
+
+**Consecuencia para el barrido:** todas las corridas que se comparan tienen que hacerse con la misma versión de AnyLogic. Si no, las mismas semillas no dan las mismas fallas y se pierde la comparación con semillas comunes.
+
+Respaldo: `backups/2026-10-28-pre-rinde-costos.alp`.
