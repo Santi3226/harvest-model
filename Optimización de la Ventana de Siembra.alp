@@ -5530,7 +5530,7 @@ for (int i = 0; i < n; i++) {
 				<StatechartElement Class="State" ParentState="ROOT_NODE">
 					<Id>1785872291055</Id>
 					<Name><![CDATA[SinSembrar]]></Name>
-					<X>340</X><Y>180</Y>
+					<X>210</X><Y>630</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5546,7 +5546,7 @@ getEngine().setRealTimeScale( 0.5 * day() );]]></EntryAction>
 				<StatechartElement Class="State" ParentState="ROOT_NODE">
 					<Id>1785872297912</Id>
 					<Name><![CDATA[Creciendo]]></Name>
-					<X>490</X><Y>180</Y>
+					<X>360</X><Y>630</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5566,7 +5566,7 @@ getEngine().setRealTimeScale( 1 * week() );]]></EntryAction>
 				<StatechartElement Class="State" ParentState="ROOT_NODE">
 					<Id>1785872303710</Id>
 					<Name><![CDATA[Maduro]]></Name>
-					<X>640</X><Y>180</Y>
+					<X>510</X><Y>630</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5592,7 +5592,7 @@ combine.moveControl.onChange();]]></EntryAction>
 				<StatechartElement Class="State" ParentState="ROOT_NODE">
 					<Id>1790500000031</Id>
 					<Name><![CDATA[Cosechado]]></Name>
-					<X>790</X><Y>180</Y>
+					<X>660</X><Y>630</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5620,7 +5620,7 @@ getEngine().setRealTimeScale( 1 * week() );]]></EntryAction>
 				<StatechartElement Class="EntryPoint" ParentState="ROOT_NODE">
 					<Id>1785872289061</Id>
 					<Name><![CDATA[cicloCultivo]]></Name>
-					<X>280</X><Y>200</Y>
+					<X>150</X><Y>650</Y>
 					<Label><X>-20</X><Y>25</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5635,7 +5635,7 @@ getEngine().setRealTimeScale( 1 * week() );]]></EntryAction>
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1785872350764</Id>
 					<Name><![CDATA[transition1]]></Name>
-					<X>590</X><Y>200</Y>
+					<X>460</X><Y>650</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5665,7 +5665,7 @@ getEngine().setRealTimeScale( 1 * week() );]]></EntryAction>
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1785872339158</Id>
 					<Name><![CDATA[transition]]></Name>
-					<X>440</X><Y>200</Y>
+					<X>310</X><Y>650</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5695,7 +5695,7 @@ getEngine().setRealTimeScale( 1 * week() );]]></EntryAction>
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1785874175951</Id>
 					<Name><![CDATA[transition2]]></Name>
-					<X>740</X><Y>195</Y>
+					<X>610</X><Y>645</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -6645,9 +6645,10 @@ return s + ";" + c;]]></Body>
 					<Height>320</Height>
 					<Rotation>0.0</Rotation>
 					<FillColor>-103</FillColor>
-					<FillColorCode><![CDATA[// sin piso: barro; llovio hoy pero da piso: gris azulado; si no, el color original
+					<FillColorCode><![CDATA[// sin piso: barro; llovio hoy (1 mm o mas) pero da piso: tierra mojada (marron claro); si no, el color original
+// la llovizna de menos de 1 mm no se dibuja: el umbral meteorologico de dia de lluvia es 1 mm
 !daPiso ? new java.awt.Color( 121, 85, 72 )
-: lluviaHoy() > 0 ? new java.awt.Color( 176, 190, 197 )
+: lluviaHoy() >= 1 ? new java.awt.Color( 161, 136, 127 )
 : new java.awt.Color( 255, 255, 153 )]]></FillColorCode>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle>
@@ -6780,7 +6781,7 @@ return s + ";" + c;]]></Body>
 					<FillColor>-1638503</FillColor>
 					<FillColorCode><![CDATA[// parte ya trabajada del lote: mas oscura que el resto del campo con barro o lluvia
 !daPiso ? new java.awt.Color( 78, 52, 46 )
-: lluviaHoy() > 0 ? new java.awt.Color( 144, 164, 174 )
+: lluviaHoy() >= 1 ? new java.awt.Color( 121, 85, 72 )
 : new java.awt.Color( 230, 255, 153 )]]></FillColorCode>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle>
@@ -6809,6 +6810,10 @@ return s + ";" + c;]]></Body>
 					<HeightCode><![CDATA[field.getHeight() - combine.YCompletedNow()]]></HeightCode>
 					<Rotation>0.0</Rotation>
 					<FillColor>-1638503</FillColor>
+					<FillColorCode><![CDATA[// parte ya trabajada del lote: mas oscura que el resto del campo con barro o lluvia
+!daPiso ? new java.awt.Color( 78, 52, 46 )
+: lluviaHoy() >= 1 ? new java.awt.Color( 121, 85, 72 )
+: new java.awt.Color( 230, 255, 153 )]]></FillColorCode>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle>
 				<Rectangle>
@@ -6836,6 +6841,10 @@ return s + ";" + c;]]></Body>
 					<HeightCode><![CDATA[combine.YCompletedNow()]]></HeightCode>
 					<Rotation>0.0</Rotation>
 					<FillColor>-1638503</FillColor>
+					<FillColorCode><![CDATA[// parte ya trabajada del lote: mas oscura que el resto del campo con barro o lluvia
+!daPiso ? new java.awt.Color( 78, 52, 46 )
+: lluviaHoy() >= 1 ? new java.awt.Color( 121, 85, 72 )
+: new java.awt.Color( 230, 255, 153 )]]></FillColorCode>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle>
 				<Rectangle>
@@ -7178,7 +7187,7 @@ de la Cosechadora]]></Text>
 					<XCode><![CDATA[262 + ( index * 97 ) % 500]]></XCode>
 					<YCode><![CDATA[30 + ( index * 53 + System.currentTimeMillis() / 3 ) % 305]]></YCode>
 					<ReplicationCode Class="CodeValue">
-						<Code><![CDATA[lluviaHoy() > 0 ? (int) min( 150, 25 + 6 * lluviaHoy() ) : 0]]></Code>
+						<Code><![CDATA[lluviaHoy() >= 1 ? (int) min( 150, 25 + 6 * lluviaHoy() ) : 0]]></Code>
 					</ReplicationCode>
 					<EmbeddedIcon>false</EmbeddedIcon>
 					<Z>0</Z>
@@ -7209,7 +7218,7 @@ de la Cosechadora]]></Text>
 					<XCode><![CDATA[262 + ( index * 97 ) % 500]]></XCode>
 					<YCode><![CDATA[40 + ( index * 61 ) % 300]]></YCode>
 					<ReplicationCode Class="CodeValue">
-						<Code><![CDATA[lluviaHoy() > 0 ? (int) min( 150, 25 + 6 * lluviaHoy() ) : 0]]></Code>
+						<Code><![CDATA[lluviaHoy() >= 1 ? (int) min( 150, 25 + 6 * lluviaHoy() ) : 0]]></Code>
 					</ReplicationCode>
 					<EmbeddedIcon>false</EmbeddedIcon>
 					<Z>0</Z>

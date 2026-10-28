@@ -299,7 +299,7 @@ La animación muestra por qué la máquina no entra al lote. Es solo presentaci�
 
 | Elemento | Qué muestra |
 |---|---|
-| `field` y `rectangle` (campo y parte trabajada, 2D y 3D) | Sin piso: marrón de barro (la parte trabajada, más oscura). Llovió ese día pero da piso: gris azulado. Si no, el color original |
+| `field`, `rectangle`, `rectangle1` y `rectangle2` (campo, parte trabajada e hilera en curso, 2D y 3D) | Sin piso: marrón de barro. Llovió ese día pero da piso: marrón más claro, de tierra mojada (desde el 28/10; antes era gris azulado). Si no, el color original. La parte trabajada y la hilera en curso usan tonos más oscuros que el campo |
 | `textSueloPiso` (verde) y `textSueloSinPiso` (rojo), debajo de `textAvance` | La lluvia del día, si da piso, la humedad de la capa superficial y el umbral. Se ve uno u otro según `daPiso` |
 | `gotaLluvia3D` (línea replicada, solo 3D) | Las mismas gotas en la vista 3D. Caen en el eje Z (altura), de 120 al suelo: en 3D el eje Y del dibujo es el suelo, así que la línea de 2D quedaría acostada sobre el campo |
 | `gotaLluvia` (línea replicada, solo 2D) | Gotas que caen sobre el campo los días de lluvia. Son más cuanta más lluvia hay: `25 + 6 × mm`, hasta 150. Azul oscuro sobre el campo claro o gris, celeste sobre el barro |
@@ -307,7 +307,7 @@ La animación muestra por qué la máquina no entra al lote. Es solo presentaci�
 - **`Main.lluviaHoy()`** devuelve la lluvia del día en curso, o 0 si el clima todavía no se cargó. Solo lee: la usan las tres figuras.
 - **La lluvia es un dato diario.** Las gotas duran todo el día del modelo, porque la serie no dice a qué hora llovió.
 - **Las gotas caen con el reloj real, no con el del modelo.** Así se mueven igual con cualquier escala de tiempo. Con la escala de la siembra (medio día por segundo), un día de lluvia se ve unos 2 segundos. El barro dura más, porque la capa superficial tarda días en secarse.
-- **Lluvia fuerte = sin piso.** Una lluvia de 5 mm o más (`lluviaBloqueante`) corta el piso ese mismo día. Los días de lluvia con piso son lluvias chicas, sobre el campo gris azulado. Por eso las gotas cambian de color según el fondo: con un solo color celeste no se veían esos días.
+- **Lluvia fuerte = sin piso.** Una lluvia de 5 mm o más (`lluviaBloqueante`) corta el piso ese mismo día. Los días de lluvia con piso son lluvias chicas, sobre el campo marrón claro. Por eso las gotas cambian de color según el fondo: con un solo color celeste no se veían esos días.
 - **El color dinámico nunca devuelve `null`:** una figura con relleno `null` queda transparente. Por eso el caso normal repite el color original.
 
 Para verlo, en la campaña 0: el día 22 llueven 22,2 mm y el campo queda sin piso hasta el día 26. Con la escala de la siembra, eso pasa entre los 44 y los 52 segundos de corrida.
@@ -341,6 +341,15 @@ Opciones, si se retoma:
 3. **Probar `setColor` en 3D**, recorriendo `crop3D.get( i )` (`ReplicatedShape` tiene `get(int)` y `size()`). Es experimental.
 
 Respaldo: `backups/2026-10-27-pre-crecimiento-visual.alp`.
+
+**Corrección del 28/10: colores del campo.**
+
+- **La hilera en curso no cambiaba de color.** `rectangle1` (la máquina va al norte) y `rectangle2` (va al sur) dibujan la hilera que se está trabajando y tenían color fijo. Con sol no se notaba, porque es el mismo color que la parte trabajada. Con lluvia o barro quedaba como una línea clara sobre el campo. Ahora usan el mismo `FillColorCode` que `rectangle`.
+- **La lluvia pone el campo marrón.** Un día con lluvia que da piso pasa de gris azulado a marrón claro: (161, 136, 127) en el campo y (121, 85, 72) en la parte trabajada. El barro sin piso sigue igual. Quedan dos tonos de marrón para que se distinga si la máquina puede entrar.
+- **La llovizna no se dibuja.** El marrón y las gotas aparecen con 1 mm o más (`lluviaHoy() >= 1`), el umbral meteorológico de "día de lluvia". Con `> 0`, en octubre y noviembre se veía lluvia el 46% de los días, 14 puntos de ellos por lloviznas de menos de 1 mm. Con el umbral queda en 32%. El texto del indicador sigue mostrando los milímetros reales, y el piso se calcula igual que antes: es solo presentación.
+- **Al cambiar de lote**, la parte trabajada vuelve a 0 (`XCompleted = 0` al empezar cada lote) y crece de nuevo, porque el dibujo es un solo lote que se repite. Es intencional: el avance total está en `rectLote`.
+
+Respaldo: `backups/2026-10-28-pre-colores-campo.alp`.
 
 ---
 
