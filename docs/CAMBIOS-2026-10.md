@@ -980,8 +980,8 @@ El barrido compara el sistema base (12 lotes, 1 tren) contra el alternativo C (1
 |---|---|
 | `replica` (1 por defecto) | Número de réplica del barrido, de 1 a 5 |
 | `tren` (1 por defecto) | Tren del sistema alternativo, 1 o 2. El base usa siempre el 1 |
-| `semillaFallasUsada()` | `semillaFallas` si es mayor que 0; si no, `replica + 10 × (tren − 1)`. La usa `Combine.generadorFalla()` |
-| `semillaMadurezUsada()` | `semillaMadurez` si es mayor que 0; si no, `replica`. Los dos trenes comparten la madurez: es el mismo cultivo |
+| `semillaFallasUsada()` | `semillaFallas` si es mayor que 0; si no, `replica + 5 × campaña + 100 × (tren − 1)` (desde el 29/10; antes `replica + 10 × (tren − 1)`). La usa `Combine.generadorFalla()` |
+| `semillaMadurezUsada()` | `semillaMadurez` si es mayor que 0; si no, `replica + 5 × campaña` (antes solo `replica`). Los dos trenes comparten la madurez: es el mismo cultivo |
 
 - **`semillaFallas` y `semillaMadurez` pasan a 0 por defecto** (derivar). Con `replica = 1` y `tren = 1` las semillas valen 1, así que `Simulation` repite la corrida de verificación de la sección 16.
 - **El tren 1 del alternativo usa las mismas fallas que el base** en cada réplica; el tren 2, otras (semillas 11 a 15).
@@ -993,3 +993,20 @@ El barrido compara el sistema base (12 lotes, 1 tren) contra el alternativo C (1
 **Verificado el 29/10** en el IDE (AnyLogic 8.9.10), `Simulation` con los valores por defecto: repite la corrida de la sección 16 al dígito. Siembra el día 41 con 3 fallas (6,69 h), meta de 1.980 grados-día, madurez el día 186, cosecha el día 255 con 1 falla y 74 viajes, `FUGA` de grano 8,5e-9 y de semilla 3,6e-11. La fila `CSV |` es idéntica a la anterior, y los parámetros nuevos aparecen en `Main` con sus etiquetas.
 
 Respaldo: `backups/2026-10-28-pre-sistema-alternativo.alp`.
+
+### Semillas que dependen de la campaña (29/10)
+
+La primera versión derivaba la semilla de la madurez solo de `replica`. Como no dependía de la `campaña`, `gddMeta` tomaba **5 valores en todo el barrido** (los 20 climas de una réplica compartían la misma meta), y la triangular quedaba representada por 5 sorteos. Las fallas tenían el mismo problema: solo 5 secuencias por tren. El TP 2.2 valida cada distribución con miles de valores y el TP 3 pide réplicas independientes, así que se cambió:
+
+| Semilla | Fórmula | Valores distintos en el barrido |
+|---|---|---|
+| Madurez | `replica + 5 × campaña` | 100 |
+| Fallas | `replica + 5 × campaña + 100 × (tren − 1)` | 200 (100 por tren) |
+
+- **Semillas comunes:** el base y el alternativo siguen usando las mismas en cada par (`campaña`, `replica`). El tren 1 del alternativo coincide con el base, y el tren 2 suma 100.
+- **Corrida de referencia:** con `campaña = 0`, `replica = 1` y `tren = 1` ambas dan 1, la misma semilla que la corrida verificada. `Simulation` con los valores por defecto tiene que repetir la sección 16 y la verificación del 29/10 (siembra el día 41, meta de 1.980, madurez el día 186, cosecha el día 255).
+- **Otras campañas** cambian respecto de antes (con `campaña = 1`, las semillas pasan de 1 a 6).
+
+**Verificado el 29/10** en el IDE (8.9.10): `Simulation` con `campaña = 0`, `replica = 1` y `tren = 1` repite la corrida anterior al dígito (siembra el día 41 con 3 fallas, meta de 1.980, madurez el día 186, cosecha el día 255 con 1 falla y 74 viajes, `FUGA` 8,5e-9) y la fila `CSV |` es idéntica.
+
+Respaldo: `backups/2026-10-29-pre-semillas-campana.alp`.

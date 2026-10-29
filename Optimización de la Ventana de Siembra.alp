@@ -5025,7 +5025,7 @@ for (int i = 0; i < n; i++) {
 						<ParameterEditor>
 							<Id>1792000000062</Id>
 							<Name><![CDATA[null]]></Name>
-							<Label><![CDATA[Semilla de fallas (0 = replica + 10 x (tren - 1))]]></Label>
+							<Label><![CDATA[Semilla de fallas (0 = replica + 5 x campaña + 100 x (tren - 1))]]></Label>
 							<EditorContolType>TEXT_BOX</EditorContolType>
 							<MinSliderValue><![CDATA[0]]></MinSliderValue>
 							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
@@ -5103,7 +5103,7 @@ for (int i = 0; i < n; i++) {
 						<ParameterEditor>
 							<Id>1797000000013</Id>
 							<Name><![CDATA[null]]></Name>
-							<Label><![CDATA[Semilla de la madurez (0 = replica)]]></Label>
+							<Label><![CDATA[Semilla de la madurez (0 = replica + 5 x campaña)]]></Label>
 							<EditorContolType>TEXT_BOX</EditorContolType>
 							<MinSliderValue><![CDATA[0]]></MinSliderValue>
 							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
@@ -6239,9 +6239,11 @@ return 0;]]></Body>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Body><![CDATA[// semilla de las fallas de esta corrida: semillaFallas si se fija a mano; si vale 0, se deriva de
-// replica y tren para que el barrido use las mismas semillas en los dos sistemas (PLAN.md, parte 4.5).
-// Con replica = 1 y tren = 1 da 1, la semilla de la ultima corrida verificada.
-return semillaFallas > 0 ? semillaFallas : replica + 10 * ( tren - 1 );]]></Body>
+// campaña, replica y tren para que el barrido use las mismas semillas en los dos sistemas (PLAN.md, parte 4.5).
+// Depende de la campaña: con solo la replica habria 5 secuencias de fallas repetidas en los 20 climas.
+// El tren 1 del alternativo coincide con el sistema base; el tren 2 suma 100.
+// Con campaña = 0, replica = 1 y tren = 1 da 1, la semilla de la corrida verificada.
+return semillaFallas > 0 ? semillaFallas : replica + 5 * campaña + 100 * ( tren - 1 );]]></Body>
 				</Function>
 				<Function AccessType="default" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
@@ -6253,8 +6255,11 @@ return semillaFallas > 0 ? semillaFallas : replica + 10 * ( tren - 1 );]]></Body
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Body><![CDATA[// semilla de la madurez: los dos trenes del sistema alternativo son el mismo cultivo, asi que solo depende de la replica
-return semillaMadurez > 0 ? semillaMadurez : replica;]]></Body>
+					<Body><![CDATA[// semilla de la madurez: los dos trenes del sistema alternativo son el mismo cultivo, asi que no depende del tren.
+// Depende de la campaña y la replica: con solo la replica, gddMeta tomaria 5 valores en todo el barrido
+// y la triangular quedaria representada por 5 sorteos. Con 20 campañas x 5 replicas son 100 metas distintas.
+// Con campaña = 0 y replica = 1 da 1, la semilla de la corrida verificada.
+return semillaMadurez > 0 ? semillaMadurez : replica + 5 * campaña;]]></Body>
 				</Function>
 				<Function AccessType="default" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>

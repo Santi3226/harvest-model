@@ -156,7 +156,7 @@ La mejor elección para cada superficie es la combinación de **mayor margen que
 **Por qué no es obvio.** El alternativo tiene más campo, pero cada máquina siembra 9 lotes en vez de 12, así que puede terminar antes y perder menos rinde. A cambio paga arrendamiento, una segunda máquina y un segundo operario.
 
 **Cómo se simula.**
-- Dos parámetros nuevos en `Main`: `replica` (1 a 5) y `tren` (1 o 2). Las semillas se derivan de ellos: fallas = `replica + 10 × (tren − 1)` y madurez = `replica`. Con los valores por defecto (1 y 1) las semillas valen 1, como en la última corrida verificada. `semillaFallas` y `semillaMadurez` en 0 significan "derivar"; con otro valor lo fijan a mano.
+- Dos parámetros nuevos en `Main`: `replica` (1 a 5) y `tren` (1 o 2). Las semillas se derivan de ellos y de la `campaña`: fallas = `replica + 5 × campaña + 100 × (tren − 1)` y madurez = `replica + 5 × campaña`. Así hay 100 metas de madurez distintas y 200 secuencias de fallas (100 por tren), y no solo 5. El base y el alternativo siguen usando las mismas semillas en cada par (`campaña`, `replica`). Con los valores por defecto (1 y 1) las semillas valen 1, como en la última corrida verificada. `semillaFallas` y `semillaMadurez` en 0 significan "derivar"; con otro valor lo fijan a mano.
 - **Base:** 12 lotes, `tren = 1`. **Alternativo:** dos corridas de 9 lotes, `tren = 1` y `tren = 2`. Los dos trenes comparten el clima y la semilla de madurez (es el mismo cultivo) y tienen fallas distintas. El tren 1 del alternativo usa las mismas fallas que el base.
 - El alternativo termina la siembra cuando termina el tren más lento, y su rinde suma los 18 lotes de los dos trenes.
 - `ParametersVariation`: `campaña` 0 a 19 × `replica` 1 a 5 × `tren` 1 a 2 × `cantidadLotes` 9 y 12 = **400 corridas**. Las 100 de 12 lotes con `tren = 2` no se usan, a cambio de que sea un solo experimento. Quedan **100 observaciones por sistema**, emparejadas por (`campaña`, `replica`).
@@ -173,6 +173,13 @@ La mejor elección para cada superficie es la combinación de **mayor margen que
 | Operarios | salario anual × trenes | Escala UATRE en dólares |
 | Combustible y mantenimiento | horas trabajadas × US$/h | ~25 l/h de gasoil más mantenimiento, supuesto |
 | Reparaciones | fallas × US$/falla | Supuesto |
+
+**Fundamento estadístico (28 y 29/10, contrastado con los TP 1.1, 2.2 y 3).**
+- **Cantidad de observaciones.** En el TP 3 se usaron "30 réplicas independientes" por escenario con IC del 95%, y se eligió la política de menor costo promedio. Acá son 100 observaciones por sistema, más del triple, con la misma lógica de elección.
+- **Independencia.** Las 100 observaciones no son independientes: son 20 climas históricos fijos con 5 semillas cada uno, y el clima domina el resultado. El IC de la diferencia de margen se calcula de dos maneras: con las 100 observaciones (como en el TP 3) y **por clima**, promediando las 5 semillas de cada año (20 diferencias independientes, t de Student con 19 grados de libertad). Si difieren, manda la segunda. Hay que declarar que 20 climas son menos que los 30 del TP 3; ampliar la serie de NASA POWER (desde 1981) es una opción, con el límite de 64 KB por literal de la JVM.
+- **Proporción de siembras a tiempo.** Con ~90% y 100 observaciones hay unos 10 fracasos, suficientes para la aproximación normal. Los dos sistemas comparten semillas, así que se compara por pares (test de McNemar o IC de la diferencia de proporciones).
+- **Gráficos del TP 3** que se replican en el análisis: media acumulada de la diferencia contra el número de observaciones, e histograma de las diferencias con su IC.
+- **Validación sin teoría cerrada**, al estilo del TP 2.2: la media de `gddMeta` en las 100 corridas tiene que dar cerca de 1.900, y las fallas, cerca de las horas trabajadas divididas por `mtbfHoras`.
 
 **Qué se compara.** El margen total y por hectárea, la probabilidad de terminar la siembra antes del 15/11 y, para decidir, la **diferencia de margen par a par** (misma `campaña` y `replica`) con su intervalo de confianza del 95%. Gana el sistema con mayor margen si el intervalo de la diferencia no incluye el 0.
 
