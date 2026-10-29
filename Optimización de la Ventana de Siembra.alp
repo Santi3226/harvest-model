@@ -170,7 +170,7 @@
 				<Variable Class="PlainVariable">
 					<Id>1791000000301</Id>
 					<Name><![CDATA[semillaCarro]]></Name>
-					<X>950</X><Y>260</Y>
+					<X>750</X><Y>430</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -185,7 +185,7 @@
 				<Variable Class="PlainVariable">
 					<Id>1791000000302</Id>
 					<Name><![CDATA[ultimaCargaSemilla]]></Name>
-					<X>950</X><Y>300</Y>
+					<X>750</X><Y>470</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1728,7 +1728,7 @@ final static CellDirection NOTSTARTED = null;
 				<Variable Class="PlainVariable">
 					<Id>1169819500111</Id>
 					<Name><![CDATA[XCompleted]]></Name>
-					<X>250</X><Y>500</Y>
+					<X>460</X><Y>680</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1740,7 +1740,7 @@ final static CellDirection NOTSTARTED = null;
 				<Variable Class="PlainVariable">
 					<Id>1169819507622</Id>
 					<Name><![CDATA[YCompleted]]></Name>
-					<X>250</X><Y>520</Y>
+					<X>460</X><Y>700</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1752,7 +1752,7 @@ final static CellDirection NOTSTARTED = null;
 				<Variable Class="PlainVariable">
 					<Id>1169819513201</Id>
 					<Name><![CDATA[YDirection]]></Name>
-					<X>250</X><Y>540</Y>
+					<X>460</X><Y>720</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1767,7 +1767,7 @@ final static CellDirection NOTSTARTED = null;
 				<Variable Class="PlainVariable">
 					<Id>1786000000301</Id>
 					<Name><![CDATA[nivel]]></Name>
-					<X>750</X><Y>260</Y>
+					<X>990</X><Y>280</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1782,7 +1782,7 @@ final static CellDirection NOTSTARTED = null;
 				<Variable Class="PlainVariable">
 					<Id>1786000000302</Id>
 					<Name><![CDATA[tasaActual]]></Name>
-					<X>750</X><Y>300</Y>
+					<X>990</X><Y>320</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1797,7 +1797,7 @@ final static CellDirection NOTSTARTED = null;
 				<Variable Class="PlainVariable">
 					<Id>1786000000303</Id>
 					<Name><![CDATA[tUltimo]]></Name>
-					<X>750</X><Y>340</Y>
+					<X>990</X><Y>360</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1812,7 +1812,7 @@ final static CellDirection NOTSTARTED = null;
 				<Variable Class="PlainVariable">
 					<Id>1786000000305</Id>
 					<Name><![CDATA[tasaCosecha]]></Name>
-					<X>750</X><Y>380</Y>
+					<X>990</X><Y>460</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -1827,7 +1827,7 @@ final static CellDirection NOTSTARTED = null;
 				<Variable Class="PlainVariable">
 					<Id>1786000000504</Id>
 					<Name><![CDATA[tUltimoEstado]]></Name>
-					<X>950</X><Y>420</Y>
+					<X>990</X><Y>400</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2037,7 +2037,7 @@ final static CellDirection NOTSTARTED = null;
 				<Variable Class="Parameter">
 					<Id>1169735952567</Id>
 					<Name><![CDATA[Capacity]]></Name>
-					<X>50</X><Y>450</Y>
+					<X>640</X><Y>620</Y>
 					<Label><X>20</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2063,7 +2063,7 @@ final static CellDirection NOTSTARTED = null;
 				<Variable Class="Parameter">
 					<Id>1169735952568</Id>
 					<Name><![CDATA[UnloadingRate]]></Name>
-					<X>50</X><Y>470</Y>
+					<X>640</X><Y>640</Y>
 					<Label><X>20</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2091,7 +2091,7 @@ final static CellDirection NOTSTARTED = null;
 				<Variable Class="Parameter">
 					<Id>1169735952569</Id>
 					<Name><![CDATA[RowWidth]]></Name>
-					<X>50</X><Y>490</Y>
+					<X>640</X><Y>660</Y>
 					<Label><X>20</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2118,7 +2118,7 @@ final static CellDirection NOTSTARTED = null;
 				<Variable Class="Parameter">
 					<Id>1169735952570</Id>
 					<Name><![CDATA[Field]]></Name>
-					<X>50</X><Y>510</Y>
+					<X>640</X><Y>680</Y>
 					<Label><X>20</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2141,7 +2141,7 @@ final static CellDirection NOTSTARTED = null;
 				<Variable Class="Parameter">
 					<Id>1169735952571</Id>
 					<Name><![CDATA[Parking]]></Name>
-					<X>50</X><Y>530</Y>
+					<X>640</X><Y>700</Y>
 					<Label><X>20</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -2164,7 +2164,7 @@ final static CellDirection NOTSTARTED = null;
 				<Variable Class="Parameter">
 					<Id>1169735952572</Id>
 					<Name><![CDATA[HarvestDensity]]></Name>
-					<X>50</X><Y>550</Y>
+					<X>640</X><Y>720</Y>
 					<Label><X>20</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3323,7 +3323,7 @@ moveControl.onChange();]]></Action>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1169735952573</Id>
 					<Name><![CDATA[YCompletedNow]]></Name>
-					<X>250</X><Y>450</Y>
+					<X>460</X><Y>630</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3341,7 +3341,7 @@ return YCompleted;
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1169735952574</Id>
 					<Name><![CDATA[harvestRate]]></Name>
-					<X>250</X><Y>470</Y>
+					<X>460</X><Y>650</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3354,7 +3354,7 @@ return YCompleted;
 					<ReturnType><![CDATA[void]]></ReturnType>
 					<Id>1786000000304</Id>
 					<Name><![CDATA[actualizarNivel]]></Name>
-					<X>750</X><Y>380</Y>
+					<X>990</X><Y>430</Y>
 					<Label><X>20</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -3374,7 +3374,7 @@ tUltimo = time();]]></Body>
 					<ReturnType><![CDATA[boolean]]></ReturnType>
 					<Id>1786000001101</Id>
 					<Name><![CDATA[puedeTrabajar]]></Name>
-					<X>750</X><Y>460</Y>
+					<X>990</X><Y>490</Y>
 					<Label><X>20</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>false</PresentationFlag>
@@ -3549,7 +3549,7 @@ moveControl.onChange();]]></Body>
 					<ReturnType><![CDATA[double]]></ReturnType>
 					<Id>1787832068265</Id>
 					<Name><![CDATA[tasaCosechaActual]]></Name>
-					<X>390</X><Y>390</Y>
+					<X>290</X><Y>640</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>

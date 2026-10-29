@@ -53,6 +53,8 @@ PARAMETROS = {
     "p_min_a_tiempo": 0.90,         # probabilidad minima de terminar la siembra a tiempo
     # --- ingreso ---
     "rinde_potencial_kg_ha": 4100.0,  # BCR GEA 2025/26, soja de primera, zona nucleo: 41 qq/ha
+    "rinde_sin_cosechar": 0.80,       # SUPUESTO: fraccion del rinde que conserva un lote sembrado cuya cosecha no cierra antes del
+                                      # 30/9 (la cosecha sigue en octubre: perdida por demora, desgrane y tiempo en el campo). Sensibilidad: 0 a 1
     "perdida_kg_ha_dia": 25.0,        # por dia de siembra despues del 15/11 (Rossi, zona nucleo; sin fuente INTA). Sensibilidad: 15 y 36
     "precio_usd_t": 331.0,            # AgBi, soja campaña 2026/27
     "flete_pct": 0.10,                # SUPUESTO, flete y comercializacion sobre el ingreso
@@ -259,10 +261,12 @@ def evaluar(trenes, lotes_arrendados, P):
         if ds is None:
             continue
         sembrados += 1
-        if dc is None:
-            continue  # sembrado y no cosechado dentro del año: sin ingreso
         atraso = max(0.0, ds - P["dia_limite_siembra"])
-        kg += max(0.0, P["rinde_potencial_kg_ha"] - P["perdida_kg_ha_dia"] * atraso) * ha
+        rinde = max(0.0, P["rinde_potencial_kg_ha"] - P["perdida_kg_ha_dia"] * atraso)
+        if dc is None:
+            # la cosecha no cierra dentro del año del barrido: sigue en octubre, no se pierde todo el lote
+            rinde *= P["rinde_sin_cosechar"]
+        kg += rinde * ha
     ingreso = kg / 1000.0 * P["precio_usd_t"]
     superficie = len(siembra) * ha
 
@@ -350,7 +354,7 @@ def informe(pares, incompletos, avisos, P, esperadas, salida=None, sintetico=Fal
     print(f"{'fallas':<22}{mean(r['fallas'] for r in rb):>14.1f}{mean(r['fallas'] for r in ra):>14.1f}")
     sin_cosechar = sum(r["lotes"] - r["cosechados"] for r in rb + ra)
     if sin_cosechar:
-        print(f"AVISO: {sin_cosechar} lotes (sumando los dos sistemas) quedaron sin cosechar en el año y no dan ingreso")
+        print(f"AVISO: {sin_cosechar} lotes (sumando los dos sistemas) quedaron sin cosechar en el año y conservan el {P['rinde_sin_cosechar']:.0%} del rinde (rinde_sin_cosechar)")
     if mean(r["margen"] for r in rb) <= 0:
         print("AVISO: el margen del base es <= 0; los costos supuestos no estan calibrados (PLAN.md, paso 5)")
 
