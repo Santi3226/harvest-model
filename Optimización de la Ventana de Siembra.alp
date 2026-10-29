@@ -532,7 +532,7 @@ double falta = Capacity - semillaCarro;
 ultimaCargaSemilla = falta;
 main.semillaDespachada += falta;
 semillaCarro = Capacity;
-traceln( "### CARRO CARGA SEMILLA | dia " + main.diaCampaña + " | " + (int) falta + " kg | t=" + time( DAY ) + " d" );]]></EntryAction>
+main.traza( "### CARRO CARGA SEMILLA | dia " + main.diaCampaña + " | " + (int) falta + " kg | t=" + time( DAY ) + " d" );]]></EntryAction>
 						<FillColor>-5383962</FillColor>
 					</Properties>
 				</StatechartElement>
@@ -1077,7 +1077,7 @@ main.combine.actualizarSemilla();
 double lote = min( semillaCarro, main.capacidadSemilla - main.combine.semilla );
 semillaCarro -= lote;
 main.combine.semilla += lote;
-traceln( "### ENTREGA SEMILLA | dia " + main.diaCampaña + " | " + (int) lote + " kg | t=" + time( DAY ) + " d" );
+main.traza( "### ENTREGA SEMILLA | dia " + main.diaCampaña + " | " + (int) lote + " kg | t=" + time( DAY ) + " d" );
 main.combine.semillaEntregada();]]></Action>
 						<Timeout Class="CodeUnitValue">
 							<Code><![CDATA[1]]></Code>
@@ -2459,7 +2459,7 @@ main.cart.tasaActual = 0;]]></ExitAction>
 // pide semilla al carro. Si el carro esta ocupado el mensaje se pierde (aprendizaje 14):
 // por eso Cart.WaitCommand vuelve a mirar si hay un pedido pendiente al quedar libre.
 actualizarSemilla();
-traceln( "### PIDE SEMILLA | dia " + main.diaCampaña + " | semilla=" + (int) semilla + " kg | t=" + time( DAY ) + " d" );
+main.traza( "### PIDE SEMILLA | dia " + main.diaCampaña + " | semilla=" + (int) semilla + " kg | t=" + time( DAY ) + " d" );
 if ( main.autoControl ) send( "NEED_SEED", main.cart );]]></EntryAction>
 						<FillColor>-5383962</FillColor>
 					</Properties>
@@ -2479,7 +2479,7 @@ main.semillaSembrada += semilla;   // resto de punto flotante del instante exact
 semilla = 0;
 sinSemilla = true;
 tInicioSinSemilla = time();
-traceln( "### SIN SEMILLA | dia " + main.diaCampaña + " | t=" + time( DAY ) + " d" );
+main.traza( "### SIN SEMILLA | dia " + main.diaCampaña + " | t=" + time( DAY ) + " d" );
 moveControl.onChange();]]></EntryAction>
 						<ExitAction><![CDATA[sinSemilla = false;
 registrarCausa();
@@ -2514,7 +2514,7 @@ main.fallas++;
 reparando = true;
 tInicioReparacion = time();
 duracionReparacion = duracionReparacionHoras();
-traceln( "### FALLA " + main.fallas + " | dia " + main.diaCampaña + " | repara " + duracionReparacion + " h | t=" + time( DAY ) + " d" );
+main.traza( "### FALLA " + main.fallas + " | dia " + main.diaCampaña + " | repara " + duracionReparacion + " h | t=" + time( DAY ) + " d" );
 moveControl.onChange();]]></EntryAction>
 						<FillColor>-5383962</FillColor>
 					</Properties>
@@ -2740,7 +2740,7 @@ if ( inState( WithCart ) ) {
 	tUltimo = time();
 	if ( inState( Loading ) ) { Full.cancel(); Full.start(); }
 }
-traceln( "### MAQUINA REANUDA | dia " + main.diaCampaña
+main.traza( "### MAQUINA REANUDA | dia " + main.diaCampaña
          + " | tasa=" + tasaCosecha + " nivelTolva=" + (int) nivel
          + " | t=" + time( DAY ) + " d" );]]></Action>
 						<Timeout Class="CodeUnitValue">
@@ -2790,7 +2790,7 @@ if ( inState( WithCart ) ) {
 	tasaActual = 0;
 	if ( inState( Loading ) ) { Full.cancel(); Full.start(); }
 }
-traceln( "### MAQUINA PARA | dia " + main.diaCampaña
+main.traza( "### MAQUINA PARA | dia " + main.diaCampaña
          + " | piso=" + main.daPiso
          + " jornada=" + main.dentroDeJornada()
          + " tolvaLlena=" + inState( FullWaitCart )
@@ -2940,7 +2940,7 @@ enCampo = true;
 registrarCausa();
 // diagnostico: semilla al empezar cada lote y consumo teorico sembrando [kg/h]
 if ( main.sembrando() )
-	traceln( "### INICIO LOTE " + ( main.lotesCompletados + 1 ) + " | dia " + main.diaCampaña
+	main.traza( "### INICIO LOTE " + ( main.lotesCompletados + 1 ) + " | dia " + main.diaCampaña
 	         + " | semilla=" + (int) semilla + " kg | velocidad=" + getSpeed( KPH ) + " km/h | ancho="
 	         + scale.toLengthUnits( RowWidth, METER ) + " m | consumo="
 	         + getSpeed( MPS ) * scale.toLengthUnits( RowWidth, METER ) * main.densidadSiembra / 10000.0 * 3600 + " kg/h" );
@@ -3298,7 +3298,7 @@ reparando = false;
 // si sigue parada (por ejemplo, fuera de jornada) la causa cambia ahora
 registrarCausa();
 main.horasReparando += ( time() - tInicioReparacion ) / hour();
-traceln( "### REPARADA | dia " + main.diaCampaña + " | t=" + time( DAY ) + " d" );
+main.traza( "### REPARADA | dia " + main.diaCampaña + " | t=" + time( DAY ) + " d" );
 moveControl.onChange();]]></Action>
 						<Timeout Class="CodeUnitValue">
 							<Code><![CDATA[duracionReparacion]]></Code>
@@ -3962,6 +3962,12 @@ if ( enCampo ) causaParada = causaActual();]]></Body>
 			<Name><![CDATA[Main]]></Name>
 			<StartupCode><![CDATA[// series climaticas NASA POWER embebidas: se parsean una sola vez
 cargarClima();
+// presentacionLenta = false (CompareRuns): ritmo rapido pero acotado, 10 semanas por segundo real (una corrida de 52 semanas en ~5 s).
+// En tiempo virtual puro el motor emite cuadros de animacion mas rapido de lo que el cliente web los consume, pierde sincronia
+// y la barra del experimento queda bloqueada despues de la segunda corrida.
+if ( !presentacionLenta ) {
+	getEngine().setRealTimeMode( true ); getEngine().setRealTimeScale( 10 * week() );
+}
 // la maquina arranca la campaña con la tolva de semilla llena (cuenta como semilla despachada)
 combine.semilla = capacidadSemilla;
 semillaDespachada = capacidadSemilla;
@@ -5595,6 +5601,58 @@ for (int i = 0; i < n; i++) {
 					</Properties>                 
 				</Variable>
 				<Variable Class="Parameter">
+					<Id>1801000000001</Id>
+					<Name><![CDATA[presentacionLenta]]></Name>
+					<X>1990</X><Y>-60</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[boolean]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA[true]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1801000000002</Id>
+							<Name><![CDATA[null]]></Name>
+							<Label><![CDATA[Ritmo de presentacion (false = tiempo virtual, para CompareRuns)]]></Label>
+							<EditorContolType>CHECK_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[1]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1802000000001</Id>
+					<Name><![CDATA[trazas]]></Name>
+					<X>1990</X><Y>-20</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[boolean]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA[false]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1802000000002</Id>
+							<Name><![CDATA[null]]></Name>
+							<Label><![CDATA[Trazas detalladas por consola]]></Label>
+							<EditorContolType>CHECK_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[1]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
 					<Id>1786000001501</Id>
 					<Name><![CDATA[horasSemanales]]></Name>
 					<X>1990</X><Y>-60</Y>
@@ -5686,7 +5744,7 @@ for (int i = 0; i < n; i++) {
 						<EntryAction><![CDATA[// arranca la campaña: el campo esta sin sembrar y la maquina sale a sembrar
 // (Combine Parked -> GoingToField espera a Main.laborPendiente(); el tick horario la reevalua).
 // ritmo de presentacion: 0.5 dias por segundo real, la siembra (~40 dias) dura ~80 s
-getEngine().setRealTimeScale( 0.5 * day() );]]></EntryAction>
+if ( presentacionLenta ) getEngine().setRealTimeScale( 0.5 * day() );]]></EntryAction>
 						<FillColor>-10496</FillColor>
 					</Properties>
 				</StatechartElement>
@@ -5708,9 +5766,9 @@ tInicioCrecimiento = time();
 // La semilla se mezcla con una constante: java.util.Random da casi el mismo primer numero
 // con semillas consecutivas (1, 2, 3 -> 0,731) y el sorteo saldria igual en todas las replicas.
 gddMeta = triangular( gddMinimo, gddMaximo, gddObjetivo, new java.util.Random( semillaMadurezUsada() * 0x9E3779B97F4A7C15L ) );
-traceln( "Siembra cerrada el dia " + diaCampaña + " — el cultivo madura al sumar " + (int) gddMeta + " grados-dia" );
+traza( "Siembra cerrada el dia " + diaCampaña + " — el cultivo madura al sumar " + (int) gddMeta + " grados-dia" );
 // ritmo de presentacion: la maduracion son meses sin nada que ver
-getEngine().setRealTimeScale( 1 * week() );]]></EntryAction>
+if ( presentacionLenta ) getEngine().setRealTimeScale( 1 * week() );]]></EntryAction>
 						<FillColor>-10496</FillColor>
 					</Properties>
 				</StatechartElement>
@@ -5726,14 +5784,14 @@ getEngine().setRealTimeScale( 1 * week() );]]></EntryAction>
 						<EntryAction><![CDATA[diaMadurez = diaCampaña;
 // largo del ciclo medido (antes era el sorteo): dias desde el cierre de la siembra
 diasHastaMadurez = diaMadurez - diaFinSiembra;
-traceln( "Cultivo maduro el dia " + diaMadurez + " — " + (int) diasHastaMadurez + " dias de ciclo, gdd=" + gdd + " — listo para cosecha" );
+traza( "Cultivo maduro el dia " + diaMadurez + " — " + (int) diasHastaMadurez + " dias de ciclo, gdd=" + gdd + " — listo para cosecha" );
 // los dias sin piso del crecimiento no son de la cosecha: foto para reportarPasada()
 baseSinPiso = diasSinPiso;
 // la cosecha se mide desde la madurez: los meses de crecimiento no son ocio del carro ni del camion
 cart.iniciarPasada();
 truck.iniciarPasada();
 // ritmo de presentacion: la maquina esta por trabajar, se mira al detalle
-getEngine().setRealTimeScale( 0.05 * day() );
+if ( presentacionLenta ) getEngine().setRealTimeScale( 0.05 * day() );
 // la condicion de Parked -> GoingToField depende de este estado: sin el aviso
 // la cosechadora no se entera de que el cultivo maduro y queda estacionada
 combine.moveControl.onChange();]]></EntryAction>
@@ -5750,9 +5808,9 @@ combine.moveControl.onChange();]]></EntryAction>
 					<ShowLabel>true</ShowLabel>
 					<Properties Width="100" Height="30">
 						<EntryAction><![CDATA[// fin de campaña: el campo quedo cosechado. Es el estado final (una corrida = una campaña).
-traceln( "Campo cosechado el dia " + diaCampaña + " — fin de campaña" );
+traza( "Campo cosechado el dia " + diaCampaña + " — fin de campaña" );
 // ritmo de presentacion: ya no hay nada que mirar
-getEngine().setRealTimeScale( 1 * week() );]]></EntryAction>
+if ( presentacionLenta ) getEngine().setRealTimeScale( 1 * week() );]]></EntryAction>
 						<FillColor>-10496</FillColor>
 					</Properties>
 				</StatechartElement>
@@ -5925,18 +5983,18 @@ if ( horaTick % 24 == 0 ) {
 		boolean piso = humedadSuperficie <= umbralPiso && lluvia < lluviaBloqueante;
 		if ( !piso ) diasSinPiso++;
 		if ( diaCampaña <= diasLogClima )
-			traceln( "CLIMA dia " + diaCampaña + " | lluvia=" + lluvia + " etc=" + etc
+			traza( "CLIMA dia " + diaCampaña + " | lluvia=" + lluvia + " etc=" + etc
 			         + " humedad=" + humedadSuperficie + " piso=" + piso );
 		if ( piso != daPiso ) {
 			daPiso = piso;
-			traceln( ( piso ? ">>> PISO RECUPERADO" : ">>> PISO PERDIDO" ) + " dia " + diaCampaña
+			traza( ( piso ? ">>> PISO RECUPERADO" : ">>> PISO PERDIDO" ) + " dia " + diaCampaña
 			         + " | humedad=" + humedadSuperficie + " lluvia=" + lluvia );
 			combine.moveControl.onChange();
 		}
 	} else if ( daPiso == false ) {
 		// serie agotada: no dejar la maquina clavada por un piso congelado
 		daPiso = true;
-		traceln( ">>> SERIE CLIMATICA AGOTADA dia " + diaCampaña + " — se libera el piso" );
+		traza( ">>> SERIE CLIMATICA AGOTADA dia " + diaCampaña + " — se libera el piso" );
 		combine.moveControl.onChange();
 	}
 	cicloCultivo.onChange();
@@ -5986,7 +6044,7 @@ lotesCompletados = 0;
 if ( sembrando() ) {
 	// ---- fin de la SIEMBRA: el dia de fin es la variable de respuesta del entregable #1
 	diaFinSiembra = diaCampaña;
-	traceln( "=== SIEMBRA TERMINADA | superficie=" + (int)( cantidadLotes * 104 )
+	traza( "=== SIEMBRA TERMINADA | superficie=" + (int)( cantidadLotes * 104 )
 	         + " ha | dia " + diaFinSiembra + " | "
 	         + ( diaFinSiembra <= diaLimiteSiembra ? "DENTRO" : "FUERA" )
 	         + " de la ventana (dia limite " + diaLimiteSiembra + ")" );
@@ -5997,18 +6055,35 @@ if ( sembrando() ) {
 	// ---- fin de la COSECHA: cierra la campaña
 	diaFinCosecha = diaCampaña;
 	campañaNro++;
-	traceln( "=== COSECHA TERMINADA | campaña " + campañaNro + " | dia " + diaFinCosecha
+	traza( "=== COSECHA TERMINADA | campaña " + campañaNro + " | dia " + diaFinCosecha
 	         + " | " + ( diaFinCosecha - diaMadurez ) + " dias desde la madurez (dia " + diaMadurez + ")" );
 	reportarPasada();
 	auditarMasa();
 	// la misma fila que escribe ParametersVariation (sin las 7 primeras columnas), para verificar desde Simulation
-	traceln( "CSV | " + csvSiembra + ";" + csvCosecha + ";" + csvLotes() );
+	traza( "CSV | " + csvSiembra + ";" + csvCosecha + ";" + csvLotes() );
 	cosechaCompleta = true;
 	if ( terminarAlCerrarCampaña ) { getEngine().finish(); return; }
 }
 // la salida del estado actual de cicloCultivo depende de las banderas de arriba,
 // y una condicion no se reevalua sola cuando cambia la variable (aprendizaje 13)
 cicloCultivo.onChange();]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[void]]></ReturnType>
+					<Id>1802000000003</Id>
+					<Name><![CDATA[traza]]></Name>
+					<X>1000</X><Y>-660</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[texto]]></Name>
+						<Type><![CDATA[String]]></Type>
+					</Parameter>
+					<Body><![CDATA[// salida de detalle por consola: solo con trazas = true (Simulation). CompareRuns y el barrido quedan en silencio.
+if ( trazas ) traceln( texto );]]></Body>
 				</Function>
 				<Function AccessType="default" StaticFunction="false">
 					<ReturnModificator>VOID</ReturnModificator>
@@ -6043,7 +6118,7 @@ actualizarSilo();
 double enSistema = combine.nivel + cart.nivel + truck.nivel + nivelSilo;
 double fuga = totalCosechado - enSistema - masaDescartada + masaInventada;
 double pct = totalCosechado > 0 ? 100 * fuga / totalCosechado : 0;
-traceln( "AUDITORIA t=" + time() + " | cosechado=" + totalCosechado + " enSistema=" + enSistema
+traza( "AUDITORIA t=" + time() + " | cosechado=" + totalCosechado + " enSistema=" + enSistema
          + " descartado=" + masaDescartada + " inventado=" + masaInventada
          + " | FUGA=" + fuga + " (" + pct + "%)" );]]></Body>
 				</Function>
@@ -6146,7 +6221,7 @@ String pasada = sembrando() ? "SIEMBRA" : "COSECHA";
 if ( sembrando() ) csvSiembra = filaPasada(); else csvCosecha = filaPasada();
 double dTrab = horasTrabajando - baseTrabajando;
 double dDet  = horasDetenida   - baseDetenida;
-traceln( pasada + " | trabajando=" + dTrab + " h | detenida=" + dDet
+traza( pasada + " | trabajando=" + dTrab + " h | detenida=" + dDet
          + " h | uso=" + (int)( 100 * dTrab / max( 1e-9, dTrab + dDet ) )
          + "% | viajes camion=" + (int)( viajesCamion - baseViajes )
          + " | dias sin piso=" + ( diasSinPiso - baseSinPiso )
@@ -6160,9 +6235,9 @@ for ( int k = 1; k < causas.length; k++ ) {
 	suma += d;
 	txt += " " + causas[ k ] + "=" + round( d * 100 ) / 100.0 + " h";
 }
-traceln( txt + " | suma-detenida=" + ( suma - dDet ) );
-traceln( pasada + " CARRO | " + cart.reporteEstados() );
-traceln( pasada + " CAMION | " + truck.reporteEstados() );
+traza( txt + " | suma-detenida=" + ( suma - dDet ) );
+traza( pasada + " CARRO | " + cart.reporteEstados() );
+traza( pasada + " CAMION | " + truck.reporteEstados() );
 baseParada = horasParada.clone();
 baseTrabajando = horasTrabajando;
 baseDetenida   = horasDetenida;
@@ -6193,7 +6268,7 @@ double hileras = Math.ceil( combine.Field.getWidth() / combine.RowWidth );
 double haLote  = hileras * scale.toLengthUnits( combine.RowWidth, METER )
                  * scale.toLengthUnits( combine.Field.getHeight(), METER ) / 10000.0;
 double esperada = densidadSiembra * cantidadLotes * haLote;
-traceln( "AUDITORIA SEMILLA | despachada=" + semillaDespachada + " sembrada=" + semillaSembrada
+traza( "AUDITORIA SEMILLA | despachada=" + semillaDespachada + " sembrada=" + semillaSembrada
          + " (esperada " + esperada + ") enSistema=" + enSistema + " | FUGA=" + fuga
          + " | entregas=" + entregasSemilla + " | horas sin semilla=" + horasSinSemilla );]]></Body>
 				</Function>
@@ -6227,6 +6302,41 @@ return lluviaDiaria[ campaña ][ diaCampaña ];]]></Body>
 if ( inState( Creciendo ) ) return min( 1, gdd / gddMeta );
 if ( inState( Maduro ) || inState( Cosechado ) ) return 1;
 return 0;]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1799000000101</Id>
+					<Name><![CDATA[haSembradas]]></Name>
+					<X>1650</X><Y>-100</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[// hectareas sembradas acumuladas, para comparar corridas (experimento CompareRuns).
+// Sembrando: lotes terminados mas la fraccion del lote en curso. Terminada la siembra, todo el campo.
+double haLote = 104.4;   // 145 hileras de 9 m por 800 m (Main.auditarSemilla)
+if ( !inState( SinSembrar ) ) return cantidadLotes * haLote;
+double parcial = combine.enCampo ? min( 1.0, combine.XCompleted / field.getWidth() ) : 0.0;
+return ( lotesCompletados + parcial ) * haLote;]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1799000000102</Id>
+					<Name><![CDATA[haCosechadas]]></Name>
+					<X>1650</X><Y>-60</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[// hectareas cosechadas acumuladas, para comparar corridas (experimento CompareRuns).
+// 0 hasta la madurez; cosechando, lotes terminados mas la fraccion del lote en curso; al final, todo el campo.
+double haLote = 104.4;   // 145 hileras de 9 m por 800 m (Main.auditarSemilla)
+if ( inState( Cosechado ) ) return cantidadLotes * haLote;
+if ( !inState( Maduro ) ) return 0.0;
+double parcial = combine.enCampo ? min( 1.0, combine.XCompleted / field.getWidth() ) : 0.0;
+return ( lotesCompletados + parcial ) * haLote;]]></Body>
 				</Function>
 				<Function AccessType="default" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
@@ -6354,6 +6464,112 @@ for ( int k = 0; k < cantidadLotes; k++ ) {
 return s + ";" + c;]]></Body>
 				</Function>
 			</Functions>
+			<AnalysisData>
+    			<DataSet>
+					<Id>1799000000001</Id>
+					<Name><![CDATA[haSembradasDS]]></Name>
+					<X>2300</X><Y>-300</Y>
+					<Label><X>15</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<AutoUpdate>true</AutoUpdate>
+					<RecurrenceProperties>
+						<Id>1799000000011</Id>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1128135600000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[0]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</RecurrenceCode>
+					</RecurrenceProperties>
+					<FreezeXAxis>true</FreezeXAxis>
+					<VerticalAxisExpression><![CDATA[haSembradas()]]></VerticalAxisExpression>
+					<SamplesToKeep>400</SamplesToKeep>
+				</DataSet>
+    			<DataSet>
+					<Id>1799000000002</Id>
+					<Name><![CDATA[haCosechadasDS]]></Name>
+					<X>2300</X><Y>-260</Y>
+					<Label><X>15</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<AutoUpdate>true</AutoUpdate>
+					<RecurrenceProperties>
+						<Id>1799000000012</Id>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1128135600000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[0]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</RecurrenceCode>
+					</RecurrenceProperties>
+					<FreezeXAxis>true</FreezeXAxis>
+					<VerticalAxisExpression><![CDATA[haCosechadas()]]></VerticalAxisExpression>
+					<SamplesToKeep>400</SamplesToKeep>
+				</DataSet>
+    			<DataSet>
+					<Id>1799000000003</Id>
+					<Name><![CDATA[humedadDS]]></Name>
+					<X>2300</X><Y>-220</Y>
+					<Label><X>15</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<AutoUpdate>true</AutoUpdate>
+					<RecurrenceProperties>
+						<Id>1799000000013</Id>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1128135600000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[0]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</RecurrenceCode>
+					</RecurrenceProperties>
+					<FreezeXAxis>true</FreezeXAxis>
+					<VerticalAxisExpression><![CDATA[humedadSuperficie]]></VerticalAxisExpression>
+					<SamplesToKeep>400</SamplesToKeep>
+				</DataSet>
+    			<DataSet>
+					<Id>1799000000004</Id>
+					<Name><![CDATA[fallasDS]]></Name>
+					<X>2300</X><Y>-180</Y>
+					<Label><X>15</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<AutoUpdate>true</AutoUpdate>
+					<RecurrenceProperties>
+						<Id>1799000000014</Id>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1128135600000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[0]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[DAY]]></Unit>
+						</RecurrenceCode>
+					</RecurrenceProperties>
+					<FreezeXAxis>true</FreezeXAxis>
+					<VerticalAxisExpression><![CDATA[fallas]]></VerticalAxisExpression>
+					<SamplesToKeep>400</SamplesToKeep>
+				</DataSet>
+			</AnalysisData>
 
 			<EmbeddedObjects>
 				<EmbeddedObject>
@@ -8650,7 +8866,7 @@ cerrarEstado();
 estado = 3;
 actualizarNivel();
 main.viajesCamion++;
-traceln( "VIAJE " + (int)main.viajesCamion + " | dia " + time( DAY ) + " | carga " + nivel
+main.traza( "VIAJE " + (int)main.viajesCamion + " | dia " + time( DAY ) + " | carga " + nivel
          + " kg de " + Capacity + " (" + (int)( 100 * nivel / Capacity ) + "%)" );
 tasaActual = -UnloadingRate / second();
 tUltimo = time();
@@ -9847,6 +10063,15 @@ de Operaciones Agricolas]]></Text>
 					<ParameterName><![CDATA[replica]]></ParameterName>
 				</Parameter>
 				<Parameter>
+					<ParameterName><![CDATA[presentacionLenta]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[trazas]]></ParameterName>
+					<ParameterValue Class="CodeValue">
+						<Code><![CDATA[true]]></Code>
+					</ParameterValue>
+				</Parameter>
+				<Parameter>
 					<ParameterName><![CDATA[tren]]></ParameterName>
 				</Parameter>
 				<Parameter>
@@ -10894,6 +11119,12 @@ try {
 			<FreeformParamValue>	
 				<Id>1798000000002</Id>
 			</FreeformParamValue>
+			<FreeformParamValue>	
+				<Id>1801000000001</Id>
+			</FreeformParamValue>
+			<FreeformParamValue>	
+				<Id>1802000000001</Id>
+			</FreeformParamValue>
 			<RangeVariationParamValue>	
 				<Id>1169735952668</Id>
 				<Type>FIXED</Type>
@@ -11050,6 +11281,14 @@ try {
 					<Code><![CDATA[1]]></Code>
 				</Step>
 			</RangeVariationParamValue>
+			<RangeVariationParamValue>	
+				<Id>1801000000001</Id>
+				<Type>FIXED</Type>
+			</RangeVariationParamValue>
+			<RangeVariationParamValue>	
+				<Id>1802000000001</Id>
+				<Type>FIXED</Type>
+			</RangeVariationParamValue>
 			<ModelTimeProperties>
 				<StopOption><![CDATA[Stop at specified time]]></StopOption>
 				<InitialDate><![CDATA[1128135600000]]></InitialDate>	
@@ -11074,6 +11313,1314 @@ try {
 				<ExpressionForConfidenceComputation><![CDATA[0]]></ExpressionForConfidenceComputation>
 			</ReplicationsProperties>
 		</ParamVariationExperiment>	
+		<!--   =========   Compare Runs Experiment   ========  -->
+		<CompareRunsExperiment ActiveObjectClassId="1169735952575">
+			<Id>1800000000001</Id>
+			<Name><![CDATA[CompareRuns]]></Name>
+			<CommandLineArguments><![CDATA[]]></CommandLineArguments>
+			<MaximumMemory>2048</MaximumMemory>
+			<RandomNumberGenerationType>fixedSeed</RandomNumberGenerationType>
+			<CustomGeneratorCode>new Random()</CustomGeneratorCode>
+			<AfterSimulationRunCode><![CDATA[parametersOfRuns.add( new Object[] { (double) eCampaña, (double) eReplica, (double) eTren, (double) eLotes, (double) eTurnos } );
+int numberOfRuns = getEngine().getRunCount();
+Color color = spectrumColor( (numberOfRuns * 4) % 21, 21 );
+String nombre = "Run " + numberOfRuns + ": " + eLotes + " lotes, tren " + eTren + ", campaña " + eCampaña + ", replica " + eReplica;
+Plot[] graficos = { chart0, chart1, chart2, chart3 };
+DataSet[] series = { root.haSembradasDS, root.haCosechadasDS, root.humedadDS, root.fallasDS };
+for ( int i = 0; i < graficos.length; i++ ) {
+	int guarda = 0;
+	while ( graficos[ i ].getCount() >= parametersOfRuns.size() && graficos[ i ].getCount() > 0 && guarda++ < 50 ) {
+		graficos[ i ].remove( graficos[ i ].getCount() - 1 );
+	}
+	graficos[ i ].addDataSet( series[ i ], nombre, color, true, Chart.INTERPOLATION_LINEAR, 1, Chart.POINT_NONE );
+}
+]]></AfterSimulationRunCode>
+			<SeedValue>1</SeedValue>
+			<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
+			<VmArgs><![CDATA[]]></VmArgs>
+			<LoadRootFromSnapshot>false</LoadRootFromSnapshot>
+			<Variables>
+				<Variable Class="PlainVariable">
+					<Id>1800000000002</Id>
+					<Name><![CDATA[eCampaña]]></Name>
+					<X>-350</X><Y>100</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1800000000003</Id>
+					<Name><![CDATA[eReplica]]></Name>
+					<X>-350</X><Y>145</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[1]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1800000000004</Id>
+					<Name><![CDATA[eTren]]></Name>
+					<X>-350</X><Y>190</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[1]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1800000000005</Id>
+					<Name><![CDATA[eLotes]]></Name>
+					<X>-350</X><Y>235</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[12]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1800000000006</Id>
+					<Name><![CDATA[eTurnos]]></Name>
+					<X>-350</X><Y>280</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[1]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1802000000011</Id>
+					<Name><![CDATA[direccionSesion]]></Name>
+					<X>-350</X><Y>180</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Properties SaveInSnapshot="false" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[String]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[anunciarDireccion()]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="CollectionVariable">
+					<Id>1800000000007</Id>
+					<Name><![CDATA[parametersOfRuns]]></Name>
+					<X>-350</X><Y>60</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" AccessType="public" StaticVariable="false">
+						<CollectionClass><![CDATA[java.util.ArrayList]]></CollectionClass>
+						<ElementClass><![CDATA[Object[]]]></ElementClass>
+						<ValueElementClass><![CDATA[String]]></ValueElementClass>
+					</Properties>
+
+				</Variable>
+			</Variables>
+			<Functions>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1800000000008</Id>
+					<Name><![CDATA[loadParametersOfRun]]></Name>
+					<X>-350</X><Y>20</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[runNumber]]></Name>
+						<Type><![CDATA[int]]></Type>
+					</Parameter>
+					<Body><![CDATA[if ( runNumber < 0 || runNumber >= parametersOfRuns.size() ) {
+	traceln( "ERROR! No se pudieron cargar los parametros de la corrida " + runNumber );
+	return;
+}
+
+Object[] values = parametersOfRuns.get( runNumber );
+
+edit_eCampaña.setValue( (Double) values[0], true );
+edit_eReplica.setValue( (Double) values[1], true );
+edit_eTren.setValue( (Double) values[2], true );
+edit_eLotes.setValue( (Double) values[3], true );
+edit_eTurnos.setValue( (Double) values[4], true );
+]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[String]]></ReturnType>
+					<Id>1802000000010</Id>
+					<Name><![CDATA[anunciarDireccion]]></Name>
+					<X>-350</X><Y>60</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[// imprime la direccion web de la sesion apenas se lanza el experimento, antes de apretar Play.
+// Al construirse el experimento el servidor puede no estar escuchando todavia: se reintenta unos segundos en un hilo aparte.
+Thread hilo = new Thread( () -> {
+	for ( int intento = 0; intento < 40; intento++ ) {
+		try {
+			String pid = String.valueOf( ProcessHandle.current().pid() );
+			Process pr = new ProcessBuilder( "netstat", "-ano", "-p", "TCP" ).redirectErrorStream( true ).start();
+			java.io.BufferedReader br = new java.io.BufferedReader( new java.io.InputStreamReader( pr.getInputStream() ) );
+			String ln;
+			while ( ( ln = br.readLine() ) != null ) {
+				String[] c = ln.trim().split( "\\s+" );
+				if ( c.length >= 5 && c[ 3 ].equals( "LISTENING" ) && c[ 4 ].equals( pid ) ) {
+					traceln( "CompareRuns disponible en http://localhost:" + c[ 1 ].substring( c[ 1 ].lastIndexOf( ':' ) + 1 ) );
+					return;
+				}
+			}
+			Thread.sleep( 500 );
+		} catch ( Throwable e ) { return; }
+	}
+} );
+hilo.setDaemon( true );
+hilo.start();
+return "";]]></Body>
+				</Function>
+			</Functions>
+
+			<Presentation>
+				<Text>
+					<Id>1800000000009</Id>
+					<Name><![CDATA[titulo]]></Name>
+					<X>40</X><Y>30</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-12490271</Color>
+					<Text><![CDATA[Ventana de siembra : CompareRuns]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>24</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+				<Text>
+					<Id>1800000000010</Id>
+					<Name><![CDATA[txtNumeroDeCorridas]]></Name>
+					<X>50</X><Y>80</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-12171190</Color>
+					<Text><![CDATA[Corridas:]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>12</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+				<Text>
+					<Id>1800000000011</Id>
+					<Name><![CDATA[txtNumeroDeCorridasValor]]></Name>
+					<X>240</X><Y>80</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-12042869</Color>
+					<Text><![CDATA[?]]></Text>
+					<TextCode><![CDATA[format( getEngine().getRunCount() )]]></TextCode>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>12</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>RIGHT</Alignment>
+				</Text>
+				<Text>
+					<Id>1800000000012</Id>
+					<Name><![CDATA[txtParametros]]></Name>
+					<X>50</X><Y>110</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-12566464</Color>
+					<Text><![CDATA[Parametros]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>12</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+				<Text>
+					<Id>1800000000013</Id>
+					<Name><![CDATA[lbl_eCampaña]]></Name>
+					<X>50</X><Y>140</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-12171190</Color>
+					<Text><![CDATA[Campaña o año climático (0 a 19)]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>12</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+				<Text>
+					<Id>1800000000014</Id>
+					<Name><![CDATA[val_eCampaña]]></Name>
+					<X>240</X><Y>140</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-12042869</Color>
+					<Text><![CDATA[?]]></Text>
+					<TextCode><![CDATA[format( eCampaña )]]></TextCode>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>12</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>RIGHT</Alignment>
+				</Text>
+				<Control Type="Slider">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1800000000015</Id>
+					<Name><![CDATA[edit_eCampaña]]></Name>
+					<X>50</X><Y>160</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="190" Height="30">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<Enabled>true</Enabled>
+						<EnableExpression><![CDATA[getState() == IDLE]]></EnableExpression>
+						<ActionCode><![CDATA[eCampaña = (int) Math.round( value );]]></ActionCode>
+					</BasicProperties>
+					<ExtendedProperties>
+						<DefaultValueCode><![CDATA[eCampaña]]></DefaultValueCode>
+						<Orientation>HORIZONTAL</Orientation>
+						<MinValue><![CDATA[0]]></MinValue>
+						<MaxValue><![CDATA[19]]></MaxValue>
+						<Step><![CDATA[1]]></Step>
+						<LinkTo>false</LinkTo>
+					</ExtendedProperties>
+				</Control>
+				<Text>
+					<Id>1800000000016</Id>
+					<Name><![CDATA[min_eCampaña]]></Name>
+					<X>50</X><Y>192</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-12042869</Color>
+					<Text><![CDATA[0]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>10</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+				<Text>
+					<Id>1800000000017</Id>
+					<Name><![CDATA[max_eCampaña]]></Name>
+					<X>240</X><Y>192</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-12042869</Color>
+					<Text><![CDATA[19]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>10</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>RIGHT</Alignment>
+				</Text>
+				<Text>
+					<Id>1800000000018</Id>
+					<Name><![CDATA[lbl_eReplica]]></Name>
+					<X>50</X><Y>210</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-12171190</Color>
+					<Text><![CDATA[Semillas (1 a 5)]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>12</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+				<Text>
+					<Id>1800000000019</Id>
+					<Name><![CDATA[val_eReplica]]></Name>
+					<X>240</X><Y>210</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-12042869</Color>
+					<Text><![CDATA[?]]></Text>
+					<TextCode><![CDATA[format( eReplica )]]></TextCode>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>12</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>RIGHT</Alignment>
+				</Text>
+				<Control Type="Slider">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1800000000020</Id>
+					<Name><![CDATA[edit_eReplica]]></Name>
+					<X>50</X><Y>230</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="190" Height="30">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<Enabled>true</Enabled>
+						<EnableExpression><![CDATA[getState() == IDLE]]></EnableExpression>
+						<ActionCode><![CDATA[eReplica = (int) Math.round( value );]]></ActionCode>
+					</BasicProperties>
+					<ExtendedProperties>
+						<DefaultValueCode><![CDATA[eReplica]]></DefaultValueCode>
+						<Orientation>HORIZONTAL</Orientation>
+						<MinValue><![CDATA[1]]></MinValue>
+						<MaxValue><![CDATA[5]]></MaxValue>
+						<LinkTo>false</LinkTo>
+					</ExtendedProperties>
+				</Control>
+				<Text>
+					<Id>1800000000021</Id>
+					<Name><![CDATA[min_eReplica]]></Name>
+					<X>50</X><Y>262</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-12042869</Color>
+					<Text><![CDATA[1]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>10</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+				<Text>
+					<Id>1800000000022</Id>
+					<Name><![CDATA[max_eReplica]]></Name>
+					<X>240</X><Y>262</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-12042869</Color>
+					<Text><![CDATA[5]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>10</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>RIGHT</Alignment>
+				</Text>
+				<Text>
+					<Id>1800000000023</Id>
+					<Name><![CDATA[lbl_eTren]]></Name>
+					<X>50</X><Y>280</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-12171190</Color>
+					<Text><![CDATA[Maquina usada (1 o 2)]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>12</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+				<Text>
+					<Id>1800000000024</Id>
+					<Name><![CDATA[val_eTren]]></Name>
+					<X>240</X><Y>280</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-12042869</Color>
+					<Text><![CDATA[?]]></Text>
+					<TextCode><![CDATA[format( eTren )]]></TextCode>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>12</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>RIGHT</Alignment>
+				</Text>
+				<Control Type="Slider">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1800000000025</Id>
+					<Name><![CDATA[edit_eTren]]></Name>
+					<X>50</X><Y>300</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="190" Height="30">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<Enabled>true</Enabled>
+						<EnableExpression><![CDATA[getState() == IDLE]]></EnableExpression>
+						<ActionCode><![CDATA[eTren = (int) Math.round( value );]]></ActionCode>
+					</BasicProperties>
+					<ExtendedProperties>
+						<DefaultValueCode><![CDATA[eTren]]></DefaultValueCode>
+						<Orientation>HORIZONTAL</Orientation>
+						<MinValue><![CDATA[1]]></MinValue>
+						<MaxValue><![CDATA[2]]></MaxValue>
+						<Step><![CDATA[1]]></Step>
+						<LinkTo>false</LinkTo>
+					</ExtendedProperties>
+				</Control>
+				<Text>
+					<Id>1800000000026</Id>
+					<Name><![CDATA[min_eTren]]></Name>
+					<X>50</X><Y>332</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-12042869</Color>
+					<Text><![CDATA[1]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>10</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+				<Text>
+					<Id>1800000000027</Id>
+					<Name><![CDATA[max_eTren]]></Name>
+					<X>240</X><Y>332</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-12042869</Color>
+					<Text><![CDATA[2]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>10</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>RIGHT</Alignment>
+				</Text>
+				<Text>
+					<Id>1800000000028</Id>
+					<Name><![CDATA[lbl_eLotes]]></Name>
+					<X>50</X><Y>350</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-12171190</Color>
+					<Text><![CDATA[Cantidad de Lotes (9 a 12)]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>12</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+				<Text>
+					<Id>1800000000029</Id>
+					<Name><![CDATA[val_eLotes]]></Name>
+					<X>240</X><Y>350</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-12042869</Color>
+					<Text><![CDATA[?]]></Text>
+					<TextCode><![CDATA[format( eLotes )]]></TextCode>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>12</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>RIGHT</Alignment>
+				</Text>
+				<Control Type="Slider">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1800000000030</Id>
+					<Name><![CDATA[edit_eLotes]]></Name>
+					<X>50</X><Y>370</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="190" Height="30">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<Enabled>true</Enabled>
+						<EnableExpression><![CDATA[getState() == IDLE]]></EnableExpression>
+						<ActionCode><![CDATA[eLotes = (int) Math.round( value );]]></ActionCode>
+					</BasicProperties>
+					<ExtendedProperties>
+						<DefaultValueCode><![CDATA[eLotes]]></DefaultValueCode>
+						<Orientation>HORIZONTAL</Orientation>
+						<MinValue><![CDATA[9]]></MinValue>
+						<MaxValue><![CDATA[12]]></MaxValue>
+						<Step><![CDATA[1]]></Step>
+						<LinkTo>false</LinkTo>
+					</ExtendedProperties>
+				</Control>
+				<Text>
+					<Id>1800000000031</Id>
+					<Name><![CDATA[min_eLotes]]></Name>
+					<X>50</X><Y>402</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-12042869</Color>
+					<Text><![CDATA[9]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>10</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+				<Text>
+					<Id>1800000000032</Id>
+					<Name><![CDATA[max_eLotes]]></Name>
+					<X>240</X><Y>402</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-12042869</Color>
+					<Text><![CDATA[12]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>10</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>RIGHT</Alignment>
+				</Text>
+				<Text>
+					<Id>1800000000033</Id>
+					<Name><![CDATA[lbl_eTurnos]]></Name>
+					<X>50</X><Y>420</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-12171190</Color>
+					<Text><![CDATA[Turnos de Operarios / dia (1 a 3)]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>12</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+				<Text>
+					<Id>1800000000034</Id>
+					<Name><![CDATA[val_eTurnos]]></Name>
+					<X>240</X><Y>420</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-12042869</Color>
+					<Text><![CDATA[?]]></Text>
+					<TextCode><![CDATA[format( eTurnos )]]></TextCode>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>12</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>RIGHT</Alignment>
+				</Text>
+				<Control Type="Slider">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1800000000035</Id>
+					<Name><![CDATA[edit_eTurnos]]></Name>
+					<X>50</X><Y>440</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="190" Height="30">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<Enabled>true</Enabled>
+						<EnableExpression><![CDATA[getState() == IDLE]]></EnableExpression>
+						<ActionCode><![CDATA[eTurnos = (int) Math.round( value );]]></ActionCode>
+					</BasicProperties>
+					<ExtendedProperties>
+						<DefaultValueCode><![CDATA[eTurnos]]></DefaultValueCode>
+						<Orientation>HORIZONTAL</Orientation>
+						<MinValue><![CDATA[1]]></MinValue>
+						<MaxValue><![CDATA[3]]></MaxValue>
+						<Step><![CDATA[1]]></Step>
+						<LinkTo>false</LinkTo>
+					</ExtendedProperties>
+				</Control>
+				<Text>
+					<Id>1800000000036</Id>
+					<Name><![CDATA[min_eTurnos]]></Name>
+					<X>50</X><Y>472</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-12042869</Color>
+					<Text><![CDATA[1]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>10</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+				<Text>
+					<Id>1800000000037</Id>
+					<Name><![CDATA[max_eTurnos]]></Name>
+					<X>240</X><Y>472</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-12042869</Color>
+					<Text><![CDATA[3]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>10</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>RIGHT</Alignment>
+				</Text>
+				<Text>
+					<Id>1800000000038</Id>
+					<Name><![CDATA[tit_chart0]]></Name>
+					<X>320</X><Y>88</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-12566464</Color>
+					<Text><![CDATA[Hectareas sembradas acumuladas [ha]]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>12</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+    			<Plot>
+					<Id>1800000000039</Id>
+					<Name><![CDATA[chart0]]></Name>
+					<X>320</X><Y>110</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<AutoUpdate>false</AutoUpdate>
+					<RecurrenceProperties>
+						<Id>1800000000040</Id>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1128135600000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[0]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+						</RecurrenceCode>
+					</RecurrenceProperties>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Width>560</Width>
+					<Height>290</Height>
+					<BackgroundColor/>
+					<BorderColor/>
+					<OnSelectionChangeCode><![CDATA[if ( !programmatically ) {
+	if ( selectedIndices.length == 1 ) {
+		loadParametersOfRun( selectedIndices[0] );
+	}
+}
+]]></OnSelectionChangeCode>
+					<ChartArea>
+						<XOffset>30</XOffset>
+						<YOffset>20</YOffset>
+						<Width>500</Width>
+						<Height>210</Height>
+						<BackgroundColor>-1</BackgroundColor>
+						<BorderColor>-9868951</BorderColor>
+						<GridColor>-12566464</GridColor>
+					</ChartArea>
+					<Legend>
+						<Place>SOUTH</Place>
+						<TextColor>-16777216</TextColor>
+						<Size>40</Size>
+					</Legend>
+					<Labels>
+						<HorLabelsPosition>DEFAULT</HorLabelsPosition>
+						<VerLabelsPosition>DEFAULT</VerLabelsPosition>
+						<TextColor>-12566464</TextColor>
+					</Labels>
+					<ShowLegend>true</ShowLegend>
+					<VerScaleFromExpression><![CDATA[0]]></VerScaleFromExpression>
+					<VerScaleToExpression><![CDATA[1]]></VerScaleToExpression>
+					<VerScaleType>AUTO</VerScaleType>
+					<DrawLine>true</DrawLine>
+					<Interpolation>LINEAR</Interpolation>
+					<SamplesToKeep>100</SamplesToKeep>
+					<HorScaleFromExpression><![CDATA[0]]></HorScaleFromExpression>
+					<HorScaleToExpression><![CDATA[1]]></HorScaleToExpression>
+					<HorScaleType>AUTO</HorScaleType>
+    			</Plot>
+				<Text>
+					<Id>1800000000041</Id>
+					<Name><![CDATA[tit_chart1]]></Name>
+					<X>920</X><Y>88</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-12566464</Color>
+					<Text><![CDATA[Hectareas cosechadas acumuladas [ha]]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>12</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+    			<Plot>
+					<Id>1800000000042</Id>
+					<Name><![CDATA[chart1]]></Name>
+					<X>920</X><Y>110</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<AutoUpdate>false</AutoUpdate>
+					<RecurrenceProperties>
+						<Id>1800000000043</Id>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1128135600000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[0]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+						</RecurrenceCode>
+					</RecurrenceProperties>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Width>560</Width>
+					<Height>290</Height>
+					<BackgroundColor/>
+					<BorderColor/>
+					<OnSelectionChangeCode><![CDATA[if ( !programmatically ) {
+	if ( selectedIndices.length == 1 ) {
+		loadParametersOfRun( selectedIndices[0] );
+	}
+}
+]]></OnSelectionChangeCode>
+					<ChartArea>
+						<XOffset>30</XOffset>
+						<YOffset>20</YOffset>
+						<Width>500</Width>
+						<Height>210</Height>
+						<BackgroundColor>-1</BackgroundColor>
+						<BorderColor>-9868951</BorderColor>
+						<GridColor>-12566464</GridColor>
+					</ChartArea>
+					<Legend>
+						<Place>SOUTH</Place>
+						<TextColor>-16777216</TextColor>
+						<Size>40</Size>
+					</Legend>
+					<Labels>
+						<HorLabelsPosition>DEFAULT</HorLabelsPosition>
+						<VerLabelsPosition>DEFAULT</VerLabelsPosition>
+						<TextColor>-12566464</TextColor>
+					</Labels>
+					<ShowLegend>true</ShowLegend>
+					<VerScaleFromExpression><![CDATA[0]]></VerScaleFromExpression>
+					<VerScaleToExpression><![CDATA[1]]></VerScaleToExpression>
+					<VerScaleType>AUTO</VerScaleType>
+					<DrawLine>true</DrawLine>
+					<Interpolation>LINEAR</Interpolation>
+					<SamplesToKeep>100</SamplesToKeep>
+					<HorScaleFromExpression><![CDATA[0]]></HorScaleFromExpression>
+					<HorScaleToExpression><![CDATA[1]]></HorScaleToExpression>
+					<HorScaleType>AUTO</HorScaleType>
+    			</Plot>
+				<Text>
+					<Id>1800000000044</Id>
+					<Name><![CDATA[tit_chart2]]></Name>
+					<X>320</X><Y>428</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-12566464</Color>
+					<Text><![CDATA[Humedad de la capa superficial [mm]]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>12</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+    			<Plot>
+					<Id>1800000000045</Id>
+					<Name><![CDATA[chart2]]></Name>
+					<X>320</X><Y>450</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<AutoUpdate>false</AutoUpdate>
+					<RecurrenceProperties>
+						<Id>1800000000046</Id>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1128135600000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[0]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+						</RecurrenceCode>
+					</RecurrenceProperties>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Width>560</Width>
+					<Height>290</Height>
+					<BackgroundColor/>
+					<BorderColor/>
+					<OnSelectionChangeCode><![CDATA[if ( !programmatically ) {
+	if ( selectedIndices.length == 1 ) {
+		loadParametersOfRun( selectedIndices[0] );
+	}
+}
+]]></OnSelectionChangeCode>
+					<ChartArea>
+						<XOffset>30</XOffset>
+						<YOffset>20</YOffset>
+						<Width>500</Width>
+						<Height>210</Height>
+						<BackgroundColor>-1</BackgroundColor>
+						<BorderColor>-9868951</BorderColor>
+						<GridColor>-12566464</GridColor>
+					</ChartArea>
+					<Legend>
+						<Place>SOUTH</Place>
+						<TextColor>-16777216</TextColor>
+						<Size>40</Size>
+					</Legend>
+					<Labels>
+						<HorLabelsPosition>DEFAULT</HorLabelsPosition>
+						<VerLabelsPosition>DEFAULT</VerLabelsPosition>
+						<TextColor>-12566464</TextColor>
+					</Labels>
+					<ShowLegend>true</ShowLegend>
+					<VerScaleFromExpression><![CDATA[0]]></VerScaleFromExpression>
+					<VerScaleToExpression><![CDATA[1]]></VerScaleToExpression>
+					<VerScaleType>AUTO</VerScaleType>
+					<DrawLine>true</DrawLine>
+					<Interpolation>LINEAR</Interpolation>
+					<SamplesToKeep>100</SamplesToKeep>
+					<HorScaleFromExpression><![CDATA[0]]></HorScaleFromExpression>
+					<HorScaleToExpression><![CDATA[1]]></HorScaleToExpression>
+					<HorScaleType>AUTO</HorScaleType>
+    			</Plot>
+				<Text>
+					<Id>1800000000047</Id>
+					<Name><![CDATA[tit_chart3]]></Name>
+					<X>920</X><Y>428</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-12566464</Color>
+					<Text><![CDATA[Fallas acumuladas]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>12</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+    			<Plot>
+					<Id>1800000000048</Id>
+					<Name><![CDATA[chart3]]></Name>
+					<X>920</X><Y>450</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<AutoUpdate>false</AutoUpdate>
+					<RecurrenceProperties>
+						<Id>1800000000049</Id>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1128135600000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[0]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+						</RecurrenceCode>
+					</RecurrenceProperties>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Width>560</Width>
+					<Height>290</Height>
+					<BackgroundColor/>
+					<BorderColor/>
+					<OnSelectionChangeCode><![CDATA[if ( !programmatically ) {
+	if ( selectedIndices.length == 1 ) {
+		loadParametersOfRun( selectedIndices[0] );
+	}
+}
+]]></OnSelectionChangeCode>
+					<ChartArea>
+						<XOffset>30</XOffset>
+						<YOffset>20</YOffset>
+						<Width>500</Width>
+						<Height>210</Height>
+						<BackgroundColor>-1</BackgroundColor>
+						<BorderColor>-9868951</BorderColor>
+						<GridColor>-12566464</GridColor>
+					</ChartArea>
+					<Legend>
+						<Place>SOUTH</Place>
+						<TextColor>-16777216</TextColor>
+						<Size>40</Size>
+					</Legend>
+					<Labels>
+						<HorLabelsPosition>DEFAULT</HorLabelsPosition>
+						<VerLabelsPosition>DEFAULT</VerLabelsPosition>
+						<TextColor>-12566464</TextColor>
+					</Labels>
+					<ShowLegend>true</ShowLegend>
+					<VerScaleFromExpression><![CDATA[0]]></VerScaleFromExpression>
+					<VerScaleToExpression><![CDATA[1]]></VerScaleToExpression>
+					<VerScaleType>AUTO</VerScaleType>
+					<DrawLine>true</DrawLine>
+					<Interpolation>LINEAR</Interpolation>
+					<SamplesToKeep>100</SamplesToKeep>
+					<HorScaleFromExpression><![CDATA[0]]></HorScaleFromExpression>
+					<HorScaleToExpression><![CDATA[1]]></HorScaleToExpression>
+					<HorScaleType>AUTO</HorScaleType>
+    			</Plot>
+			</Presentation>
+
+			<Parameters>			
+				<Parameter>
+					<ParameterName><![CDATA[campaña]]></ParameterName>
+					<ParameterValue Class="CodeValue">
+						<Code><![CDATA[eCampaña]]></Code>
+					</ParameterValue>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[replica]]></ParameterName>
+					<ParameterValue Class="CodeValue">
+						<Code><![CDATA[eReplica]]></Code>
+					</ParameterValue>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[tren]]></ParameterName>
+					<ParameterValue Class="CodeValue">
+						<Code><![CDATA[eTren]]></Code>
+					</ParameterValue>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[cantidadLotes]]></ParameterName>
+					<ParameterValue Class="CodeValue">
+						<Code><![CDATA[eLotes]]></Code>
+					</ParameterValue>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[turnos]]></ParameterName>
+					<ParameterValue Class="CodeValue">
+						<Code><![CDATA[eTurnos]]></Code>
+					</ParameterValue>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[presentacionLenta]]></ParameterName>
+					<ParameterValue Class="CodeValue">
+						<Code><![CDATA[false]]></Code>
+					</ParameterValue>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[velocidadSiembra]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[velocidadCosecha]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[diaLimiteSiembra]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[densidadSiembra]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[mtbfHoras]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[semillaFallas]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[gddMinimo]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[gddMaximo]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[semillaMadurez]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[capacidadSemilla]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[umbralSemilla]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[HarvestDensity]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[Cultivo]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[diasMaduracionMin]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[diasMaduracionMax]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[diasMaduracionModa]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[capacidadSuperficie]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[umbralPiso]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[lluviaBloqueante]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[kc]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[tBase]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[gddObjetivo]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[terminarAlCerrarCampaña]]></ParameterName>
+					<ParameterValue Class="CodeValue">
+						<Code><![CDATA[false]]></Code>
+					</ParameterValue>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[horasSemanales]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[horaInicio]]></ParameterName>
+				</Parameter>
+				<Parameter>
+					<ParameterName><![CDATA[trazas]]></ParameterName>
+				</Parameter>
+			</Parameters>			
+			<PresentationProperties>
+				<EnableZoomAndPanning>true</EnableZoomAndPanning>
+				<EnableDeveloperPanel>true</EnableDeveloperPanel>
+				<ShowDeveloperPanelOnStart>false</ShowDeveloperPanelOnStart>
+				<Title><![CDATA[Ventana de siembra : CompareRuns]]></Title>	
+			</PresentationProperties>
+			<ModelTimeProperties>
+				<StopOption><![CDATA[Stop at specified time]]></StopOption>
+				<InitialDate><![CDATA[1128135600000]]></InitialDate>	
+				<InitialTime><![CDATA[0.0]]></InitialTime>	
+				<FinalDate><![CDATA[1159585200000]]></FinalDate>	
+				<FinalTime><![CDATA[52.0]]></FinalTime>	
+			</ModelTimeProperties>
+		</CompareRunsExperiment>
 	</Experiments>
 	<ModelResources>
 		<Resource>

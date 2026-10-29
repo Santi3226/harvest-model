@@ -1010,3 +1010,80 @@ La primera versión derivaba la semilla de la madurez solo de `replica`. Como no
 **Verificado el 29/10** en el IDE (8.9.10): `Simulation` con `campaña = 0`, `replica = 1` y `tren = 1` repite la corrida anterior al dígito (siembra el día 41 con 3 fallas, meta de 1.980, madurez el día 186, cosecha el día 255 con 1 falla y 74 viajes, `FUGA` 8,5e-9) y la fila `CSV |` es idéntica.
 
 Respaldo: `backups/2026-10-29-pre-semillas-campana.alp`.
+
+## 18. Comparación visual de corridas: experimento Compare Runs (29/10)
+
+El barrido (`ParametersVariation`) da la estadística; este experimento sirve para **explicar** una campaña concreta: base y alternativo en pantalla, con el mismo clima y las mismas semillas. Es una ilustración de un año y una réplica, no reemplaza al barrido. Se armó siguiendo el modelo Market (`Models/Market Model`), donde cada corrida termina y su serie de datos se agrega a un gráfico del experimento.
+
+### Qué se agregó al modelo
+
+| Elemento | Qué es |
+|---|---|
+| `haSembradasDS` | Hectáreas sembradas acumuladas (`Main.haSembradas()`: lotes terminados más la fracción del lote en curso) |
+| `haCosechadasDS` | Hectáreas cosechadas acumuladas (`Main.haCosechadas()`: 0 hasta la madurez) |
+| `humedadDS` | `humedadSuperficie` [mm] |
+| `fallasDS` | `fallas` acumuladas |
+
+Los cuatro son `DataSet` de `Main` con actualización automática cada día, igual que `usersDS` en Market. El eje x queda en la unidad de tiempo del modelo (semanas).
+
+### Cómo se usa: tres corridas con la misma campaña y réplica
+
+| Corrida | `cantidadLotes` | `tren` | Representa |
+|---|---|---|---|
+| Run 0 | 12 | 1 | Base |
+| Run 1 | 9 | 1 | Alternativo, tren 1 |
+| Run 2 | 9 | 2 | Alternativo, tren 2 |
+
+El alternativo termina cuando termina el más lento de los dos trenes. Las dos corridas del alternativo se ven como dos curvas, no como una suma.
+
+### El experimento CompareRuns
+
+El experimento **ya está creado en el modelo** (se generó por script copiando la estructura del Compare Runs de Market). Se abre en el proyecto como `CompareRuns`, junto a `Simulation` y `ParametersVariation`: cinco sliders (`campaña`, `replica`, `tren`, `cantidadLotes` y `turnos`) y cuatro gráficos, uno por serie. Lo que sigue describe cómo está armado, por si hay que rehacerlo a mano en el IDE.
+
+**Para usarlo:** correr `CompareRuns`, esperar a que termine la corrida, mover los sliders y volver a correr. Cada corrida agrega una curva a los cuatro gráficos.
+
+### Cómo está armado
+
+1. Recargar el modelo sin guardar. En `Main` tienen que aparecer los cuatro `DataSet`.
+2. `New → Experiment → Compare Runs`, como en Market. Variables del experimento (con valor por defecto, y un slider cada una): `campaña` (0 a 19), `replica` (1 a 5), `tren` (1 o 2), `cantidadLotes` (9 a 12) y `turnos` (1 a 3). En `Parameters` se pasan al modelo con el mismo nombre. `terminarAlCerrarCampaña` queda en `true` para que cada corrida termine al cerrar la cosecha.
+3. Tiempo: `Stop at specified time`, 52 semanas.
+4. En el lienzo del experimento, un gráfico por serie (`chart0` a `chart3`), como el de Market, sin datos propios.
+5. `After simulation run` (adaptado del de Market):
+
+```java
+parametersOfRuns.add( new Object[] { (double) campaña, (double) replica, (double) tren, (double) cantidadLotes, (double) turnos } );
+int n = getEngine().getRunCount();
+Color color = spectrumColor( (n * 4) % 21, 21 );
+String nombre = "Run " + n + ": " + cantidadLotes + " lotes, tren " + tren + ", campaña " + campaña + ", réplica " + replica;
+Plot[] graficos = { chart0, chart1, chart2, chart3 };
+DataSet[] series = { root.haSembradasDS, root.haCosechadasDS, root.humedadDS, root.fallasDS };
+for ( int i = 0; i < graficos.length; i++ ) {
+	while ( graficos[ i ].getCount() >= parametersOfRuns.size() ) graficos[ i ].remove( graficos[ i ].getCount() - 1 );
+	graficos[ i ].addDataSet( series[ i ], nombre, color, true, Chart.INTERPOLATION_LINEAR, 1, Chart.POINT_NONE );
+}
+```
+
+6. Cada slider lleva `ActionCode: variable = (int) value;` y `loadParametersOfRun()` repite el patrón de Market para volver a poner los sliders cuando se elige una serie.
+
+### Para verificar en la primera prueba
+
+- **Eje x en semanas:** la serie de hectáreas sembradas del Run 0 (campaña 0, réplica 1, 12 lotes) tiene que llegar a 1.253 ha cerca de la semana 6 (día 41) y las cosechadas, a 1.253 ha hacia la semana 36 (día 255). Si se prefieren días, se puede convertir con `DataSet.getX(i) * 7` al agregar la serie; no se verificó que `getX` exista en 8.9.10 (la clase base no resuelve con `javap` en este equipo).
+- **Velocidad:** el modelo llama a `setRealTimeScale` para ir despacio en la siembra. No se sabe si un Compare Runs la respeta o corre a máxima velocidad.
+- El modelo no se probó con los `DataSet` nuevos: se escribieron copiando el patrón de `usersDS` de Market, y hay que abrir el modelo y ver que no marque errores.
+
+### Ritmo de presentación (29/10)
+
+En las primeras corridas de `CompareRuns` la consola mostraba el mismo desarrollo que `Simulation`: siembra, crecimiento, cosecha y fin. Las llamadas a `setRealTimeScale` del statechart `cicloCultivo` (siembra 0,5 días/s, crecimiento 1 semana/s, cosecha 0,05 días/s) son para mirar `Simulation` despacio. `setRealTimeScale` solo guarda la escala, no activa el modo de tiempo real (se verificó con `javap -c`), pero un experimento que corra en tiempo real las respetaría y cada corrida duraría decenas de minutos.
+
+Por eso se agregó el parámetro **`presentacionLenta`** (`true` por defecto):
+
+- Las cuatro llamadas a `setRealTimeScale` son ahora `if ( presentacionLenta ) ...`.
+- Con `presentacionLenta = false` el arranque del modelo llama a `getEngine().setRealTimeMode( false )`: tiempo virtual, como en el barrido.
+- CompareRuns pasa además `terminarAlCerrarCampaña = false`: la corrida termina por el tiempo de parada (semana 52), como en Market, y no con `getEngine().finish()` llamado desde un evento del modelo. Sospecha (sin confirmar) de que esa llamada dejaba trabada la tercera corrida; si persiste, mirar la consola en busca de excepciones.
+- **Bloqueo de la barra tras la 2.ª corrida:** el volcado de hilos de Java mostró el proceso inactivo (sin deadlock) y desde un navegador aparte el experimento siguió corriendo; lo que se traba es la ventana embebida de AnyLogic (Chromium `--app`), que pierde una actualización de estado. Con tiempo virtual puro el motor emite cuadros más rápido de lo que el cliente los consume, por eso `presentacionLenta = false` usa ahora 10 semanas por segundo. Causa **no confirmada**; si la ventana embebida se traba igual, abrir la dirección que imprime la consola en un navegador normal.
+- **Consola silenciosa:** el parámetro `trazas` (por defecto `false`; `Simulation` lo pasa en `true`) habilita `Main.traza( texto )`, por donde salen todos los `traceln` de detalle y de resumen. CompareRuns y el barrido quedan sin ruido; los errores (`!!!`, `ERROR!`) siguen saliendo siempre. Apenas se lanza CompareRuns (antes de apretar Play) se imprime `CompareRuns disponible en http://localhost:<puerto>`: la variable del experimento `direccionSesion` se inicializa con `anunciarDireccion()`, que busca en un hilo aparte el puerto que escucha el propio proceso (`netstat`, solo Windows; reintenta hasta 20 s porque el servidor puede arrancar después del experimento). El puerto cambia en cada lanzamiento.
+- `CompareRuns` lo pasa en `false`. `Simulation` lo lleva en su lista con el valor por defecto (`true`), así que sigue igual. `ParametersVariation` no lo necesita: ya corre en tiempo virtual.
+
+Respaldo: `backups/2026-10-29-pre-ritmo-compare-runs.alp`.
+
+Respaldos: `backups/2026-10-29-pre-compare-runs.alp` (antes de las series de datos) y `backups/2026-10-29-pre-compare-runs-experimento.alp` (antes del experimento).
