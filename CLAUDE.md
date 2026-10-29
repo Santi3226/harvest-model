@@ -137,6 +137,8 @@ Explicación completa y decisiones: [docs/CAMBIOS-2026-10.md](docs/CAMBIOS-2026-
 
 **Causas de parada (paso 4, verificado 2026-10-27):** `Combine.causaActual()` imputa cada hora detenida a una causa con prioridad falla > sinSemilla > jornada > sinPiso > esperaCarro (más `traslado` al lote y `otra`, que tiene que dar 0). `registrarCausa()` cierra el tramo: llamarla donde pueda cambiar una causa (ya está en parar, reanudar, inicio y fin de lote, fin de reparación, salida de `Agotada` y el tick horario). Acumula en `Main.horasParada[]`. `Cart` y `Truck` miden horas por grupo de estados con `cerrarEstado()` en cada entry action; un estado nuevo tiene que llamarla y fijar `estado`. Detalle: sección 14 de [docs/CAMBIOS-2026-10.md](docs/CAMBIOS-2026-10.md).
 
+**Análisis del barrido:** `herramientas/analizar_barrido.py` (solo biblioteca estándar) lee `resultados.csv`, arma el sistema base y el alternativo, calcula el margen con los costos supuestos de su diccionario `PARAMETROS` y compara por pares con IC del 95%. `--demo` lo prueba con datos sintéticos; `--param nombre=valor` cambia un supuesto (sensibilidad). Detalle en la parte 4.5 de [docs/PLAN.md](docs/PLAN.md).
+
 **Clima:** `herramientas/clima_nasa.py` baja NASA POWER a `datos/` y reescribe las tres series String del `.alp` (365/366 días por campaña). `--verificar` solo compara.
 
 ## Trampas verificadas (cada una costó una corrida fallida)
