@@ -990,4 +990,6 @@ El barrido compara el sistema base (12 lotes, 1 tren) contra el alternativo C (1
 
 **Cómo verificarlo.** `Simulation` con los valores por defecto tiene que repetir la sección 16: siembra el día 41 con 3 fallas, meta de 1.980 grados-día, madurez el día 186 y cosecha el día 255. Con `tren = 2` cambian las fallas pero no la meta de madurez.
 
+**Verificado el 29/10** en el IDE (AnyLogic 8.9.10), `Simulation` con los valores por defecto: repite la corrida de la sección 16 al dígito. Siembra el día 41 con 3 fallas (6,69 h), meta de 1.980 grados-día, madurez el día 186, cosecha el día 255 con 1 falla y 74 viajes, `FUGA` de grano 8,5e-9 y de semilla 3,6e-11. La fila `CSV |` es idéntica a la anterior, y los parámetros nuevos aparecen en `Main` con sus etiquetas.
+
 Respaldo: `backups/2026-10-28-pre-sistema-alternativo.alp`.
