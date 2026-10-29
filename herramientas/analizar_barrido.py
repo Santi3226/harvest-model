@@ -437,8 +437,9 @@ def informe(pares, incompletos, avisos, P, esperadas, salida=None, sintetico=Fal
           f"{'OK' if abs(zm) < 1.96 else 'REVISAR'}")
     if len(semillas) < len(valores):
         print("AVISO: hay metas repetidas; las semillas de madurez no son todas distintas")
-    horas = sum(f["s_trabajando"] + f["c_trabajando"] for p in pares for f in [p["base"]] + p["alt"])
-    fallas = sum(f["s_fallas"] + f["c_fallas"] for p in pares for f in [p["base"]] + p["alt"])
+    # las pasadas sin terminar (cosecha que no cierra en el año) traen NA en sus contadores: cuentan como 0
+    horas = sum((f["s_trabajando"] or 0.0) + (f["c_trabajando"] or 0.0) for p in pares for f in [p["base"]] + p["alt"])
+    fallas = sum((f["s_fallas"] or 0.0) + (f["c_fallas"] or 0.0) for p in pares for f in [p["base"]] + p["alt"])
     esperadas_f = horas / P["mtbf_horas"]
     zf = (fallas - esperadas_f) / math.sqrt(esperadas_f) if esperadas_f > 0 else float("nan")
     print(f"fallas: {fallas:.0f} observadas contra {esperadas_f:.1f} esperadas (horas trabajadas / MTBF = "
