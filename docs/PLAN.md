@@ -47,7 +47,7 @@ Todos los pasos siguen el mismo protocolo, para que cualquiera del grupo pueda r
 | 6 | Crecimiento visual del cultivo | Ninguno | 3 | **Hecho** (tamaño el 27/10; color del campo según el cultivo el 28/10, verificado en el IDE) |
 | 7 | Barrido final de Monte Carlo | #1, #2, #3 | 1 a 5 | **En curso**: diseño decidido (parte 4.5) y modelo preparado, sin verificar; falta el script de análisis |
 | 8 | Sensibilidad de los parámetros inciertos | #1, #3 | 7 | Pendiente |
-| 9 | Informe, regenerar el HTML y limpiar el repo | Ninguno | Todos | Pendiente |
+| 9 | Regenerar el HTML y limpiar el repo | Ninguno | Todos | Pendiente |
 
 **Orden recomendado:** 1, 2, 3, 4, 5, 7, 8, 9. El paso 6 se hace si sobra tiempo. Los pasos 2 y 3 son independientes del 1 y se pueden intercambiar.
 
@@ -81,7 +81,7 @@ Entonces el desabastecimiento solo aparecería si la reposición fuera lenta. Se
 
 ### 4.3 Valores que hay que respaldar con una fuente
 
-Ninguno de estos valores se puede inventar. Cada uno queda marcado en el modelo y en el informe como supuesto hasta tener la fuente:
+Ninguno de estos valores se puede inventar. Cada uno queda marcado en el modelo y en los docs como supuesto hasta tener la fuente:
 
 | Valor | Hoy | Fuente a conseguir |
 |---|---|---|
@@ -165,7 +165,7 @@ La mejor elección para cada superficie es la combinación de **mayor margen que
 
 | Rubro | Cálculo | Referencia |
 |---|---|---|
-| Ingreso | Σ rinde del lote × 104,4 ha × precio | 41 qq/ha, menos 25 kg/ha por día de atraso después del 15/11; 331 US$/t |
+| Ingreso | Σ rinde del lote × 104,4 ha × precio | 41 qq/ha, menos 25 kg/ha por día de atraso después del 15/11; 331 US$/t. Un lote sin cosechar a fin de año conserva el 80% (supuesto) |
 | Arrendamiento | qq/ha × ha arrendadas × precio | ~15 qq/ha, solo en el alternativo (626 ha) |
 | Insumos por hectárea | US$/ha × superficie | ~350 US$/ha, supuesto |
 | Flete y comercialización | % del ingreso | ~10%, supuesto |
@@ -307,8 +307,8 @@ El sorteo actual tiene un rango de 60 días y la meta de 1.900 da un rango de 54
 
 1. **El modelo calcula lo físico y el script de análisis calcula la plata.** El modelo exporta al CSV el día en que termina cada lote, las horas trabajadas y detenidas por causa, las fallas y las horas del carro y del camión (sección 15 de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md)). El rinde, los costos y el margen los calcula `herramientas/analizar_barrido.py` (paso 7). Así la sensibilidad a precios y costos (paso 8) se recalcula sin volver a simular, y el cálculo de N máquinas (parte 4.1) usa los mismos datos.
 2. **Costo fijo por máquina y por campaña.** Si la maquinaria se pagara por hectárea, como cobran los contratistas, el costo sería el mismo con 1, 2 o 3 máquinas y no habría nada que comparar. Por eso cada máquina tiene un costo fijo por campaña, más un costo por hora trabajada (combustible) y por falla (reparación). Es una simplificación declarada.
-3. **Los valores sin fuente se asumen.** Se eligen para que el margen dé positivo en general, se declaran como supuestos en el informe y se varían en la sensibilidad.
-4. **La pérdida por cosechar tarde no entra en el margen base.** No hay un valor por día publicado. El CSV igual trae los días de cosecha de cada lote, así que se puede agregar en la sensibilidad.
+3. **Los valores sin fuente se asumen.** Se eligen para que el margen dé positivo en general, se declaran como supuestos en los docs y se varían en la sensibilidad.
+4. **La pérdida por cosechar tarde no entra en el margen base.** No hay un valor por día publicado. El CSV igual trae los días de cosecha de cada lote, así que se puede agregar en la sensibilidad. **Excepción (29/10):** los lotes sembrados cuya cosecha no cierra antes del 30/9 (el barrido para en el día 364) no se descartan: conservan una fracción del rinde, `rinde_sin_cosechar` = 0,80 (supuesto; la cosecha sigue en octubre). En el primer barrido pasa en 2 pares de la campaña 7 (2012/13, madurez entre los días 332 y 343), 14 lotes del base. Con 0 (sin ingreso) esos dos pares sumaban ~18.000 US$ a una diferencia de 180.000 y ensanchaban el IC; con 0,5, 0,8 y 1 la diferencia por clima es de 172.000, 167.000 y 163.000, y el alternativo gana en los tres.
 
 **Rinde.**
 - `rindeLote(k) = rindePotencial − perdidaDiaria × max(0, diaSiembraLote[k] − diaLimiteSiembra)`, por la superficie del lote (104,4 ha).
@@ -364,10 +364,9 @@ Se varía **un parámetro por vez** y los demás quedan en su valor base. Se mid
 
 También se afinan las celdas de transición que quedaron sin resolver.
 
-### Paso 9. Informe y cierre
+### Paso 9. Cierre del repositorio
 
 - Regenerar `docs/ventana-siembra.html`: hoy tiene una advertencia de desactualizado. Se actualizan las partes de statecharts, variables, experimentos y resultados.
-- Redactar el informe: modelo, supuestos con su fuente, resultados de los tres entregables y sensibilidad.
 - Limpiar el repositorio: dejar uno o dos respaldos en `backups/` (hoy son 6, 2,4 MB), borrar `docs/CONTEXTO-TRASPASO.md.bak` y actualizar el README, que hoy tiene una línea.
 
 ---
@@ -385,4 +384,4 @@ Se actualiza al terminar cada paso, con la fecha y el commit.
 - [x] Paso 6. Crecimiento visual (opcional). **Tamaño hecho el 2026-10-27** en `feat/lluvia-visual`: escala de `crop3D` según `gdd / gddObjetivo`. **Color hecho el 2026-10-28** en `feat/color-cultivo`: el campo pasa de suelo sin sembrar a verde claro, verde intenso, ámbar maduro y rastrojo (opción 1 de la sección 6 bis de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md)). En la misma rama: color del campo con lluvia y sin piso, indicador de suelo y gotas en 2D y 3D (sección 6 bis de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md)).
 - [ ] Paso 7. Barrido final. **2026-10-28:** se decidió comparar el sistema base contra el alternativo C (parte 4.5). En `feat/sistema-alternativo`: parámetros `replica` y `tren`, `ParametersVariation` de 400 corridas y CSV de 59 columnas (sección 17 de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md)). **Verificado el 2026-10-29:** los valores por defecto repiten la sección 16 al dígito. **2026-10-29:** `herramientas/analizar_barrido.py` escrito y probado con la fila real verificada (margen del base ~1,0 M US$) y con datos sintéticos (`--demo`). **Pendiente:** revisar los costos supuestos (parte 4.3), correr el barrido de 400 corridas y analizarlo.
 - [ ] Paso 8. Sensibilidad.
-- [ ] Paso 9. Informe y cierre.
+- [ ] Paso 9. Cierre del repositorio (el informe queda fuera del plan).
