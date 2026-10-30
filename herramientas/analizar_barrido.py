@@ -61,8 +61,9 @@ PARAMETROS = {
     # --- costos ---
     "insumos_usd_ha": 350.0,          # SUPUESTO: de los ~700 US$/ha de implantar soja (BCR), sin labores ni cosecha propias
     "arriendo_qq_ha": 15.0,           # Infocampo / BCR: ~15 qq/ha en el sudeste de Cordoba
-    "fijo_tren_usd": 60000.0,         # SUPUESTO: amortizacion, interes y seguro de maquina, carro y camion
-    "salario_mes_usd": 2300.0,        # SUPUESTO: CCT UATRE (1,89 M$ARS/mes en oct 2026) en dolares, con cargas
+    "fijo_tren_usd": 120000.0,        # SUPUESTO: poseer un tren (maquina, carro y camion): amortizacion, interes y seguro por campaña.
+                                      # Referencia: un contratista cobra ~165 a 190 US$/ha (FACMA 2026/27), ~205.000 a 240.000 US$ por 1.253 ha
+    "salario_mes_usd": 1200.0,        # SUPUESTO: CCT UATRE (ARS 1.892.406,17/mes en oct 2026) a ~1.575 ARS/US$ (bruto, sin cargas)
     "costo_hora_usd": 40.0,           # SUPUESTO: combustible (~25 l/h) y mantenimiento por hora trabajada
     "costo_falla_usd": 300.0,         # SUPUESTO: reparacion por falla
 }

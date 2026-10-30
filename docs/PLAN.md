@@ -45,7 +45,7 @@ Todos los pasos siguen el mismo protocolo, para que cualquiera del grupo pueda r
 | 4 | Causas de parada y contadores de carro y camión | #2 | 1, 2 | **Hecho** (verificado con 12 lotes) |
 | 5 | Rinde según la fecha de siembra y costos | #3 | 1, 3, 4 | **Salidas del modelo verificadas**. El cálculo de rinde y costos va en el paso 7 |
 | 6 | Crecimiento visual del cultivo | Ninguno | 3 | **Hecho** (tamaño el 27/10; color del campo según el cultivo el 28/10, verificado en el IDE) |
-| 7 | Barrido final de Monte Carlo | #1, #2, #3 | 1 a 5 | **En curso**: diseño decidido (parte 4.5) y modelo preparado, sin verificar; falta el script de análisis |
+| 7 | Barrido final de Monte Carlo | #1, #2, #3 | 1 a 5 | **Corrido y analizado el 30/10** (registro de avance). Falta explicar el exceso de fallas (z = +2,78) y confirmar costos con el grupo |
 | 8 | Sensibilidad de los parámetros inciertos | #1, #3 | 7 | Pendiente |
 | 9 | Regenerar el HTML y limpiar el repo | Ninguno | Todos | Pendiente |
 
@@ -169,7 +169,7 @@ La mejor elección para cada superficie es la combinación de **mayor margen que
 | Arrendamiento | qq/ha × ha arrendadas × precio | ~15 qq/ha, solo en el alternativo (626 ha) |
 | Insumos por hectárea | US$/ha × superficie | ~350 US$/ha, supuesto |
 | Flete y comercialización | % del ingreso | ~10%, supuesto |
-| Costo fijo por tren | US$/campaña × trenes | Supuesto a calibrar (amortización, interés y seguro de máquina, carro y camión) |
+| Costo fijo por tren | US$/campaña × trenes | Supuesto: 120.000 US$ por tren (poseer máquina, carro y camión: amortización, interés y seguro). Contra un contratista: ~165 a 190 US$/ha (FACMA 2026/27, siembra ~66 y cosecha ~97 a 130 US$/ha), es decir ~205.000 a 240.000 US$ por 1.253 ha. Se varía en la sensibilidad |
 | Operarios | salario anual × trenes | Escala UATRE en dólares |
 | Combustible y mantenimiento | horas trabajadas × US$/h | ~25 l/h de gasoil más mantenimiento, supuesto |
 | Reparaciones | fallas × US$/falla | Supuesto |
@@ -382,6 +382,26 @@ Se actualiza al terminar cada paso, con la fecha y el commit.
 - [x] Paso 4. Causas de parada y contadores. **Verificado el 2026-10-27** en `feat/causas-parada`: con los parámetros de la corrida C repite los mismos eventos, las causas suman `horasDetenida` (diferencia 1e-11) y `otra` da 0. En la cosecha, la jornada es el 91% de lo detenido y la espera del carro, 21 h. Detalle en la sección 14 de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md).
 - [ ] Paso 5. Rinde y costos. **Diseño decidido el 2026-10-28** (costo fijo por máquina y por campaña; el modelo calcula lo físico y el script la plata). **Salidas del modelo implementadas** en `feat/rinde-costos`: días por lote y CSV de 55 columnas en UTF-8. **Verificado el 2026-10-28**: la fila es correcta y la siembra repite la corrida C. La cosecha cierra el día 251 por una falla más, y se asume que es por el cambio a AnyLogic 8.9.10. Todo el barrido tiene que correrse con una sola versión. Detalle en la sección 15 de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md).
 - [x] Paso 6. Crecimiento visual (opcional). **Tamaño hecho el 2026-10-27** en `feat/lluvia-visual`: escala de `crop3D` según `gdd / gddObjetivo`. **Color hecho el 2026-10-28** en `feat/color-cultivo`: el campo pasa de suelo sin sembrar a verde claro, verde intenso, ámbar maduro y rastrojo (opción 1 de la sección 6 bis de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md)). En la misma rama: color del campo con lluvia y sin piso, indicador de suelo y gotas en 2D y 3D (sección 6 bis de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md)).
-- [ ] Paso 7. Barrido final. **2026-10-28:** se decidió comparar el sistema base contra el alternativo C (parte 4.5). En `feat/sistema-alternativo`: parámetros `replica` y `tren`, `ParametersVariation` de 400 corridas y CSV de 59 columnas (sección 17 de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md)). **Verificado el 2026-10-29:** los valores por defecto repiten la sección 16 al dígito. **2026-10-29:** `herramientas/analizar_barrido.py` escrito y probado con la fila real verificada (margen del base ~1,0 M US$) y con datos sintéticos (`--demo`). **Pendiente:** revisar los costos supuestos (parte 4.3), correr el barrido de 400 corridas y analizarlo.
-- [ ] Paso 8. Sensibilidad.
+- [ ] Paso 7. Barrido final. **2026-10-28:** se decidió comparar el sistema base contra el alternativo C (parte 4.5). En `feat/sistema-alternativo`: parámetros `replica` y `tren`, `ParametersVariation` de 400 corridas y CSV de 59 columnas (sección 17 de [CAMBIOS-2026-10.md](CAMBIOS-2026-10.md)). **Verificado el 2026-10-29:** los valores por defecto repiten la sección 16 al dígito. **2026-10-29:** `herramientas/analizar_barrido.py` escrito y probado con la fila real verificada (margen del base ~1,0 M US$) y con datos sintéticos (`--demo`). **Barrido de 400 corridas analizado el 2026-10-30** con fijo por tren de 120.000 US$ y operario de 1.200 US$/mes: 100 pares completos y semillas comunes OK. Margen por campaña: base 940.130, alternativo 1.049.294 US$. Diferencia 109.164 US$, IC 95% por clima [100.121 ; 118.207] (no incluye el 0): conviene el alternativo en margen total, aunque por hectárea pierde (750 contra 558 US$/ha). Siembra a tiempo: base 45%, alternativo 95% (McNemar p < 0,001); el base no cumple el 90% mínimo. 14 lotes sin cosechar en el año. Validación: `gddMeta` OK (media 1.911,5, z = +1,41); **fallas REVISAR** (1.218 observadas contra 1.124,8 esperadas, z = +2,78, +8%). Barrido repetido a las 15:01 del mismo día, ya sin los tres parámetros `diasMaduracion*`: salida idéntica al dígito (margen 109.164 US$, 1.218 fallas), así que la limpieza no cambió el modelo. **Pendiente:** entender el exceso de fallas y confirmar los costos supuestos (parte 4.3) con el grupo.
+- [ ] Paso 8. Sensibilidad. **Parte económica hecha el 2026-10-30**, recalculando el barrido de 400 corridas con `--param` (sin simular). Diferencia de margen alternativo − base (por clima, base 109.164 US$, IC [100.121 ; 118.207]), un parámetro por vez:
+
+  | Parámetro | Valor | Diferencia (US$) | IC 95% por clima | Conviene |
+  |---|---|---|---|---|
+  | `fijo_tren_usd` | 60.000 | 169.164 | [160.121 ; 178.207] | alternativo |
+  | | 180.000 | 49.164 | [40.121 ; 58.207] | alternativo |
+  | | **229.000** | **164** | [−8.879 ; 9.207] | **empate** |
+  | | 300.000 | −70.836 | [−79.879 ; −61.793] | base |
+  | `precio_usd_t` | 250 | −3.696 | [−10.403 ; 3.010] | empate |
+  | | 400 | 205.304 | [194.271 ; 216.338] | alternativo |
+  | `arriendo_qq_ha` | 10 | 212.833 | [203.790 ; 221.876] | alternativo |
+  | | 20 | 5.495 | [−3.548 ; 14.538] | empate |
+  | `insumos_usd_ha` | 250 | 171.804 | [162.761 ; 180.847] | alternativo |
+  | | 450 | 46.524 | [37.481 ; 55.567] | alternativo |
+  | `perdida_kg_ha_dia` | 15 | 107.743 | [99.557 ; 115.929] | alternativo |
+  | | 36 | 110.728 | [100.713 ; 120.742] | alternativo |
+  | `rinde_sin_cosechar` | 0 | 122.888 | [85.213 ; 160.562] | alternativo |
+  | | 1 | 105.733 | [103.451 ; 108.015] | alternativo |
+  | `salario_mes_usd` | 2.300 | 106.560 | [97.593 ; 115.527] | alternativo |
+
+  **Lectura.** El alternativo gana mientras el precio sea mayor a ~250 US$/t, el arriendo menor a ~20 qq/ha y el fijo por tren menor a ~229.000 US$. La pérdida por siembra tardía, el rinde sin cosechar y el salario casi no mueven el resultado: la ventaja viene sobre todo de sembrar 626 ha más, no de terminar antes. Por hectárea el base gana en todos los casos. **Falta** la sensibilidad de los parámetros del modelo (`umbralPiso`, `mtbfHoras`, `velocidadSiembra`, `gddObjetivo`), que exige correr de nuevo el barrido en el IDE.
 - [ ] Paso 9. Cierre del repositorio (el informe queda fuera del plan).

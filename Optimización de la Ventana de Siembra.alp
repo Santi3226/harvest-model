@@ -5254,7 +5254,7 @@ for (int i = 0; i < n; i++) {
 						<ParameterEditor>
 							<Id>1169735939976</Id>
 							<Name><![CDATA[null]]></Name>
-							<Label><![CDATA[Harvest density]]></Label>
+							<Label><![CDATA[Densidad de cosecha (kg/m2)]]></Label>
 							<EditorContolType>TEXT_BOX</EditorContolType>
 							<MinSliderValue><![CDATA[0]]></MinSliderValue>
 							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
@@ -5280,85 +5280,7 @@ for (int i = 0; i < n; i++) {
 						<ParameterEditor>
 							<Id>1785872570967</Id>
 							<Name><![CDATA[null]]></Name>
-							<Label><![CDATA[Harvest density]]></Label>
-							<EditorContolType>TEXT_BOX</EditorContolType>
-							<MinSliderValue><![CDATA[0]]></MinSliderValue>
-							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
-							<DelimeterType>NO_DELIMETER</DelimeterType>
-						</ParameterEditor>
-					</Properties>                 
-				</Variable>
-				<Variable Class="Parameter">
-					<Id>1785872635566</Id>
-					<Name><![CDATA[diasMaduracionMin]]></Name>
-					<X>1200</X><Y>-880</Y>
-					<Label><X>20</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
-						<Type><![CDATA[double]]></Type>
-						<UnitType><![CDATA[NONE]]></UnitType>
-						<SdArray>false</SdArray>
-						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[90]]></Code>
-						</DefaultValue>
-						<ParameterEditor>
-							<Id>1785872635564</Id>
-							<Name><![CDATA[null]]></Name>
-							<Label><![CDATA[Harvest density]]></Label>
-							<EditorContolType>TEXT_BOX</EditorContolType>
-							<MinSliderValue><![CDATA[0]]></MinSliderValue>
-							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
-							<DelimeterType>NO_DELIMETER</DelimeterType>
-						</ParameterEditor>
-					</Properties>                 
-				</Variable>
-				<Variable Class="Parameter">
-					<Id>1785872675515</Id>
-					<Name><![CDATA[diasMaduracionMax]]></Name>
-					<X>1200</X><Y>-860</Y>
-					<Label><X>20</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
-						<Type><![CDATA[double]]></Type>
-						<UnitType><![CDATA[NONE]]></UnitType>
-						<SdArray>false</SdArray>
-						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[150]]></Code>
-						</DefaultValue>
-						<ParameterEditor>
-							<Id>1785872675513</Id>
-							<Name><![CDATA[null]]></Name>
-							<Label><![CDATA[Harvest density]]></Label>
-							<EditorContolType>TEXT_BOX</EditorContolType>
-							<MinSliderValue><![CDATA[0]]></MinSliderValue>
-							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
-							<DelimeterType>NO_DELIMETER</DelimeterType>
-						</ParameterEditor>
-					</Properties>                 
-				</Variable>
-				<Variable Class="Parameter">
-					<Id>1785872691556</Id>
-					<Name><![CDATA[diasMaduracionModa]]></Name>
-					<X>1200</X><Y>-840</Y>
-					<Label><X>20</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>false</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
-						<Type><![CDATA[double]]></Type>
-						<UnitType><![CDATA[NONE]]></UnitType>
-						<SdArray>false</SdArray>
-						<DefaultValue Class="CodeValue">
-							<Code><![CDATA[120]]></Code>
-						</DefaultValue>
-						<ParameterEditor>
-							<Id>1785872691554</Id>
-							<Name><![CDATA[null]]></Name>
-							<Label><![CDATA[Harvest density]]></Label>
+							<Label><![CDATA[Cultivo]]></Label>
 							<EditorContolType>TEXT_BOX</EditorContolType>
 							<MinSliderValue><![CDATA[0]]></MinSliderValue>
 							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
@@ -5759,7 +5681,6 @@ if ( presentacionLenta ) getEngine().setRealTimeScale( 0.5 * day() );]]></EntryA
 					<Properties Width="100" Height="30">
 						<EntryAction><![CDATA[// la madurez depende del clima de la campaña: el tick diario suma grados-dia
 // mientras se este en este estado y la salida es la condicion gdd >= gddMeta
-// (diasMaduracionMin/Max/Moda quedan obsoletos: eran el sorteo triangular de antes)
 gdd = 0;
 tInicioCrecimiento = time();
 // meta de la corrida: triangular( minimo, maximo, moda ) con generador propio, un solo sorteo.
@@ -9985,15 +9906,6 @@ de Operaciones Agricolas]]></Text>
 					<ParameterName><![CDATA[Cultivo]]></ParameterName>
 				</Parameter>
 				<Parameter>
-					<ParameterName><![CDATA[diasMaduracionMin]]></ParameterName>
-				</Parameter>
-				<Parameter>
-					<ParameterName><![CDATA[diasMaduracionMax]]></ParameterName>
-				</Parameter>
-				<Parameter>
-					<ParameterName><![CDATA[diasMaduracionModa]]></ParameterName>
-				</Parameter>
-				<Parameter>
 					<ParameterName><![CDATA[campaña]]></ParameterName>
 				</Parameter>
 				<Parameter>
@@ -10267,7 +10179,7 @@ try {
 					<Z>0</Z>
 					<Rotation>0.0</Rotation>
 					<Color>-12171190</Color>
-					<Text><![CDATA[Harvest density]]></Text>
+					<Text><![CDATA[Densidad de cosecha (kg/m2)]]></Text>
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>12</Size>
@@ -10333,7 +10245,7 @@ try {
 					<Z>0</Z>
 					<Rotation>0.0</Rotation>
 					<Color>-12171190</Color>
-					<Text><![CDATA[Harvest density]]></Text>
+					<Text><![CDATA[Cultivo]]></Text>
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>12</Size>
@@ -10364,50 +10276,6 @@ try {
 					</Font>
 					<Alignment>RIGHT</Alignment>
 				</Text>
-				<Text>
-					<Id>1786475899849</Id>
-					<Name><![CDATA[text8]]></Name>
-					<X>50</X><Y>210</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<Rotation>0.0</Rotation>
-					<Color>-12171190</Color>
-					<Text><![CDATA[Harvest density]]></Text>
-					<Font>
-						<Name>SansSerif</Name>
-						<Size>12</Size>
-						<Style>0</Style>
-					</Font>
-					<Alignment>LEFT</Alignment>
-				</Text>
-				<Text>
-					<Id>1786475899850</Id>
-					<Name><![CDATA[text9]]></Name>
-					<X>240</X><Y>210</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<VisibleCode><![CDATA[getCurrentIteration() > 0]]></VisibleCode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<Rotation>0.0</Rotation>
-					<Color>-12042869</Color>
-					<Text><![CDATA[?]]></Text>
-					<TextCode><![CDATA[format( diasMaduracionMin )]]></TextCode>
-					<Font>
-						<Name>SansSerif</Name>
-						<Size>12</Size>
-						<Style>0</Style>
-					</Font>
-					<Alignment>RIGHT</Alignment>
-				</Text>
 				<Rectangle>
 					<Id>1786475899851</Id>
 					<Name><![CDATA[rectangle1]]></Name>
@@ -10430,94 +10298,6 @@ try {
 					<FillColor>-657931</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle>
-				<Text>
-					<Id>1786475899852</Id>
-					<Name><![CDATA[text10]]></Name>
-					<X>50</X><Y>240</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<Rotation>0.0</Rotation>
-					<Color>-12171190</Color>
-					<Text><![CDATA[Harvest density]]></Text>
-					<Font>
-						<Name>SansSerif</Name>
-						<Size>12</Size>
-						<Style>0</Style>
-					</Font>
-					<Alignment>LEFT</Alignment>
-				</Text>
-				<Text>
-					<Id>1786475899853</Id>
-					<Name><![CDATA[text11]]></Name>
-					<X>240</X><Y>240</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<VisibleCode><![CDATA[getCurrentIteration() > 0]]></VisibleCode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<Rotation>0.0</Rotation>
-					<Color>-12042869</Color>
-					<Text><![CDATA[?]]></Text>
-					<TextCode><![CDATA[format( diasMaduracionMax )]]></TextCode>
-					<Font>
-						<Name>SansSerif</Name>
-						<Size>12</Size>
-						<Style>0</Style>
-					</Font>
-					<Alignment>RIGHT</Alignment>
-				</Text>
-				<Text>
-					<Id>1786475899854</Id>
-					<Name><![CDATA[text12]]></Name>
-					<X>50</X><Y>270</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<Rotation>0.0</Rotation>
-					<Color>-12171190</Color>
-					<Text><![CDATA[Harvest density]]></Text>
-					<Font>
-						<Name>SansSerif</Name>
-						<Size>12</Size>
-						<Style>0</Style>
-					</Font>
-					<Alignment>LEFT</Alignment>
-				</Text>
-				<Text>
-					<Id>1786475899855</Id>
-					<Name><![CDATA[text13]]></Name>
-					<X>240</X><Y>270</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<VisibleCode><![CDATA[getCurrentIteration() > 0]]></VisibleCode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<Rotation>0.0</Rotation>
-					<Color>-12042869</Color>
-					<Text><![CDATA[?]]></Text>
-					<TextCode><![CDATA[format( diasMaduracionModa )]]></TextCode>
-					<Font>
-						<Name>SansSerif</Name>
-						<Size>12</Size>
-						<Style>0</Style>
-					</Font>
-					<Alignment>RIGHT</Alignment>
-				</Text>
 				<Rectangle>
 					<Id>1786475899856</Id>
 					<Name><![CDATA[rectangle2]]></Name>
@@ -10543,7 +10323,7 @@ try {
 				<Text>
 					<Id>1786475899857</Id>
 					<Name><![CDATA[text14]]></Name>
-					<X>50</X><Y>300</Y>
+					<X>50</X><Y>210</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -10564,7 +10344,7 @@ try {
 				<Text>
 					<Id>1786475899858</Id>
 					<Name><![CDATA[text15]]></Name>
-					<X>240</X><Y>300</Y>
+					<X>240</X><Y>210</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -10587,7 +10367,7 @@ try {
 				<Text>
 					<Id>1786475899859</Id>
 					<Name><![CDATA[text16]]></Name>
-					<X>50</X><Y>330</Y>
+					<X>50</X><Y>240</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -10608,7 +10388,7 @@ try {
 				<Text>
 					<Id>1786475899860</Id>
 					<Name><![CDATA[text17]]></Name>
-					<X>240</X><Y>330</Y>
+					<X>240</X><Y>240</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -10653,7 +10433,7 @@ try {
 				<Text>
 					<Id>1786475899862</Id>
 					<Name><![CDATA[text18]]></Name>
-					<X>50</X><Y>360</Y>
+					<X>50</X><Y>270</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -10674,7 +10454,7 @@ try {
 				<Text>
 					<Id>1786475899863</Id>
 					<Name><![CDATA[text19]]></Name>
-					<X>240</X><Y>360</Y>
+					<X>240</X><Y>270</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -10697,7 +10477,7 @@ try {
 				<Text>
 					<Id>1786475899864</Id>
 					<Name><![CDATA[text20]]></Name>
-					<X>50</X><Y>390</Y>
+					<X>50</X><Y>300</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -10718,7 +10498,7 @@ try {
 				<Text>
 					<Id>1786475899865</Id>
 					<Name><![CDATA[text21]]></Name>
-					<X>240</X><Y>390</Y>
+					<X>240</X><Y>300</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -10763,7 +10543,7 @@ try {
 				<Text>
 					<Id>1786475899867</Id>
 					<Name><![CDATA[text22]]></Name>
-					<X>50</X><Y>420</Y>
+					<X>50</X><Y>330</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -10784,7 +10564,7 @@ try {
 				<Text>
 					<Id>1786475899868</Id>
 					<Name><![CDATA[text23]]></Name>
-					<X>240</X><Y>420</Y>
+					<X>240</X><Y>330</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -10807,7 +10587,7 @@ try {
 				<Text>
 					<Id>1786475899869</Id>
 					<Name><![CDATA[text24]]></Name>
-					<X>50</X><Y>450</Y>
+					<X>50</X><Y>360</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -10828,7 +10608,7 @@ try {
 				<Text>
 					<Id>1786475899870</Id>
 					<Name><![CDATA[text25]]></Name>
-					<X>240</X><Y>450</Y>
+					<X>240</X><Y>360</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -10848,32 +10628,10 @@ try {
 					</Font>
 					<Alignment>RIGHT</Alignment>
 				</Text>
-				<Rectangle>
-					<Id>1786475899871</Id>
-					<Name><![CDATA[rectangle5]]></Name>
-					<X>40</X><Y>470</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<ZHeight>10</ZHeight>
-					<LineWidth>1</LineWidth>
-					<LineColor/>
-					<LineMaterial>null</LineMaterial>
-					<LineStyle>SOLID</LineStyle>
-					<Width>210</Width>
-					<Height>30</Height>
-					<Rotation>0.0</Rotation>
-					<FillColor>-657931</FillColor>
-					<FillMaterial>null</FillMaterial>
-				</Rectangle>
 				<Text>
 					<Id>1786475899872</Id>
 					<Name><![CDATA[text26]]></Name>
-					<X>50</X><Y>480</Y>
+					<X>50</X><Y>390</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -10894,7 +10652,7 @@ try {
 				<Text>
 					<Id>1786475899873</Id>
 					<Name><![CDATA[text27]]></Name>
-					<X>240</X><Y>480</Y>
+					<X>240</X><Y>390</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -10917,7 +10675,7 @@ try {
 				<Text>
 					<Id>1786475899874</Id>
 					<Name><![CDATA[text28]]></Name>
-					<X>50</X><Y>510</Y>
+					<X>50</X><Y>420</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -10938,7 +10696,7 @@ try {
 				<Text>
 					<Id>1786475899875</Id>
 					<Name><![CDATA[text29]]></Name>
-					<X>240</X><Y>510</Y>
+					<X>240</X><Y>420</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -10958,32 +10716,10 @@ try {
 					</Font>
 					<Alignment>RIGHT</Alignment>
 				</Text>
-				<Rectangle>
-					<Id>1786475899876</Id>
-					<Name><![CDATA[rectangle6]]></Name>
-					<X>40</X><Y>530</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<ZHeight>10</ZHeight>
-					<LineWidth>1</LineWidth>
-					<LineColor/>
-					<LineMaterial>null</LineMaterial>
-					<LineStyle>SOLID</LineStyle>
-					<Width>210</Width>
-					<Height>30</Height>
-					<Rotation>0.0</Rotation>
-					<FillColor>-657931</FillColor>
-					<FillMaterial>null</FillMaterial>
-				</Rectangle>
 				<Text>
 					<Id>1786475899877</Id>
 					<Name><![CDATA[text30]]></Name>
-					<X>50</X><Y>540</Y>
+					<X>50</X><Y>450</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -11004,7 +10740,7 @@ try {
 				<Text>
 					<Id>1786475899878</Id>
 					<Name><![CDATA[text31]]></Name>
-					<X>240</X><Y>540</Y>
+					<X>240</X><Y>450</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -12563,15 +12299,6 @@ return "";]]></Body>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[Cultivo]]></ParameterName>
-				</Parameter>
-				<Parameter>
-					<ParameterName><![CDATA[diasMaduracionMin]]></ParameterName>
-				</Parameter>
-				<Parameter>
-					<ParameterName><![CDATA[diasMaduracionMax]]></ParameterName>
-				</Parameter>
-				<Parameter>
-					<ParameterName><![CDATA[diasMaduracionModa]]></ParameterName>
 				</Parameter>
 				<Parameter>
 					<ParameterName><![CDATA[capacidadSuperficie]]></ParameterName>

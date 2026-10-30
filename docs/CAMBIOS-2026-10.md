@@ -713,7 +713,7 @@ Este cambio es el paso 3 de [PLAN.md](PLAN.md). Antes, el período de crecimient
 
 El tick diario ya sumaba `max(0, tmedia − tBase)` a `gdd` mientras `Creciendo` estaba activo, y ya llamaba a `cicloCultivo.onChange()` al final. Por eso la condición se evalúa una vez por día, en el mismo tick que suma los grados-día. El día de madurez es el primer día en que el acumulado llega a la meta.
 
-`diasHastaMadurez` deja de ser un sorteo y pasa a ser una salida: el largo del ciclo medido. Los parámetros `diasMaduracionMin`, `diasMaduracionMax` y `diasMaduracionModa` quedan sin uso. No se borran porque aparecen en la pantalla del experimento `Simulation` y en las listas de los dos experimentos. Se borran en la limpieza del paso 9.
+`diasHastaMadurez` deja de ser un sorteo y pasa a ser una salida: el largo del ciclo medido. Los parámetros `diasMaduracionMin`, `diasMaduracionMax` y `diasMaduracionModa` quedaron sin uso y se borraron el 2026-10-30: de `Main`, de las listas de parámetros de los dos experimentos y del panel de `ParametersVariation` (las filas de abajo subieron 90 px).
 
 El sorteo eliminado era el único del generador del modelo antes de la cosecha. Con fallas apagadas, la madurez ahora depende **solo** del clima y del día de cierre de la siembra.
 
