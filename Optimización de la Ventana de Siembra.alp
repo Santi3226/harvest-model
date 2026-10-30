@@ -10443,7 +10443,7 @@ try {
 					<Z>0</Z>
 					<Rotation>0.0</Rotation>
 					<Color>-12171190</Color>
-					<Text><![CDATA[Agua de la capa superficial (mm)]]></Text>
+					<Text><![CDATA[Agua de la superficie (mm)]]></Text>
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>12</Size>
@@ -10487,7 +10487,7 @@ try {
 					<Z>0</Z>
 					<Rotation>0.0</Rotation>
 					<Color>-12171190</Color>
-					<Text><![CDATA[Umbral de humedad sin piso (mm)]]></Text>
+					<Text><![CDATA[Umbral de humedad para piso]]></Text>
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>12</Size>
@@ -10553,7 +10553,7 @@ try {
 					<Z>0</Z>
 					<Rotation>0.0</Rotation>
 					<Color>-12171190</Color>
-					<Text><![CDATA[Lluvia que impide trabajar (mm)]]></Text>
+					<Text><![CDATA[Lluvia que impide trabajar]]></Text>
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>12</Size>
@@ -10597,7 +10597,7 @@ try {
 					<Z>0</Z>
 					<Rotation>0.0</Rotation>
 					<Color>-12171190</Color>
-					<Text><![CDATA[Coeficiente de cultivo (ETc = kc * ET0)]]></Text>
+					<Text><![CDATA[Coeficiente de cultivo]]></Text>
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>12</Size>
@@ -10641,7 +10641,7 @@ try {
 					<Z>0</Z>
 					<Rotation>0.0</Rotation>
 					<Color>-12171190</Color>
-					<Text><![CDATA[Temperatura base grados-dia (C)]]></Text>
+					<Text><![CDATA[Temperatura base]]></Text>
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>12</Size>
@@ -10772,15 +10772,6 @@ try {
 				<Id>1785872570969</Id>
 			</FreeformParamValue>
 			<FreeformParamValue>	
-				<Id>1785872635566</Id>
-			</FreeformParamValue>
-			<FreeformParamValue>	
-				<Id>1785872675515</Id>
-			</FreeformParamValue>
-			<FreeformParamValue>	
-				<Id>1785872691556</Id>
-			</FreeformParamValue>
-			<FreeformParamValue>	
 				<Id>1786000000701</Id>
 			</FreeformParamValue>
 			<FreeformParamValue>	
@@ -10867,18 +10858,6 @@ try {
 			</RangeVariationParamValue>
 			<RangeVariationParamValue>	
 				<Id>1785872570969</Id>
-				<Type>FIXED</Type>
-			</RangeVariationParamValue>
-			<RangeVariationParamValue>	
-				<Id>1785872635566</Id>
-				<Type>FIXED</Type>
-			</RangeVariationParamValue>
-			<RangeVariationParamValue>	
-				<Id>1785872675515</Id>
-				<Type>FIXED</Type>
-			</RangeVariationParamValue>
-			<RangeVariationParamValue>	
-				<Id>1785872691556</Id>
 				<Type>FIXED</Type>
 			</RangeVariationParamValue>
 			<RangeVariationParamValue>	
