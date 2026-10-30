@@ -212,15 +212,16 @@ button{font:inherit;color:inherit}
 <div class="shell">
 
   <header class="mast">
-    <p class="eyebrow">Modelo híbrido · AnyLogic 8.9.9 PLE · UTN Rosario</p>
+    <p class="eyebrow">Modelo híbrido · AnyLogic 8.9.10 PLE · UTN Rosario</p>
     <h1>Anatomía de la Ventana de Siembra</h1>
     <p class="dek">Qué simula el modelo, con qué reglas, cómo está construido por dentro y por qué cada decisión se tomó así. Empieza por el vocabulario: no se usa ningún término antes de definirlo.</p>
     <div class="chips">
       <span class="chip"><b>4</b> agentes</span>
-      <span class="chip"><b>4</b> statecharts</span>
+      <span class="chip"><b>8</b> statecharts</span>
       <span class="chip">unidad de tiempo <b>Week</b></span>
       <span class="chip"><b>20</b> campañas reales NASA POWER</span>
-      <span class="chip"><b>104 ha</b> por lote</span>
+      <span class="chip"><b>104,4 ha</b> por lote</span>
+      <span class="chip"><b>400</b> corridas de Monte Carlo</span>
     </div>
   </header>
 
@@ -246,9 +247,9 @@ button{font:inherit;color:inherit}
 
   <main>
 
-    <div class="note warn">
-      <span class="tag">Desactualizado</span>
-      <p>Este documento describe el modelo al <strong>11 de agosto de 2026</strong>. Desde el 5 de octubre el modelo siembra de verdad (la misma máquina con dos modos), el ciclo es <em>SinSembrar → Creciendo → Maduro → Cosechado</em> y el clima cubre el año completo (1/10 al 30/9). Quedaron desactualizadas las partes 6 (statecharts), 9 (variables), 11 (experimentos) y 13 (lo que falta), y la tabla de resultados de la parte 11. Para el estado vigente, leer <code>docs/CAMBIOS-2026-10.md</code> y <code>docs/PLAN.md</code>. Este HTML se regenera al terminar el plan (paso 9).</p>
+    <div class="note">
+      <span class="tag">Actualizado al 30/10/2026</span>
+      <p>Este documento describe el modelo después de los pasos 1 a 7 del plan: la máquina <strong>siembra y cosecha</strong> (dos modos), la semilla se gasta y se repone, la máquina se rompe, el cultivo madura por <strong>grados-día</strong>, cada hora parada se imputa a una causa, y el barrido de <strong>400 corridas</strong> compara el sistema base contra un alternativo. La Parte 11 trae los resultados y la sensibilidad económica. Para el detalle cronológico de cada cambio y los respaldos, ver <code>docs/CAMBIOS-2026-10.md</code>; para el plan y sus criterios de aceptación, <code>docs/PLAN.md</code>.</p>
     </div>
 
     <!-- ============ 1 ============ -->
@@ -256,7 +257,7 @@ button{font:inherit;color:inherit}
       <span class="part-no">Parte 1</span>
       <h2>La pregunta que el modelo responde</h2>
 
-      <p class="lede">En la pampa húmeda la ventana de siembra dura pocas semanas. Sembrar tarde no es un problema de agenda: es un problema de plata, porque el rinde cae con la fecha. La pregunta del trabajo es de dimensionamiento — <strong>cuánta máquina y cuánta logística hay que contratar para cerrar la siembra dentro de la ventana</strong>, sin pagar de más por equipos que van a estar parados.</p>
+      <p class="lede">En la pampa húmeda la ventana de siembra dura pocas semanas. Sembrar tarde no es un problema de agenda: es un problema de plata, porque el rinde cae con la fecha. La pregunta del trabajo es de dimensionamiento — <strong>cuánta máquina y cuánta logística hay que contratar para cerrar la siembra dentro de la ventana</strong>, sin pagar de más por equipos que van a estar parados. Concretamente se compara un sistema <strong>base</strong> (1 máquina con su acoplado y su camión, 1.253 ha propias) contra un sistema <strong>alternativo</strong> (arrendar 626 ha más y sumar un segundo tren).</p>
 
       <h3>Por qué no alcanza con una cuenta</h3>
 
@@ -277,16 +278,17 @@ button{font:inherit;color:inherit}
           <caption>Entregables del trabajo práctico</caption>
           <thead><tr><th>#</th><th>Resultado</th><th>Estado</th></tr></thead>
           <tbody>
-            <tr><td class="num">1</td><td>Curva de probabilidad de cerrar la siembra dentro de la ventana (antes del 15/nov) bajo los escenarios climáticos históricos</td><td><span class="ok">Cerrado</span> — 300 corridas, tabla en la Parte&nbsp;11</td></tr>
-            <tr><td class="num">2</td><td>Cuantificación de los cuellos de botella logísticos: tiempo de máquina parada esperando recarga</td><td><span class="mid">Parcial</span> — se mide, falta desglosar por causa</td></tr>
-            <tr><td class="num">3</td><td>Trade-off financiero: alquilar máquina extra vs. perder rinde por sembrar tarde</td><td><span class="no">Pendiente</span> — necesita las roturas y el acople de rinde</td></tr>
+            <tr><td class="num">1</td><td>Probabilidad de cerrar la siembra dentro de la ventana (antes del 15/nov) bajo los escenarios climáticos históricos, para el sistema base y el alternativo</td><td><span class="ok">Cerrado</span> — 400 corridas: base 45%, alternativo 95% (Parte&nbsp;11)</td></tr>
+            <tr><td class="num">2</td><td>Cuantificación de los cuellos de botella logísticos: tiempo de máquina parada, y por qué</td><td><span class="mid">Medido</span> — cada hora parada se imputa a una causa y el CSV del barrido las trae; falta presentarlas en el informe</td></tr>
+            <tr><td class="num">3</td><td>Trade-off financiero: costo de máquinas y arrendamiento contra el beneficio de sembrar a tiempo</td><td><span class="mid">Calculado con supuestos</span> — margen de los dos sistemas y sensibilidad económica (Parte&nbsp;11); falta confirmar los costos con el grupo</td></tr>
           </tbody>
         </table>
       </div>
 
       <div class="note">
         <span class="tag">Alcance real</span>
-        <p>El modelo cubre el <strong>proceso productivo integrado</strong>: siembra → crecimiento → cosecha. No es solo siembra. Hoy la máquina que recorre el lote es una <em>cosechadora</em> (el modelo parte del ejemplo oficial «Harvest Simulator» de AnyLogic) y la etapa de siembra propiamente dicha todavía no está — figura en la hoja de ruta. Lo que sí está completo es la mecánica: una máquina que recorre un lote, se llena, descarga en una cadena logística y para cuando no puede trabajar.</p>
+        <p>El modelo cubre el <strong>proceso productivo integrado</strong>: siembra → crecimiento → cosecha, en una corrida por campaña. La <strong>misma máquina</strong> (el agente <code>Combine</code>) siembra y cosecha: el modo se deduce del estado del campo. Sembrando gasta semilla que le repone el acoplado; cosechando llena su tanque de grano y alimenta la cadena acoplado → camión → silo. En el medio el cultivo madura al acumular grados-día con el clima real de esa campaña.</p>
+        <p>Lo que <strong>no</strong> hace el modelo es calcular plata: el rinde, los costos y el margen los calcula el script de análisis a partir de lo que el modelo exporta al CSV (el día en que termina cada lote, las horas trabajadas y paradas, las fallas).</p>
       </div>
     </section>
 
@@ -303,7 +305,7 @@ button{font:inherit;color:inherit}
         <div><dt>Agente</dt><dd>Un <b>tipo</b> de cosa que existe en el modelo y tiene comportamiento propio. Acá hay cuatro: <code>Main</code>, <code>Combine</code>, <code>Cart</code> y <code>Truck</code>. Un agente es como una clase: define cómo son todas las máquinas de ese tipo.</dd></div>
         <div><dt>Main</dt><dd>El agente <b>raíz</b>, el que contiene a todos los demás. Acá <code>Main</code> es «el mundo»: el lote dibujado, el reloj, el clima, el silo y el estado del cultivo. Cuando desde otro agente ves <code>main.algo</code>, es una variable del mundo.</dd></div>
         <div><dt>Instancia embebida</dt><dd>La <b>copia concreta</b> de un agente que vive adentro de <code>Main</code>. Hay tres: <code>combine</code>, <code>cart</code> y <code>truck</code>, en minúscula. La distinción importa: <b>la instancia puede pisar los valores del tipo</b>, y eso ya causó un diagnóstico equivocado de horas.</dd></div>
-        <div><dt>Parámetro</dt><dd>Un valor que <b>se fija antes de correr y no cambia durante la corrida</b>. Ej.: <code>cantidadLotes = 40</code>. Es lo que un experimento puede variar de corrida en corrida.</dd></div>
+        <div><dt>Parámetro</dt><dd>Un valor que <b>se fija antes de correr y no cambia durante la corrida</b>. Ej.: <code>cantidadLotes = 12</code>. Es lo que un experimento puede variar de corrida en corrida.</dd></div>
         <div><dt>Variable</dt><dd>Un valor que <b>cambia mientras el modelo corre</b>. Ej.: <code>humedadSuperficie</code>. Tiene un valor inicial y después el modelo la escribe.</dd></div>
         <div><dt>Función</dt><dd>Un bloque de código con nombre que se puede llamar desde cualquier lado. Ej.: <code>puedeTrabajar()</code>, <code>actualizarNivel()</code>. Se escriben con paréntesis para distinguirlas de las variables.</dd></div>
       </dl>
@@ -331,9 +333,9 @@ button{font:inherit;color:inherit}
           <caption>Los cuatro tipos de trigger</caption>
           <thead><tr><th>Trigger</th><th>La flecha se dispara cuando…</th><th>Ejemplo en el modelo</th></tr></thead>
           <tbody>
-            <tr><td><strong>Timeout</strong></td><td>pasa un tiempo, calculado en el momento de entrar al estado de origen</td><td><code>Creciendo → Maduro</code> tras <code>diasHastaMadurez</code> días</td></tr>
+            <tr><td><strong>Timeout</strong></td><td>pasa un tiempo, calculado en el momento de entrar al estado de origen</td><td>la falla de la máquina: <code>aFalla</code> espera <code>tHastaFallaHoras()</code> horas de operación</td></tr>
             <tr><td><strong>Message</strong></td><td>llega un mensaje concreto de otro agente</td><td><code>WithoutCart → WithCart</code> con <code>"STARTED_UNLOADING"</code></td></tr>
-            <tr><td><strong>Condition</strong></td><td>una expresión booleana da verdadero — pero <em>solo se revisa en momentos discretos</em></td><td><code>MoveHarvesting → MoveWaitCart</code> con <code>!puedeTrabajar()</code></td></tr>
+            <tr><td><strong>Condition</strong></td><td>una expresión booleana da verdadero — pero <em>solo se revisa en momentos discretos</em></td><td><code>Creciendo → Maduro</code> con <code>gdd &gt;= gddMeta</code>; <code>MoveHarvesting → MoveWaitCart</code> con <code>!puedeTrabajar()</code></td></tr>
             <tr><td><strong>Rate</strong></td><td>proceso de Poisson</td><td>no se usa en este modelo</td></tr>
           </tbody>
         </table>
@@ -372,9 +374,9 @@ button{font:inherit;color:inherit}
       <h3>D · Convenciones de este modelo</h3>
 
       <dl class="defs">
-        <div><dt>Español sin tildes</dt><dd>Todo el código embebido en el modelo (variables, comentarios, mensajes de consola) está en español <b>sin acentos</b>, para evitar problemas de codificación entre las tres máquinas del equipo. Solo los documentos llevan tildes.</dd></div>
+        <div><dt>Español sin tildes, pero con ñ</dt><dd>Todo el código embebido en el modelo (variables, comentarios, mensajes de consola) está en español <b>sin acentos</b>, para evitar problemas de codificación entre las máquinas del equipo. La excepción es la <b>ñ</b> (<code>campaña</code>, <code>diaCampaña</code>), que Java y AnyLogic aceptan en los identificadores. Solo los documentos llevan tildes.</dd></div>
         <div><dt><code>transition5</code>, <code>transition8</code>…</dt><dd>Nombres <b>autogenerados por AnyLogic</b> cuando se dibuja una flecha sin bautizarla. No significan nada. Las que sí tienen nombre propio (<code>StartedUnloading</code>, <code>tickDiario</code>, <code>Full</code>) fueron renombradas a mano porque importan.</dd></div>
-        <div><dt><code>traceln("...")</code></dt><dd>Imprime una línea en la consola de AnyLogic. Es la <b>única salida</b> del modelo: no hay gráficos. Todo lo que se mide se lee ahí.</dd></div>
+        <div><dt><code>traceln("...")</code> y <code>traza("...")</code></dt><dd>Imprimen una línea en la consola de AnyLogic. <code>traza</code> solo imprime si el parámetro <code>trazas</code> vale <code>true</code> (lo usa <code>Simulation</code>; el barrido y <code>CompareRuns</code> corren en silencio). Los errores usan <code>traceln</code> y salen siempre. Las otras salidas son el archivo <code>resultados.csv</code> del barrido y los gráficos de <code>CompareRuns</code> (Parte 11).</dd></div>
         <div><dt>Recipiente</dt><dd>Palabra del proyecto, no de AnyLogic. Es cualquiera de los cuatro lugares donde se acumula grano: el <b>tanque de la máquina</b>, el <b>acoplado</b>, el <b>camión</b> y el <b>silo</b>. Todos funcionan igual — Parte 4.</dd></div>
       </dl>
     </section>
@@ -392,24 +394,34 @@ button{font:inherit;color:inherit}
           <thead><tr><th>Regla</th><th>De dónde sale</th><th>Cómo vive en el modelo</th></tr></thead>
           <tbody>
             <tr>
-              <td><strong>Un lote son 104 ha</strong></td>
+              <td><strong>Un lote son 104,4 ha</strong></td>
               <td>Tamaño típico de un lote de la zona</td>
-              <td>El rectángulo verde del dibujo mide 520×320 píxeles, y la escala del modelo es de 2,5 m por píxel: 1300 × 800 m</td>
+              <td>El rectángulo del dibujo mide 520×320 píxeles a 2,5 m por píxel: 1.300 × 800 m. La máquina hace hileras enteras de 9 m (145 hileras, 1.305 m), así que cada lote son <strong>104,4 ha</strong></td>
             </tr>
             <tr>
-              <td><strong>La soja rinde ~3 t/ha</strong></td>
+              <td><strong>La soja rinde ~3 t/ha de grano en la cadena</strong></td>
               <td>Rinde típico de la región</td>
-              <td>Parámetro <code>HarvestDensity = 0,3</code> kg por metro cuadrado → 312 toneladas por lote</td>
+              <td>Parámetro <code>HarvestDensity = 0,3</code> kg por metro cuadrado → 313,2 toneladas por lote. Es el flujo físico de grano; el rinde <em>económico</em> (41 qq/ha) lo usa el script de análisis</td>
             </tr>
             <tr>
-              <td><strong>La máquina avanza a 5,5 km/h con 9 m de plataforma</strong></td>
-              <td>Catálogo de cosechadora clase 7-8</td>
-              <td>La velocidad del agente <code>combine</code> y el parámetro <code>RowWidth</code>. Multiplicados por el rinde dan 4,1 kg/s ≈ 15 t/h</td>
+              <td><strong>Se siembra a 7 km/h y se cosecha a 5,5 km/h, con 9 m de plataforma</strong></td>
+              <td>Catálogo de maquinaria (la velocidad de siembra es un supuesto sin fuente)</td>
+              <td>Parámetros <code>velocidadSiembra</code> y <code>velocidadCosecha</code>, y <code>RowWidth</code>. Cosechando, por el rinde da 4,1 kg/s ≈ 15 t/h</td>
             </tr>
             <tr>
-              <td><strong>Un lote son 21 h de labor efectiva</strong></td>
-              <td>Consecuencia aritmética de las dos reglas anteriores</td>
-              <td>145 pasadas de 800 m = 116 km a 1,53 m/s. <strong>El modelo mide 21,09 h</strong> — la coincidencia valida la calibración</td>
+              <td><strong>Sembrar un lote son 16,6 h y cosecharlo 21,1 h de labor efectiva</strong></td>
+              <td>Consecuencia aritmética de las reglas anteriores</td>
+              <td>104,4 ha a 6,3 ha/h dan 16,57 h; 145 pasadas de 800 m a 1,53 m/s dan 21,09 h. <strong>El modelo mide 198,9 h de siembra con 12 lotes (12 × 16,57) y 21,09 h por lote cosechado</strong> — la coincidencia valida la calibración</td>
+            </tr>
+            <tr>
+              <td><strong>La sembradora gasta 70 kg de semilla por hectárea</strong></td>
+              <td>Supuesto: falta la fuente (INTA)</td>
+              <td><code>densidadSiembra</code> = 70, tolva de <code>capacidadSemilla</code> = 4.000 kg. Consumo de 441 kg/h; el acoplado repone cuando la tolva baja del 20% (<code>umbralSemilla</code>)</td>
+            </tr>
+            <tr>
+              <td><strong>La máquina se rompe cada ~100 h de operación</strong></td>
+              <td>Supuesto: falta la fuente (ASABE D497.7)</td>
+              <td><code>mtbfHoras</code> = 100, tiempo hasta la falla exponencial; reparación <code>triangular(0,5; 8; 2)</code> horas (media 3,5 h)</td>
             </tr>
             <tr>
               <td><strong>No se entra al lote con el suelo mojado</strong></td>
@@ -422,19 +434,29 @@ button{font:inherit;color:inherit}
               <td>La función <code>dentroDeJornada()</code>. Los turnos multiplican horas-máquina, no horas-persona — Parte 8</td>
             </tr>
             <tr>
-              <td><strong>La ventana cierra el 15 de noviembre</strong></td>
+              <td><strong>La ventana de siembra cierra el 15 de noviembre</strong></td>
               <td>Fecha agronómica de referencia para soja de primera</td>
-              <td>La corrida arranca el 01/10, así que terminar «dentro» significa <code>diaFinSiembra ≤ 45</code></td>
+              <td>La corrida arranca el 01/10, así que terminar «dentro» significa <code>diaFinSiembra ≤ 45</code> (<code>diaLimiteSiembra</code>)</td>
+            </tr>
+            <tr>
+              <td><strong>Sembrar tarde cuesta rinde</strong></td>
+              <td>41 qq/ha de rinde potencial (BCR GEA 2025/26) y 25 kg/ha de pérdida por día de siembra después del 15/11 (zona núcleo; sin publicación de INTA)</td>
+              <td>No vive en el modelo sino en el script de análisis, que lee el día de siembra de cada lote del CSV — Parte 11</td>
             </tr>
             <tr>
               <td><strong>El grano va tanque → acoplado → camión → silo</strong></td>
               <td>Logística estándar de cosecha</td>
-              <td>Cuatro recipientes en cadena: 9 t / 20 t / 50 t / 312 t — Partes 4 y 5</td>
+              <td>Cuatro recipientes en cadena: 9 t / 20 t / 50 t / silo (cuya capacidad de 312 t es solo la escala del dibujo) — Partes 4 y 5. La semilla hace el camino inverso con el mismo acoplado</td>
             </tr>
             <tr>
-              <td><strong>El cultivo tarda 90–150 días en madurar</strong></td>
-              <td>Ciclo de soja</td>
-              <td>Un sorteo <code>triangular(90, 150, 120)</code> — <em>con una salvedad importante en la Parte 13</em></td>
+              <td><strong>El cultivo madura al acumular calor</strong></td>
+              <td>Ciclo de soja medido en grados-día base 10 °C. Los valores 1.700 / 1.900 / 2.100 son un supuesto sin fuente (INTA o Bolsa de Cereales)</td>
+              <td>Cada corrida sortea una meta <code>gddMeta = triangular(1.700; 2.100; 1.900)</code>; el cultivo madura el primer día en que <code>gdd &gt;= gddMeta</code></td>
+            </tr>
+            <tr>
+              <td><strong>Un tren es máquina + acoplado + camión</strong></td>
+              <td>Decisión de dimensionamiento (<code>docs/PLAN.md</code>, 4.1 y 4.5)</td>
+              <td>El sistema alternativo son <strong>dos trenes independientes</strong> de 9 lotes cada uno: se simulan como dos corridas (<code>tren</code> = 1 y 2) con el mismo clima y distintas fallas</td>
             </tr>
           </tbody>
         </table>
@@ -442,7 +464,7 @@ button{font:inherit;color:inherit}
 
       <div class="note warn">
         <span class="tag">El número que hay que tener en la cabeza</span>
-        <p>Todo el trabajo se reduce a comparar dos cantidades: las <strong>21 h de labor por lote</strong> contra las <strong>horas disponibles por día</strong>. Con un turno son 6,29 h/día, o sea 3,3 días por lote. La ventana tiene 45 días. Ese cociente <em>es</em> la respuesta de dimensionamiento; todo el resto del modelo existe para descontarle correctamente el clima, las colas y (cuando entren) las roturas.</p>
+        <p>Todo el trabajo se reduce a comparar dos cantidades: las <strong>16,6 h de siembra por lote</strong> contra las <strong>horas disponibles por día</strong>. Con un turno son 6,29 h/día, o sea unos 2,6 días por lote. La ventana tiene 45 días. Ese cociente <em>es</em> la respuesta de dimensionamiento; todo el resto del modelo existe para descontarle correctamente el clima, las colas, la semilla y las roturas. Con 12 lotes, 1 turno y la campaña 0 la siembra cierra el día 41; en el barrido de 20 climas × 5 réplicas, el sistema base de 12 lotes cierra a tiempo solo en el 45% (Parte 11).</p>
       </div>
     </section>
 
@@ -457,7 +479,7 @@ button{font:inherit;color:inherit}
 
       <p>La máquina cosecha a 4,125 kg por segundo. Querés poder preguntar, en cualquier instante, <strong>cuántos kilos hay en el tanque</strong>. ¿Cómo se guarda eso?</p>
 
-      <p><strong>La forma ingenua</strong> sería tener una variable <code>kilos</code> y sumarle 4,125 cada segundo simulado. No sirve: una campaña son 212 días, o sea 18,3 millones de segundos, y habría que programar 18,3 millones de eventos por recipiente. AnyLogic no está hecho para eso y la corrida tardaría horas.</p>
+      <p><strong>La forma ingenua</strong> sería tener una variable <code>kilos</code> y sumarle 4,125 cada segundo simulado. No sirve: una campaña son 365 días, o sea 31,5 millones de segundos, y habría que programar 31,5 millones de eventos por recipiente. AnyLogic no está hecho para eso y la corrida tardaría horas.</p>
 
       <p><strong>La forma del modelo</strong> es no calcular nada hasta que alguien pregunte. Para poder reconstruir el valor en cualquier momento alcanza con guardar tres números:</p>
 
@@ -471,9 +493,11 @@ button{font:inherit;color:inherit}
 
       <p>Esas tres variables existen, con esos mismos nombres, en <code>Combine</code>, <code>Cart</code> y <code>Truck</code>. El silo tiene su copia en <code>Main</code> con otros nombres (<code>nivelSilo</code>, <code>tasaSilo</code>, <code>tUltimoSilo</code>) porque <code>Main</code> no es un recipiente, solo lo contiene.</p>
 
+      <p>La <strong>semilla</strong> usa el mismo esquema con el flujo invertido: la tolva de la sembradora guarda <code>semilla</code>, <code>tasaSemilla</code> (negativa: se gasta) y <code>tUltimoSemilla</code>, y la función <code>actualizarSemilla()</code> la pone al día. El acoplado lleva su propia carga en <code>semillaCarro</code>, una variable aparte de <code>nivel</code>, para que la semilla nunca se mezcle con el grano ni con su auditoría.</p>
+
       <h3>El ejemplo que ya viste en tu log</h3>
 
-      <p>Seguí el tanque de la máquina a lo largo de una noche. Es literalmente lo que imprimió la última corrida.</p>
+      <p>Seguí el tanque de la máquina a lo largo de una noche. Son valores de una corrida de cosecha de agosto; el mecanismo es el mismo hoy.</p>
 
       <div class="tw">
         <table>
@@ -574,7 +598,7 @@ tUltimo = time();</div>
         </div>
       </div>
 
-      <p>Hay cinco alarmas de este tipo en el modelo: dos en el carro, una en la máquina y dos en el camión. Y una consecuencia importante: <strong>la alarma se calcula al armarse, no se recalcula sola.</strong> Si la tasa cambia después, hay que rearmarla a mano con <code>cancel()</code> y <code>start()</code>.</p>
+      <p>Hay cinco alarmas de este tipo para el grano: dos en el carro, una en la máquina y dos en el camión. El mismo recurso arma las alarmas de la semilla (<code>aPedida</code> y <code>aAgotada</code>) y la de la falla (<code>aFalla</code>). Y una consecuencia importante: <strong>la alarma se calcula al armarse, no se recalcula sola.</strong> Si la tasa cambia después, hay que rearmarla a mano con <code>cancel()</code> y <code>start()</code>.</p>
 
       <h3>Por qué no se usa la Fluid Library</h3>
 
@@ -615,11 +639,11 @@ tUltimo = time();</div>
               <text x="844" y="152">Silo</text>
             </g>
             <g font-family="IBM Plex Mono, monospace" font-size="11" text-anchor="middle" fill="currentColor" opacity=".62">
-              <text x="76" y="172">104 ha</text>
+              <text x="76" y="172">104,4 ha</text>
               <text x="268" y="172">9.000 kg</text>
               <text x="460" y="172">20.000 kg</text>
               <text x="652" y="172">50.000 kg</text>
-              <text x="844" y="172">312.000 kg</text>
+              <text x="844" y="172">escala 312 t</text>
               <text x="76" y="188">0,3 kg/m²</text>
               <text x="268" y="188">agente Combine</text>
               <text x="460" y="188">agente Cart</text>
@@ -651,7 +675,7 @@ tUltimo = time();</div>
             </g>
             <line x1="1" y1="256" x2="919" y2="256" stroke="currentColor" stroke-width="1" opacity=".3"/>
             <text x="1" y="278" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity=".75">auditarMasa():  totalCosechado  ==  Σ niveles + nivelSilo + masaDescartada − masaInventada</text>
-            <text x="1" y="293" font-family="IBM Plex Mono, monospace" font-size="10" fill="currentColor" opacity=".5">medido hoy: FUGA = −2,7e−11 kg  (ruido de coma flotante)</text>
+            <text x="1" y="293" font-family="IBM Plex Mono, monospace" font-size="10" fill="currentColor" opacity=".5">medido hoy (12 lotes): FUGA = 8,5e−9 kg  (ruido de coma flotante)</text>
           </svg>
         </div>
         <figcaption><b>La cadena de masa.</b> Cada flecha se abre con un mensaje explícito entre agentes. La barra vertical sobre la primera flecha es <code>puedeTrabajar()</code>: la única válvula que corta la entrada de grano al sistema.</figcaption>
@@ -677,7 +701,9 @@ tUltimo = time();</div>
 
       <pre><code>totalCosechado  ==  nivel de los 4 recipientes  +  masaDescartada  −  masaInventada</code></pre>
 
-      <p>La diferencia entre los dos lados se llama <strong><code>FUGA</code></strong> y se imprime en el log. Hoy da <strong>−2,7 × 10⁻¹¹ kg</strong>, catorce órdenes de magnitud por debajo de lo relevante: es ruido de coma flotante, no un desbalance. <strong>La cadena conserva masa.</strong></p>
+      <p>La diferencia entre los dos lados se llama <strong><code>FUGA</code></strong> y se imprime en el log. Con 12 lotes da entre 6 × 10⁻⁹ y 9 × 10⁻⁹ kg sobre unos 3,76 millones de kg cosechados: es ruido de coma flotante, no un desbalance. <strong>La cadena conserva masa.</strong></p>
+
+      <p>La semilla tiene su propia auditoría, <code>auditarSemilla()</code>, al cerrar la siembra: la semilla despachada tiene que ser igual a la sembrada más la que queda en la tolva y en el acoplado (<code>FUGA</code> de ~10⁻¹¹ kg), y la sembrada tiene que ser igual a la densidad por la superficie realmente recorrida (87.696 kg con 12 lotes de 104,4 ha a 70 kg/ha).</p>
 
       <p>Detalle que importa: <code>auditarMasa()</code> empieza llamando <code>actualizarNivel()</code> en los cuatro recipientes. Sin eso compararía fotos de momentos distintos —recordá que <code>nivel</code> es el valor de la última vez que alguien miró— y la <code>FUGA</code> daría cualquier cosa.</p>
 
@@ -692,15 +718,17 @@ tUltimo = time();</div>
       <span class="part-no">Parte 6</span>
       <h2>Los statecharts: dónde vive el comportamiento</h2>
 
-      <p>El modelo tiene <strong>cuatro statecharts</strong>: dos en la máquina y dos en el mundo. Todo lo que pasa, pasa porque alguno de los cuatro cambió de estado.</p>
+      <p>El modelo tiene <strong>ocho statecharts</strong>: cuatro en la máquina (<code>Combine</code>), dos en el mundo (<code>Main</code>), uno en el acoplado (<code>Cart</code>) y uno en el camión (<code>Truck</code>). Todo lo que pasa, pasa porque alguno de ellos cambió de estado.</p>
 
-      <h3>La máquina: dos statecharts en paralelo</h3>
+      <h3>La máquina: cuatro statecharts en paralelo</h3>
 
-      <p>Esta es la pieza que más confunde. La cosechadora tiene <strong>dos statecharts corriendo al mismo tiempo</strong>. No son alternativas: son dos preguntas simultáneas sobre la misma máquina.</p>
+      <p>Esta es la pieza que más confunde. La máquina (el agente <code>Combine</code>, que siembra y cosecha) tiene <strong>cuatro statecharts corriendo al mismo tiempo</strong>. No son alternativas: son cuatro preguntas simultáneas sobre la misma máquina.</p>
 
       <ul>
         <li><code>moveControl</code> — <strong>¿dónde está y qué hace la máquina?</strong> Estacionada, yendo al lote, recorriendo hileras, parada.</li>
-        <li><code>tankControl</code> — <strong>¿qué pasa con el grano?</strong> Tanque llenándose, tanque lleno esperando, descargando en el acoplado.</li>
+        <li><code>tankControl</code> — <strong>¿qué pasa con el grano?</strong> Tanque llenándose, tanque lleno esperando, descargando en el acoplado. Sembrando no entra grano, así que acá no pasa nada.</li>
+        <li><code>semillaControl</code> — <strong>¿cuánta semilla le queda a la tolva?</strong> <code>Suficiente → Pedida → Agotada</code>.</li>
+        <li><code>fallaControl</code> — <strong>¿está operativa o en reparación?</strong> <code>Operativa → Reparando → Operativa</code>.</li>
       </ul>
 
       <p>Puede estar en <code>MoveHarvesting</code> <em>y</em> en <code>WithCart</code> a la vez: recorriendo la hilera mientras descarga en el acoplado que va al lado. Los dos statecharts se hablan por variables compartidas y por <code>onChange()</code>.</p>
@@ -709,7 +737,7 @@ tUltimo = time();</div>
 
       <figure>
         <div class="fbox">
-          <svg viewBox="0 0 900 375" role="img" aria-label="Los dos statecharts paralelos de la cosechadora: moveControl decide dónde está la máquina, tankControl qué pasa con el grano, y la función puedeTrabajar combina tres entradas para decidir si la máquina se detiene">
+          <svg viewBox="0 0 900 375" role="img" aria-label="Los dos statecharts paralelos de la cosechadora: moveControl decide dónde está la máquina, tankControl qué pasa con el grano, y la función puedeTrabajar combina cinco entradas para decidir si la máquina se detiene">
             <defs>
               <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
                 <path d="M0,1 L9,5 L0,9 z" fill="currentColor"/>
@@ -743,7 +771,7 @@ tUltimo = time();</div>
             </g>
 
             <g font-family="IBM Plex Mono, monospace" font-size="9.5" text-anchor="middle" fill="currentColor" opacity=".72">
-              <text x="110" y="38">!siembraCompleta</text>
+              <text x="110" y="38">laborPendiente()</text>
               <text x="271" y="38">ARRIVED</text>
               <text x="457" y="46">!puedeTrabajar()</text>
               <text x="520" y="92">puedeTrabajar()</text>
@@ -766,6 +794,15 @@ tUltimo = time();</div>
               <text x="0" y="156">main.daPiso</text>
               <text x="0" y="189">main.dentroDeJornada()</text>
               <text x="444" y="256">!inState(FullWaitCart)</text>
+            </g>
+
+            <g stroke="currentColor" stroke-width="1.3" stroke-dasharray="4 3" fill="none" marker-end="url(#ar2)" opacity=".8">
+              <path d="M700,178 L552,178"/>
+              <path d="M700,196 L552,196"/>
+            </g>
+            <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="currentColor" opacity=".72">
+              <text x="706" y="182">!sinSemilla</text>
+              <text x="706" y="200">!reparando</text>
             </g>
 
             <text x="0" y="290" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="currentColor" opacity=".6">tankControl — ¿qué pasa con el grano?</text>
@@ -802,8 +839,38 @@ tUltimo = time();</div>
             </g>
           </svg>
         </div>
-        <figcaption><b>Los dos statecharts de la máquina y el punto único de parada.</b> <code>puedeTrabajar()</code> combina tres entradas —dos del mundo, una del propio tanque— y su resultado gobierna un solo par de flechas: <code>MoveHarvesting ⇄ MoveWaitCart</code>. Las cajas punteadas de abajo son estados compuestos: estar en <code>Loading</code> es también estar en <code>WithoutCart</code> y en <code>Harvesting</code>.</figcaption>
+        <figcaption><b>Los dos statecharts de la máquina y el punto único de parada.</b> <code>puedeTrabajar()</code> combina cinco entradas —dos del mundo y tres del propio <code>Combine</code>: el tanque, la semilla y las fallas— y su resultado gobierna un solo par de flechas: <code>MoveHarvesting ⇄ MoveWaitCart</code>. La salida del galpón (<code>Parked → GoingToField</code>) la gobierna <code>main.laborPendiente()</code>: hay campo por sembrar o maduro, y quedan lotes. Las cajas punteadas de abajo son estados compuestos: estar en <code>Loading</code> es también estar en <code>WithoutCart</code> y en <code>Harvesting</code>.</figcaption>
       </figure>
+
+      <h3>Los otros dos statecharts de la máquina: semilla y fallas</h3>
+
+      <div class="tw">
+        <table>
+          <caption><code>semillaControl</code> — la tolva de semilla</caption>
+          <thead><tr><th>Estado</th><th>Qué significa</th><th>Qué hace al entrar</th></tr></thead>
+          <tbody>
+            <tr><td><code>Suficiente</code></td><td>La tolva está por encima del umbral (20% de 4.000 kg = 800 kg)</td><td>Nada</td></tr>
+            <tr><td><code>Pedida</code></td><td>Bajó del umbral y se pidió semilla al acoplado</td><td>Manda <code>NEED_SEED</code> al acoplado</td></tr>
+            <tr><td><code>Agotada</code></td><td>La tolva llegó a 0</td><td>Pone <code>sinSemilla = true</code> y la máquina para</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Los pasos entre estados son timeouts calculados con la tasa de consumo (<code>aPedida</code>, <code>aAgotada</code>) y condiciones de vuelta. Las vueltas exigen <code>semilla &gt; umbral + 1 kg</code>: sin ese margen el redondeo de coma flotante arma un bucle infinito en tiempo cero (Parte 14). Con 7 km/h, 9 m y 70 kg/ha la máquina gasta 441 kg/h y la tolva de 4.000 kg alcanza para unas 9 h; en las corridas de verificación la máquina nunca esperó semilla (0 h), así que con estos valores la semilla no es un cuello de botella. El depósito de la cabecera tiene stock infinito: es un supuesto declarado.</p>
+
+      <div class="tw">
+        <table>
+          <caption><code>fallaControl</code> — roturas de la máquina</caption>
+          <thead><tr><th>Elemento</th><th>Qué hace</th></tr></thead>
+          <tbody>
+            <tr><td><code>aFalla</code> (timeout)</td><td>Espera <code>trabajando ? tHastaFallaHoras() : 1e12</code> horas: solo corre mientras la máquina trabaja. El tiempo hasta la falla es exponencial de media <code>mtbfHoras</code> = 100 h de operación</td></tr>
+            <tr><td><code>Reparando</code> (estado)</td><td>Cuenta la falla, pone <code>reparando = true</code>, sortea la duración (<code>triangular(0,5; 8; 2)</code> horas, media 3,5 h) y llama a <code>moveControl.onChange()</code></td></tr>
+            <tr><td><code>finReparacion</code> (timeout)</td><td>Pone <code>reparando = false</code> y vuelve a <code>Operativa</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Como la exponencial no tiene memoria, al reanudar el trabajo se vuelve a sortear el tiempo hasta la falla (<code>reprogramarFalla()</code>), que es estadísticamente equivalente a descontar el tiempo ya trabajado. Las fallas usan un <code>java.util.Random</code> propio (<code>semillaFallas</code>) para no mover los demás sorteos del modelo.</p>
 
       <h3>El punto único de parada</h3>
 
@@ -814,49 +881,59 @@ tUltimo = time();</div>
         <div class="ann-row">
           <div class="ann-code">return main.daPiso
     &amp;&amp; main.dentroDeJornada()
-    &amp;&amp; !inState( FullWaitCart );</div>
-          <div class="ann-note">Devuelve verdadero solo si se cumplen las tres a la vez:<br>· <b>el terreno está transitable</b> (variable del mundo, la escribe el reloj del clima);<br>· <b>estamos en horario de trabajo</b> (función del mundo, pura aritmética sobre la hora);<br>· <b>el tanque no está lleno esperando al acoplado</b> (estado del <em>otro</em> statechart de la propia máquina).</div>
+    &amp;&amp; !inState( FullWaitCart )
+    &amp;&amp; !sinSemilla
+    &amp;&amp; !reparando;</div>
+          <div class="ann-note">Devuelve verdadero solo si se cumplen las cinco a la vez:<br>· <b>el terreno está transitable</b> (variable del mundo, la escribe el reloj del clima);<br>· <b>estamos en horario de trabajo</b> (función del mundo, pura aritmética sobre la hora);<br>· <b>el tanque no está lleno esperando al acoplado</b> (estado de <code>tankControl</code>);<br>· <b>hay semilla</b> (bandera de <code>semillaControl</code>);<br>· <b>la máquina no está en reparación</b> (bandera de <code>fallaControl</code>).</div>
         </div>
       </div>
 
-      <p>La alternativa habría sido que cada motivo mandara su propio mensaje <code>STOP</code> / <code>RESUME</code>. Con tres motivos son seis mensajes y ocho combinaciones de estado; con cuatro —cuando entren las roturas— es inmanejable. Y peor: dos motivos que se levantan en distinto orden dejarían a la máquina parada o andando según el azar del despacho.</p>
+      <p>La alternativa habría sido que cada motivo mandara su propio mensaje <code>STOP</code> / <code>RESUME</code>. Con cinco motivos son diez mensajes y 32 combinaciones de estado. Y peor: dos motivos que se levantan en distinto orden dejarían a la máquina parada o andando según el azar del despacho.</p>
 
-      <p><strong>Con la condición única eso no puede pasar.</strong> Cuando se agregó la jornada legal no hizo falta ningún mecanismo nuevo: fue un término más en el <code>&amp;&amp;</code>. Las roturas van a entrar igual.</p>
+      <p><strong>Con la condición única eso no puede pasar.</strong> Cuando se agregaron la jornada legal, la semilla y las roturas no hizo falta ningún mecanismo nuevo: cada una fue un término más en el <code>&amp;&amp;</code>. Todo motivo de parada futuro va ahí y no como mensaje nuevo.</p>
 
-      <div class="note warn">
-        <span class="tag">La contracara</span>
-        <p>Que haya un solo punto de decisión no significa que haya un solo <em>motivo</em>. Hoy los tres comparten el mismo estado <code>MoveWaitCart</code>, así que el modelo sabe <em>que</em> paró pero no lleva la cuenta de <em>por qué</em>. Para el entregable #2 —cuantificar el cuello de botella logístico— hace falta imputar cada parada a su causa.</p>
+      <div class="note">
+        <span class="tag">Y por qué paró, se mide aparte</span>
+        <p>Que haya un solo punto de decisión no significa que haya un solo <em>motivo</em>. <code>Combine.causaActual()</code> imputa cada hora detenida a una causa, con esta prioridad: <strong>falla &gt; sinSemilla &gt; jornada &gt; sinPiso &gt; esperaCarro</strong> (más <code>traslado</code> al lote y <code>otra</code>, que es un control y tiene que dar 0). <code>registrarCausa()</code> cierra cada tramo y acumula en <code>Main.horasParada[]</code>; las causas suman <code>horasDetenida</code> con una diferencia de ~10⁻¹¹ h.</p>
+        <p>En la cosecha de la corrida de verificación del 27/10 (12 lotes, 1 turno, campaña 0), de 1.386 h detenidas la <strong>jornada</strong> explica 1.258 h (91%), el piso 102 h, la espera del acoplado 21 h y las fallas 4 h. La logística pesa poco; lo que frena a la máquina con 1 turno es la jornada.</p>
       </div>
 
       <h3>El acoplado y el camión</h3>
 
-      <p>Son máquinas de estados más simples, pero su interacción es donde se rompió la conservación de masa tres veces. El ciclo completo:</p>
+      <p>Son máquinas de estados más simples, pero su interacción es donde se rompió la conservación de masa tres veces. Cada uno tiene un solo statechart (<code>moveControl</code>). El ciclo completo:</p>
 
       <div class="tw">
         <table>
           <caption>Ciclo del acoplado y del camión</caption>
           <thead><tr><th>Agente</th><th>Estado</th><th>Qué está pasando</th></tr></thead>
           <tbody>
-            <tr><td rowspan="5"><strong>Cart</strong><br>acoplado</td><td><code>WaitCommand</code></td><td>Estacionado, esperando que lo llamen</td></tr>
+            <tr><td rowspan="9"><strong>Cart</strong><br>acoplado</td><td><code>WaitCommand</code></td><td>Estacionado, esperando que lo llamen (o que pidan semilla)</td></tr>
             <tr><td><code>GoingToCombine</code></td><td>Yendo a buscar a la máquina</td></tr>
             <tr><td><code>Loading</code></td><td>Acoplado, viajando al lado de la máquina y recibiendo grano</td></tr>
             <tr><td><code>WaitTruck</code></td><td>En la cabecera del lote, esperando al camión</td></tr>
+            <tr><td><code>GoingToUnload</code></td><td>Yendo a descargar</td></tr>
             <tr><td><code>Unloading</code></td><td>Descargando en el camión a 150 kg/s</td></tr>
-            <tr><td rowspan="4"><strong>Truck</strong><br>camión</td><td><code>WaitCart</code></td><td>En el lote, esperando que el acoplado descargue</td></tr>
+            <tr><td><code>CargandoSemilla</code></td><td>Cargando semilla en la cabecera (la carga dura lo cargado dividido <code>UnloadingRate</code>)</td></tr>
+            <tr><td><code>LlevandoSemilla</code></td><td>Viajando hacia la sembradora; como la sembradora se mueve, se reapunta cada minuto</td></tr>
+            <tr><td><code>VolviendoSemilla</code></td><td>Después de volcar la semilla de golpe, vuelve a la cabecera</td></tr>
+            <tr><td rowspan="5"><strong>Truck</strong><br>camión</td><td><code>WaitCart</code></td><td>En el lote, esperando que el acoplado descargue</td></tr>
             <tr><td><code>Loading</code></td><td>Recibiendo del acoplado</td></tr>
             <tr><td><code>GoingToBin</code></td><td>Viajando al acopio. Sale cuando se llena</td></tr>
             <tr><td><code>Unloading</code></td><td>Descargando en el silo a 100 kg/s. Acá se cuenta el viaje</td></tr>
+            <tr><td><code>GoingBack</code></td><td>Volviendo del acopio al lote</td></tr>
           </tbody>
         </table>
       </div>
 
-      <p>Los mensajes que sincronizan las dos máquinas son <code>GO_TO_COMBINE</code>, <code>STARTED_UNLOADING</code>, <code>FINISHED_UNLOADING</code>, <code>TRUCK_ARRIVED</code>, <code>TRUCK_DEPARTED</code>, <code>START_LOADING</code> y <code>FINISHED_LOADING</code>. Cada uno abre o cierra un flujo — y por eso <strong>perder uno fabrica o destruye grano</strong>.</p>
+      <p>Los mensajes que sincronizan las máquinas son <code>GO_TO_COMBINE</code>, <code>STARTED_UNLOADING</code>, <code>FINISHED_UNLOADING</code>, <code>TRUCK_ARRIVED</code>, <code>TRUCK_DEPARTED</code>, <code>START_LOADING</code>, <code>FINISHED_LOADING</code> y, para la semilla, <code>NEED_SEED</code>. Cada uno abre o cierra un flujo — y por eso <strong>perder uno fabrica o destruye grano</strong>.</p>
+
+      <p>Cada entry action del acoplado y del camión llama a <code>cerrarEstado()</code>, que acumula las horas del estado que se deja. Así se miden las horas por grupo de estados: el acoplado, por ejemplo, en la siembra pasa el 99,5% del tiempo ocioso (la semilla no es cuello de botella), y en la cosecha el camión espera al acoplado el 97% (parece sobredimensionado, candidato a comparar tamaños).</p>
 
       <h3>El mundo: cicloCultivo y climaControl</h3>
 
       <figure>
         <div class="fbox">
-          <svg viewBox="0 0 880 300" role="img" aria-label="Los dos statecharts de Main: cicloCultivo alterna entre sin sembrar, creciendo y maduro; climaControl corre un tick horario que actualiza el balance hídrico y despierta a los otros statecharts">
+          <svg viewBox="0 0 880 300" role="img" aria-label="Los dos statecharts de Main: cicloCultivo avanza de sin sembrar a creciendo, maduro y cosechado (estado final); climaControl corre un tick horario que actualiza el balance hídrico y despierta a los otros statecharts">
             <defs>
               <marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
                 <path d="M0,1 L9,5 L0,9 z" fill="currentColor"/>
@@ -866,27 +943,34 @@ tUltimo = time();</div>
             <text x="0" y="16" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="currentColor" opacity=".6">cicloCultivo — el estado del cultivo</text>
 
             <g fill="none" stroke="currentColor" stroke-width="1.5">
-              <rect x="60"  y="46" width="130" height="40" rx="3"/>
-              <rect x="320" y="46" width="130" height="40" rx="3"/>
-              <rect x="580" y="46" width="130" height="40" rx="3"/>
+              <rect x="20"  y="46" width="130" height="40" rx="3"/>
+              <rect x="260" y="46" width="130" height="40" rx="3"/>
+              <rect x="500" y="46" width="130" height="40" rx="3"/>
+              <rect x="740" y="46" width="130" height="40" rx="3"/>
             </g>
             <g font-family="Archivo, sans-serif" font-size="12.5" font-weight="600" text-anchor="middle" fill="currentColor">
-              <text x="125" y="71">SinSembrar</text>
-              <text x="385" y="71">Creciendo</text>
-              <text x="645" y="71">Maduro</text>
+              <text x="85"  y="71">SinSembrar</text>
+              <text x="325" y="71">Creciendo</text>
+              <text x="565" y="71">Maduro</text>
+              <text x="805" y="71">Cosechado</text>
             </g>
 
             <g stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#ar3)">
-              <line x1="192" y1="66" x2="316" y2="66"/>
-              <line x1="452" y1="66" x2="576" y2="66"/>
-              <path d="M645,88 L645,116 L125,116 L125,90"/>
+              <line x1="152" y1="66" x2="256" y2="66"/>
+              <line x1="392" y1="66" x2="496" y2="66"/>
+              <line x1="632" y1="66" x2="736" y2="66"/>
             </g>
             <g font-family="IBM Plex Mono, monospace" font-size="9.5" text-anchor="middle" fill="currentColor" opacity=".75">
-              <text x="254" y="38">condición:</text>
-              <text x="254" y="50">siembraCompleta</text>
-              <text x="514" y="38">timeout:</text>
-              <text x="514" y="50">diasHastaMadurez</text>
-              <text x="385" y="131">timeout 0 · siembraCompleta = false · reset de campaña</text>
+              <text x="204" y="38">condición:</text>
+              <text x="204" y="50">siembraCompleta</text>
+              <text x="444" y="38">condición:</text>
+              <text x="444" y="50">gdd &gt;= gddMeta</text>
+              <text x="684" y="38">condición:</text>
+              <text x="684" y="50">cosechaCompleta</text>
+              <text x="85"  y="106">siembra</text>
+              <text x="325" y="106">crece · entry: gdd = 0 · gddMeta = triangular(1.700; 2.100; 1.900)</text>
+              <text x="565" y="106">cosecha</text>
+              <text x="805" y="106">estado final</text>
             </g>
 
             <line x1="0" y1="160" x2="880" y2="160" stroke="currentColor" stroke-width="1" opacity=".25"/>
@@ -912,11 +996,15 @@ tUltimo = time();</div>
             <text x="308" y="288" font-family="IBM Plex Mono, monospace" font-size="9" fill="currentColor" opacity=".55">el tick horario existe porque las condiciones no se revisan solas</text>
           </svg>
         </div>
-        <figcaption><b>Los dos statecharts de Main.</b> <code>cicloCultivo</code> es el ciclo agronómico completo. <code>climaControl</code> es el motor del mundo: un tick horario que avanza el balance de agua una vez por día y —crucial— despierta las condiciones de los otros statecharts cada hora.</figcaption>
+        <figcaption><b>Los dos statecharts de Main.</b> <code>cicloCultivo</code> es el ciclo agronómico de una campaña, de punta a punta: termina en <code>Cosechado</code>, que es estado final. <code>climaControl</code> es el motor del mundo: un tick horario que avanza el balance de agua una vez por día y —crucial— despierta las condiciones de los otros statecharts cada hora.</figcaption>
       </figure>
 
       <h4>Cómo cierra el ciclo del cultivo</h4>
-      <p>Cada vez que la máquina termina de recorrer un lote entero, llama a <code>main.onCompleted()</code>. Esa función incrementa <code>lotesCompletados</code>; cuando llega a <code>cantidadLotes</code>, pone la bandera <code>siembraCompleta = true</code>. Eso hace dos cosas a la vez: manda al cultivo de <code>SinSembrar</code> a <code>Creciendo</code>, y deja a la máquina estacionada (porque su condición de salida es <code>!siembraCompleta</code>). Meses después, <code>Maduro → SinSembrar</code> baja la bandera y todo vuelve a empezar.</p>
+      <p>Cada vez que la máquina termina de recorrer un lote entero, llama a <code>main.onCompleted()</code>. Esa función guarda el día en que terminó el lote (<code>diaSiembraLote[]</code> o <code>diaCosechaLote[]</code>) e incrementa <code>lotesCompletados</code>; cuando llega a <code>cantidadLotes</code> cierra la pasada.</p>
+
+      <p>Si estaba sembrando, fija <code>diaFinSiembra</code> y pone <code>siembraCompleta = true</code>: eso manda al cultivo de <code>SinSembrar</code> a <code>Creciendo</code> y deja a la máquina en el galpón. El tick diario suma grados-día y, el día en que <code>gdd &gt;= gddMeta</code>, el cultivo pasa a <code>Maduro</code> y la máquina vuelve a salir, esta vez a cosechar. Al cerrar el último lote fija <code>diaFinCosecha</code>, pone <code>cosechaCompleta = true</code>, audita la masa y el cultivo queda en <code>Cosechado</code>.</p>
+
+      <p><strong>Una corrida es una campaña.</strong> Para otra campaña se cambia el parámetro <code>campaña</code>; el ciclo no se reinicia. Así el día del modelo coincide siempre con el día del calendario (el día 0 es el 1/10) y cada corrida del barrido es una observación independiente.</p>
 
       <h4>Por qué el tick es horario si el clima es diario</h4>
       <p>Porque hace dos trabajos a dos ritmos distintos. El balance de agua avanza <strong>una vez por día</strong>. Pero la condición de jornada cambia dos veces por día a horas que no caen en el cambio de fecha, y —como vimos— las condiciones no se revisan solas. De ahí el <code>combine.moveControl.onChange()</code> <strong>cada hora</strong>, fuera del <code>if</code> diario.</p>
@@ -933,14 +1021,14 @@ tUltimo = time();</div>
 
       <h3>De dónde salen los datos</h3>
 
-      <p>No hay clima inventado. El modelo lleva embebida una <strong>serie diaria real de NASA POWER</strong> (reanálisis satelital MERRA-2), del punto −33,0 / −61,0 en la zona de Rosario: <strong>20 campañas de 2005/06 a 2024/25</strong>, 212 días cada una (del 1/10 al 30/4), sin valores faltantes.</p>
+      <p>No hay clima inventado. El modelo lleva embebida una <strong>serie diaria real de NASA POWER</strong> (reanálisis satelital MERRA-2), del punto −33,0 / −61,0 en la zona de Rosario: <strong>20 campañas de 2005/06 a 2024/25</strong>, de 365 o 366 días cada una (del 1/10 al 30/9, así la cosecha también tiene clima), sin valores faltantes.</p>
 
       <p>Tres series por campaña: <strong>lluvia</strong>, <strong>temperatura media</strong> y <strong>ET0</strong>. Esta última es la <em>evapotranspiración de referencia</em>: cuántos milímetros de agua se evaporan por día en condiciones estándar. Viene precalculada con el método Hargreaves (FAO-56) a partir de las temperaturas y la latitud. Va como dato y no como cálculo del modelo porque es una cantidad física, no una decisión de modelado.</p>
 
       <div class="note">
         <span class="tag">Por qué los datos son un texto y no un arreglo</span>
         <p>Las tres series están guardadas en variables de tipo texto (campañas separadas por <code>;</code>, días por <code>,</code>) y las convierte a números la función <code>cargarClima()</code> al arrancar la corrida.</p>
-        <p>La razón es un límite de la máquina virtual de Java: <strong>65.535 bytes de código por método</strong>. AnyLogic mete la inicialización de <em>todas</em> las variables de un agente en un único método generado, y tres listas de 4.240 números cada una lo desbordan. Un texto, en cambio, es una sola instrucción, y ahí el límite es de 64 KB — el mayor de los tres mide 20 KB.</p>
+        <p>La razón es un límite de la máquina virtual de Java: <strong>65.535 bytes de código por método</strong>. AnyLogic mete la inicialización de <em>todas</em> las variables de un agente en un único método generado, y tres listas de unos 7.300 números cada una (20 campañas × 365 días) lo desbordan. Un texto, en cambio, es una sola instrucción, y ahí el límite es de 64 KB — el mayor de los tres mide 36 KB.</p>
         <p>Beneficio colateral: el archivo del modelo queda autocontenido y corre igual en las tres máquinas del equipo, sin rutas externas que se rompan al cambiar de sistema operativo.</p>
       </div>
 
@@ -971,7 +1059,7 @@ tUltimo = time();</div>
       <div class="note warn">
         <span class="tag">La decisión de modelado más delicada</span>
         <p><strong>Modelar el perfil completo del suelo (150 mm) no sirve.</strong> Con una evapotranspiración de 5 a 7 mm/día en primavera, el perfil se seca y da <strong>0 días sin piso en casi todas las campañas</strong>: la lluvia nunca detendría la máquina y el entregable quedaría degenerado.</p>
-        <p>El fenómeno real no es el perfil cargado sino la <strong>superficie mojada justo después de la lluvia</strong>. Con la capa superficial: media de <strong>11,2 días no trabajables de 46</strong>, mínimo 4, máximo 24. Eso sí se parece a una campaña real.</p>
+        <p>El fenómeno real no es el perfil cargado sino la <strong>superficie mojada justo después de la lluvia</strong>. Con la capa superficial, en la medición original sobre los primeros 46 días de cada campaña: media de <strong>11,2 días no trabajables de 46</strong>, mínimo 4, máximo 24. Eso sí se parece a una campaña real.</p>
       </div>
 
       <p>Así se ve un episodio real del modelo, tomado de una corrida (campaña 0, días 21 a 31):</p>
@@ -1096,17 +1184,19 @@ return h &lt; horasDia;</div>
       <span class="part-no">Parte 9</span>
       <h2>Catálogo de variables</h2>
 
-      <p>Referencia rápida. Todo lo de acá ya apareció explicado en las partes anteriores; esta es la tabla para consultar mientras leés el modelo.</p>
+      <p>Referencia rápida. Todo lo de acá ya apareció explicado en las partes anteriores; esta es la tabla para consultar mientras leés el modelo. Los valores son los que figuran en el archivo del modelo.</p>
 
-      <h3>1 · Parámetros de decisión — los que se barren</h3>
-      <p>Son las palancas del problema. El experimento Monte Carlo los varía; el resultado del trabajo es una función de estos tres.</p>
+      <h3>1 · Factores del barrido</h3>
+      <p>Son los parámetros que el experimento <code>ParametersVariation</code> hace variar. El resultado del trabajo compara el sistema base (12 lotes, tren 1) contra el alternativo (dos trenes de 9 lotes).</p>
       <div class="tw">
         <table>
           <thead><tr><th>Variable</th><th>Default</th><th>Rango barrido</th><th>Qué representa</th></tr></thead>
           <tbody>
-            <tr><td><code>cantidadLotes</code></td><td class="num">40</td><td class="num">6 → 30 paso 6</td><td>Superficie a trabajar, en lotes de 104 ha</td></tr>
-            <tr><td><code>turnos</code></td><td class="num">1</td><td class="num">1 → 3</td><td>Cuántos turnos de operario cubren la máquina</td></tr>
             <tr><td><code>campaña</code></td><td class="num">0</td><td class="num">0 → 19</td><td>Cuál de las 20 campañas históricas se usa</td></tr>
+            <tr><td><code>cantidadLotes</code></td><td class="num">12</td><td class="num">9 y 12</td><td>Lotes de 104,4 ha por tren: 12 es el base; el alternativo son dos trenes de 9</td></tr>
+            <tr><td><code>tren</code></td><td class="num">1</td><td class="num">1 → 2</td><td>Tren del sistema alternativo. El base usa siempre el 1</td></tr>
+            <tr><td><code>replica</code></td><td class="num">1</td><td class="num">1 → 5</td><td>Número de réplica: fija las semillas de las fallas y de la madurez</td></tr>
+            <tr><td><code>turnos</code></td><td class="num">1</td><td class="num">fijo en 1</td><td>Turnos de operario por día (el parámetro admite 1 a 3)</td></tr>
           </tbody>
         </table>
       </div>
@@ -1116,37 +1206,56 @@ return h &lt; horasDia;</div>
         <table>
           <thead><tr><th>Variable</th><th>Valor</th><th>Origen</th></tr></thead>
           <tbody>
-            <tr><td><code>HarvestDensity</code></td><td class="num">0,3 kg/m²</td><td>Rinde de soja, 3 t/ha</td></tr>
+            <tr><td><code>velocidadSiembra</code></td><td class="num">7 km/h</td><td>Supuesto: falta ficha técnica de sembradora o ASABE D497.7</td></tr>
+            <tr><td><code>velocidadCosecha</code></td><td class="num">5,5 km/h</td><td>Cosechadora clase 7-8; da las 21,09 h por lote medidas</td></tr>
+            <tr><td><code>diaLimiteSiembra</code></td><td class="num">45</td><td>15/11 con el día 0 en el 1/10</td></tr>
+            <tr><td><code>densidadSiembra</code></td><td class="num">70 kg/ha</td><td>Supuesto: falta la fuente (INTA)</td></tr>
+            <tr><td><code>capacidadSemilla</code> · <code>umbralSemilla</code></td><td class="num">4.000 kg · 0,2</td><td>Tolva de la sembradora (supuesto) y fracción que dispara el pedido de semilla</td></tr>
+            <tr><td><code>mtbfHoras</code></td><td class="num">100 h</td><td>Supuesto: falta la fuente (ASABE D497.7)</td></tr>
+            <tr><td><code>gddMinimo</code> · <code>gddObjetivo</code> · <code>gddMaximo</code></td><td class="num">1.700 · 1.900 · 2.100</td><td>Triangular de la meta de madurez (<code>gddObjetivo</code> es la moda). Supuesto: falta INTA o Bolsa de Cereales</td></tr>
+            <tr><td><code>tBase</code></td><td class="num">10 °C</td><td>Temperatura base de los grados-día</td></tr>
+            <tr><td><code>HarvestDensity</code></td><td class="num">0,3 kg/m²</td><td>Rinde de soja en la cadena de grano, 3 t/ha</td></tr>
             <tr><td><code>capacidadSuperficie</code></td><td class="num">35 mm</td><td>Agua útil de la capa superficial del suelo</td></tr>
-            <tr><td><code>umbralPiso</code></td><td class="num">25 mm</td><td><strong>El más influyente.</strong> Sin valor publicado único</td></tr>
+            <tr><td><code>umbralPiso</code></td><td class="num">25 mm</td><td><strong>El más influyente en el modelo físico.</strong> Sin valor publicado único</td></tr>
             <tr><td><code>lluviaBloqueante</code></td><td class="num">5 mm</td><td>Lluvia del día que impide entrar al lote</td></tr>
             <tr><td><code>kc</code></td><td class="num">1,0</td><td>Coeficiente de cultivo: ETc = kc × ET0</td></tr>
-            <tr><td><code>horasSemanales</code></td><td class="num">44</td><td>Ley 26.727</td></tr>
-            <tr><td><code>horaInicio</code></td><td class="num">6</td><td>Hora de arranque de la jornada</td></tr>
-            <tr><td><code>diasMaduracionMin/Max/Moda</code></td><td class="num">90 / 150 / 120</td><td>Ciclo de soja — <em>ver Parte 13</em></td></tr>
-            <tr><td><code>tBase</code> · <code>gddObjetivo</code></td><td class="num">10 °C · 1680</td><td>Grados-día base 10. Calibrados pero <strong>todavía sin usar</strong></td></tr>
-            <tr><td><code>terminarAlCerrarCampaña</code></td><td class="num">true</td><td>Interruptor de experimento — <em>ver Parte 11</em></td></tr>
+            <tr><td><code>horasSemanales</code> · <code>horaInicio</code></td><td class="num">44 · 6</td><td>Ley 26.727 y hora de arranque de la jornada</td></tr>
           </tbody>
         </table>
       </div>
 
-      <h3>3 · Estado del clima</h3>
+      <h3>3 · Control de la corrida</h3>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Variable</th><th>Default</th><th>Qué hace</th></tr></thead>
+          <tbody>
+            <tr><td><code>terminarAlCerrarCampaña</code></td><td class="num">true</td><td>Corta la corrida al cerrar la cosecha — <em>ver Parte 11</em></td></tr>
+            <tr><td><code>presentacionLenta</code></td><td class="num">true</td><td>Con <code>true</code> el ciclo cambia la velocidad de la animación; con <code>false</code> (CompareRuns) corre en tiempo virtual</td></tr>
+            <tr><td><code>trazas</code></td><td class="num">false</td><td>Habilita <code>traza(...)</code>, las líneas de detalle de la consola. <code>Simulation</code> lo pasa en <code>true</code></td></tr>
+            <tr><td><code>semillaFallas</code> · <code>semillaMadurez</code></td><td class="num">0</td><td>0 significa «derivar»: <code>replica + 5 × campaña + 100 × (tren − 1)</code> para las fallas y <code>replica + 5 × campaña</code> para la madurez</td></tr>
+            <tr><td><code>Cultivo</code></td><td class="num">"Soja"</td><td>Solo la etiqueta que muestra la pantalla</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>4 · Estado del clima y del cultivo</h3>
       <div class="tw">
         <table>
           <thead><tr><th>Variable</th><th>Tipo</th><th>Qué guarda</th></tr></thead>
           <tbody>
             <tr><td><code>climaLluvia</code> · <code>climaTmedia</code> · <code>climaEt0</code></td><td>texto</td><td>Las series NASA POWER crudas, embebidas como texto</td></tr>
-            <tr><td><code>lluviaDiaria</code> · <code>tmediaDiaria</code> · <code>et0Diaria</code></td><td>número [ ][ ]</td><td>Lo mismo ya convertido a números: <code>[campaña][día]</code>, 20 × 212</td></tr>
-            <tr><td><code>diaCampaña</code></td><td>entero</td><td>Día actual dentro de la campaña. <strong>Se reinicia en cada campaña</strong></td></tr>
+            <tr><td><code>lluviaDiaria</code> · <code>tmediaDiaria</code> · <code>et0Diaria</code></td><td>número [ ][ ]</td><td>Lo mismo ya convertido a números: <code>[campaña][día]</code>, 20 campañas de 365 o 366 días</td></tr>
+            <tr><td><code>diaCampaña</code></td><td>entero</td><td>Día actual dentro de la campaña (el día 0 es el 1/10)</td></tr>
             <tr><td><code>humedadSuperficie</code></td><td>número</td><td>Milímetros de agua en la capa superficial</td></tr>
-            <tr><td><code>daPiso</code></td><td>sí/no</td><td>La bandera. Lo único que el resto del modelo mira</td></tr>
-            <tr><td><code>gdd</code></td><td>número</td><td>Grados-día acumulados. Se calcula pero <strong>no se usa</strong></td></tr>
+            <tr><td><code>daPiso</code></td><td>sí/no</td><td>La bandera. Lo único del clima que mira la máquina</td></tr>
+            <tr><td><code>gdd</code> · <code>gddMeta</code></td><td>número</td><td>Grados-día acumulados desde que cierra la siembra, y la meta sorteada de la corrida. El cultivo madura cuando <code>gdd &gt;= gddMeta</code></td></tr>
+            <tr><td><code>diasHastaMadurez</code></td><td>número</td><td>Salida: largo del ciclo medido (día de madurez menos día de fin de siembra)</td></tr>
             <tr><td><code>horaTick</code></td><td>entero</td><td>Contador de horas, para saber cuándo cambia el día</td></tr>
           </tbody>
         </table>
       </div>
 
-      <h3>4 · Estado de la cadena de masa</h3>
+      <h3>5 · Estado de la cadena de masa</h3>
       <p>El patrón se repite idéntico en <code>Combine</code>, <code>Cart</code> y <code>Truck</code>, más una copia en <code>Main</code> para el silo. Explicado en la Parte 4.</p>
       <div class="tw">
         <table>
@@ -1155,40 +1264,51 @@ return h &lt; horasDia;</div>
             <tr><td><code>nivel</code></td><td>Kilos en el recipiente <em>a la fecha de <code>tUltimo</code></em>, no ahora</td></tr>
             <tr><td><code>tasaActual</code></td><td>Flujo neto de este recipiente, en kg por unidad de tiempo. Negativo = descargando</td></tr>
             <tr><td><code>tUltimo</code></td><td>Cuándo se actualizó <code>nivel</code> por última vez</td></tr>
-            <tr><td><code>tasaCosecha</code></td><td>Solo en <code>Combine</code>: lo que entra al sistema desde el campo</td></tr>
-            <tr><td><code>trabajando</code></td><td>Solo en <code>Combine</code>: bandera de la que se deriva <code>tasaCosecha</code></td></tr>
+            <tr><td><code>tasaCosecha</code></td><td>Solo en <code>Combine</code>: lo que entra al sistema desde el campo. Vale 0 sembrando</td></tr>
+            <tr><td><code>trabajando</code></td><td>Solo en <code>Combine</code>: bandera de la que se derivan <code>tasaCosecha</code> y <code>tasaSemilla</code></td></tr>
+            <tr><td><code>semilla</code> · <code>tasaSemilla</code> · <code>tUltimoSemilla</code></td><td>Solo en <code>Combine</code>: la tolva de semilla, con el mismo esquema que el grano</td></tr>
+            <tr><td><code>semillaCarro</code></td><td>Solo en <code>Cart</code>: la semilla que lleva el acoplado, aparte de <code>nivel</code></td></tr>
             <tr><td><code>nivelSilo</code> · <code>tasaSilo</code> · <code>tUltimoSilo</code></td><td>El silo, que vive en <code>Main</code></td></tr>
-            <tr><td><code>Capacity</code></td><td>Parámetro: el tope del recipiente</td></tr>
+            <tr><td><code>Capacity</code></td><td>Parámetro: el tope del recipiente (9.000 / 20.000 / 50.000 kg)</td></tr>
           </tbody>
         </table>
       </div>
 
-      <h3>5 · Banderas de control</h3>
+      <h3>6 · Banderas de control</h3>
       <div class="tw">
         <table>
           <thead><tr><th>Variable</th><th>Quién la escribe</th><th>Quién la lee</th></tr></thead>
           <tbody>
-            <tr><td><code>siembraCompleta</code></td><td><code>onCompleted()</code>, al terminar el último lote</td><td><code>SinSembrar → Creciendo</code> y <code>Parked → GoingToField</code></td></tr>
+            <tr><td><code>siembraCompleta</code></td><td><code>onCompleted()</code>, al terminar el último lote sembrado</td><td><code>SinSembrar → Creciendo</code> y <code>laborPendiente()</code></td></tr>
+            <tr><td><code>cosechaCompleta</code></td><td><code>onCompleted()</code>, al terminar el último lote cosechado</td><td><code>Maduro → Cosechado</code> y <code>laborPendiente()</code></td></tr>
             <tr><td><code>daPiso</code></td><td>El tick diario del clima</td><td><code>puedeTrabajar()</code></td></tr>
+            <tr><td><code>sinSemilla</code></td><td><code>semillaControl</code> (estado <code>Agotada</code>)</td><td><code>puedeTrabajar()</code></td></tr>
+            <tr><td><code>reparando</code></td><td><code>fallaControl</code> (estado <code>Reparando</code>)</td><td><code>puedeTrabajar()</code></td></tr>
             <tr><td><code>lotesCompletados</code></td><td><code>onCompleted()</code>, uno por lote</td><td><code>onCompleted()</code>, contra <code>cantidadLotes</code></td></tr>
-            <tr><td><code>trabajando</code></td><td>Las flechas de parar y reanudar</td><td>El cálculo de <code>tasaCosecha</code></td></tr>
+            <tr><td><code>trabajando</code></td><td>Las flechas de parar y reanudar</td><td>El cálculo de <code>tasaCosecha</code> y <code>tasaSemilla</code></td></tr>
             <tr><td><code>autoControl</code></td><td>Fijo en <code>true</code></td><td>Habilita el despacho automático del acoplado</td></tr>
           </tbody>
         </table>
       </div>
 
-      <h3>6 · Contadores y métricas</h3>
+      <h3>7 · Contadores y métricas</h3>
       <div class="tw">
         <table>
           <thead><tr><th>Variable</th><th>Qué mide</th></tr></thead>
           <tbody>
-            <tr><td><code>diaFinSiembra</code></td><td><strong>La métrica del entregable.</strong> Día en que cerró la campaña. <code>−1</code> = no terminó</td></tr>
-            <tr><td><code>horasCosechando</code> · <code>horasDetenida</code></td><td>Se acumulan al entrar y salir de <code>MoveHarvesting</code></td></tr>
+            <tr><td><code>diaFinSiembra</code></td><td><strong>La métrica del entregable #1.</strong> Día en que cerró la siembra. <code>−1</code> = no terminó</td></tr>
+            <tr><td><code>diaMadurez</code> · <code>diaFinCosecha</code></td><td>Día en que el cultivo maduró y día en que cerró la cosecha. <code>−1</code> = no ocurrió</td></tr>
+            <tr><td><code>diaSiembraLote[]</code> · <code>diaCosechaLote[]</code></td><td>Día (con fracción) en que termina cada lote. Con ellos el script calcula el rinde de cada lote según su fecha de siembra</td></tr>
+            <tr><td><code>horasTrabajando</code> · <code>horasDetenida</code></td><td>Se acumulan al entrar y salir de <code>MoveHarvesting</code> (antes <code>horasCosechando</code>: ahora también cuenta la siembra)</td></tr>
+            <tr><td><code>horasParada[8]</code></td><td>Horas detenidas por causa (falla, sinSemilla, jornada, sinPiso, esperaCarro, traslado, otra). Suman <code>horasDetenida</code></td></tr>
+            <tr><td><code>fallas</code> · <code>horasReparando</code></td><td>Cantidad de roturas y horas en reparación</td></tr>
+            <tr><td><code>entregasSemilla</code> · <code>horasSinSemilla</code></td><td>Entregas del acoplado y horas que la máquina esperó semilla</td></tr>
             <tr><td><code>viajesCamion</code></td><td>Un incremento por llegada del camión al silo</td></tr>
             <tr><td><code>diasSinPiso</code></td><td>Días en que <code>daPiso</code> fue falso</td></tr>
             <tr><td><code>totalCosechado</code></td><td>Masa que entró al sistema. El lado izquierdo de la auditoría</td></tr>
             <tr><td><code>masaDescartada</code> · <code>masaInventada</code></td><td>Lo que se recortó en los topes. Detectan el desbalance, no lo localizan</td></tr>
-            <tr><td><code>base…</code> (4 variables)</td><td>Foto de los contadores al empezar la campaña, para poder reportar el delta y no el acumulado histórico</td></tr>
+            <tr><td><code>semillaDespachada</code> · <code>semillaSembrada</code></td><td>Para la auditoría de semilla</td></tr>
+            <tr><td><code>base…</code> (<code>baseTrabajando</code>, <code>baseDetenida</code>, <code>baseViajes</code>, <code>baseSinPiso</code>, <code>baseFallas</code>, <code>baseReparando</code>, <code>baseParada[]</code>)</td><td>Foto de los contadores al empezar cada pasada, para poder reportar el delta y no el acumulado histórico</td></tr>
           </tbody>
         </table>
       </div>
@@ -1199,10 +1319,10 @@ return h &lt; horasDia;</div>
       <span class="part-no">Parte 10</span>
       <h2>Cómo leer el log de una corrida</h2>
 
-      <p>El modelo no tiene gráficos: se lee por consola. Este es un fragmento real anotado línea por línea.</p>
+      <p>La consola de <code>Simulation</code> (con <code>trazas = true</code>) es la forma de ver una corrida por dentro. Este es un fragmento real de una corrida de agosto de 2026 (1 lote, cosecha en octubre), anotado línea por línea: sirve para aprender el formato y la mecánica. Abajo está la lista de las líneas que se agregaron desde entonces.</p>
 
       <div class="ann">
-        <p class="ann-h">Log real de una corrida, anotado</p>
+        <p class="ann-h">Log de una corrida de agosto, anotado</p>
         <div class="ann-row">
           <div class="ann-code">### MAQUINA PARA | dia 0 | piso=true
     jornada=false tolvaLlena=false
@@ -1270,76 +1390,177 @@ CLIMA dia 1 | lluvia=0.1 etc=4.62
         </div>
       </div>
 
-      <div class="note warn">
-        <span class="tag">La métrica que hay que arreglar</span>
-        <p><code>uso = cosechando / (cosechando + detenida)</code> mezcla tres cosas distintas en el denominador: la noche (que no es tiempo perdido, es tiempo que no existe), los días sin piso (pérdida climática) y la espera del acoplado (pérdida logística). Para el entregable #2 hay que <strong>imputar cada parada a su causa</strong> y reportar tres contadores separados.</p>
+      <h3>Las líneas que aparecen hoy</h3>
+
+      <p>Desde agosto el modelo siembra, repone semilla, se rompe y reporta las paradas por causa. Estas líneas se agregaron (se imprimen solo con <code>trazas = true</code>; el barrido y <code>CompareRuns</code> corren en silencio, y los errores, <code>!!!</code> y <code>ERROR!</code>, salen siempre):</p>
+
+      <div class="tw">
+        <table>
+          <thead><tr><th>Línea</th><th>Qué dice</th></tr></thead>
+          <tbody>
+            <tr><td><code>### INICIO LOTE n</code></td><td>Al empezar cada lote de siembra: semilla en la tolva, velocidad, ancho y consumo</td></tr>
+            <tr><td><code>### PIDE SEMILLA</code>, <code>### CARRO CARGA SEMILLA</code>, <code>### ENTREGA SEMILLA</code>, <code>### SIN SEMILLA</code></td><td>La cadena de la semilla: la tolva baja del umbral, el acoplado carga, entrega, y (si no llega a tiempo) la máquina para</td></tr>
+            <tr><td><code>### FALLA n</code> · <code>### REPARADA</code></td><td>Cada rotura con su duración y su fin. <code>### MAQUINA PARA</code> ahora trae también <code>reparando=</code></td></tr>
+            <tr><td><code>=== SIEMBRA TERMINADA | superficie=…</code></td><td>Cierre de la siembra, con <code>DENTRO</code> o <code>FUERA</code> de la ventana del 15/11. Es la observación del entregable #1</td></tr>
+            <tr><td><code>Siembra cerrada el dia N</code> · <code>Cultivo maduro el dia N</code></td><td>Las transiciones del cultivo; la madurez trae <code>gdd=</code> y los días de ciclo, y el crecimiento la meta sorteada (<code>madura al sumar N grados-dia</code>)</td></tr>
+            <tr><td><code>=== COSECHA TERMINADA | campaña …</code> · <code>Campo cosechado el dia N</code></td><td>Cierre de la cosecha</td></tr>
+            <tr><td><code>SIEMBRA PARADAS | falla=… sinSemilla=… jornada=… sinPiso=… esperaCarro=…</code></td><td>Horas de parada por causa de la pasada; <code>suma-detenida</code> tiene que dar ~0. Siguen <code>SIEMBRA CARRO</code> y <code>SIEMBRA CAMION</code> (horas por estado) y las mismas tres líneas con <code>COSECHA</code></td></tr>
+            <tr><td><code>AUDITORIA …</code> · <code>AUDITORIA SEMILLA | despachada=…</code></td><td>Conservación de grano y de semilla; la <code>FUGA</code> tiene que ser ruido de coma flotante</td></tr>
+            <tr><td><code>CSV | …</code></td><td>La fila que el barrido agrega a <code>resultados.csv</code>, para verificarla desde <code>Simulation</code></td></tr>
+            <tr><td><code>&gt;&gt;&gt; SERIE CLIMATICA AGOTADA dia N</code></td><td>La corrida pasó el último día de clima de la campaña</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note">
+        <span class="tag">La métrica que había que arreglar, resuelta</span>
+        <p>El <code>uso = 25%</code> del fragmento de agosto mezclaba tres cosas distintas en el denominador: la noche (tiempo que no existe), los días sin piso (pérdida climática) y la espera del acoplado (pérdida logística). Hoy cada hora detenida se imputa a su causa con una prioridad fija (Parte 6), y esas horas por causa son las que trae el CSV del barrido.</p>
       </div>
     </section>
 
     <!-- ============ 11 ============ -->
     <section id="p11">
       <span class="part-no">Parte 11</span>
-      <h2>Los dos experimentos</h2>
+      <h2>Los experimentos y el barrido final</h2>
 
-      <p>Un <strong>experimento</strong> en AnyLogic es una forma de correr el modelo. El mismo modelo se puede correr de maneras distintas; acá hay dos, con propósitos opuestos.</p>
+      <p>Un <strong>experimento</strong> en AnyLogic es una forma de correr el modelo. El mismo modelo se puede correr de maneras distintas; acá hay tres, con propósitos distintos.</p>
 
       <div class="tw">
         <table>
           <caption>Configuración de los experimentos</caption>
-          <thead><tr><th></th><th><code>Simulation</code></th><th><code>ParametersVariation</code></th></tr></thead>
+          <thead><tr><th></th><th><code>Simulation</code></th><th><code>ParametersVariation</code></th><th><code>CompareRuns</code></th></tr></thead>
           <tbody>
-            <tr><td><strong>Para qué</strong></td><td>Ver el modelo funcionando, depurar</td><td>Producir los resultados del entregable</td></tr>
-            <tr><td><strong>Corridas</strong></td><td>1</td><td>300 · 5 superficies × 3 turnos × 20 campañas</td></tr>
-            <tr><td><strong>Cuándo termina</strong></td><td>15/05/2026 (~421 semanas)</td><td>A las <strong>31 semanas</strong> (217 días)</td></tr>
-            <tr><td><strong><code>terminarAlCerrarCampaña</code></strong></td><td><span class="ok">false</span> — deja correr el ciclo completo</td><td><span class="ok">true</span> — corta al cerrar la campaña</td></tr>
-            <tr><td><strong>Modo</strong></td><td>Con animación, a velocidad escalada</td><td>Sin animación, lo más rápido posible</td></tr>
-            <tr><td><strong>Salida</strong></td><td>La consola</td><td>Una fila por corrida en <code>resultados.csv</code></td></tr>
+            <tr><td><strong>Para qué</strong></td><td>Ver el modelo funcionando, depurar</td><td>Producir los resultados: el barrido de Monte Carlo</td><td>Comparar corridas en pantalla y explicar una campaña concreta</td></tr>
+            <tr><td><strong>Corridas</strong></td><td>1</td><td>400: 20 campañas × 5 réplicas × 2 trenes × 2 tamaños (9 y 12 lotes). Se usan 300</td><td>Las que se lanzan a mano moviendo cinco sliders (<code>campaña</code>, <code>replica</code>, <code>tren</code>, <code>cantidadLotes</code>, <code>turnos</code>)</td></tr>
+            <tr><td><strong>Cuándo termina</strong></td><td>Al cerrar la cosecha (<code>terminarAlCerrarCampaña = true</code>)</td><td>Al cerrar la cosecha, o a las <strong>52 semanas</strong></td><td>A las 52 semanas (<code>terminarAlCerrarCampaña = false</code>)</td></tr>
+            <tr><td><strong>Modo</strong></td><td>Con animación, a escala de tiempo real</td><td>Sin animación, tiempo virtual</td><td>Tiempo virtual a 10 semanas por segundo (<code>presentacionLenta = false</code>)</td></tr>
+            <tr><td><strong>Salida</strong></td><td>La consola (<code>trazas = true</code>)</td><td>Una fila por corrida en <code>resultados.csv</code>, de 59 columnas</td><td>Cuatro gráficos con una curva por corrida: ha sembradas, ha cosechadas, humedad y fallas</td></tr>
           </tbody>
         </table>
       </div>
 
       <div class="note">
         <span class="tag">Por qué existe terminarAlCerrarCampaña</span>
-        <p>En el barrido, cada corrida tiene que ser <strong>una observación limpia</strong>: una campaña, un valor de <code>diaFinSiembra</code>. Con el interruptor en <code>true</code> el modelo se corta apenas cierra la campaña y no sigue simulando meses que nadie va a mirar. Si <em>no</em> cierra dentro de los 212 días de datos climáticos, <code>diaFinSiembra</code> queda en <strong>−1</strong>, que es la observación «no terminó» — no un error.</p>
-        <p>En la corrida única querés lo contrario: ver el ciclo agronómico completo. Con el interruptor en <code>true</code>, los estados <code>Creciendo</code> y <code>Maduro</code> son literalmente inalcanzables.</p>
+        <p>En el barrido, cada corrida tiene que ser <strong>una observación limpia</strong>: una campaña, un valor de <code>diaFinSiembra</code>. Con el interruptor en <code>true</code> el modelo se corta apenas cierra la cosecha y no sigue simulando meses que nadie va a mirar. Si la siembra o la cosecha no cierran antes del último día de clima, <code>diaFinSiembra</code> o <code>diaFinCosecha</code> quedan en <strong>−1</strong> y los lotes sin terminar figuran como <code>NA</code> en el CSV: es la observación «no terminó», no un error.</p>
+        <p><code>CompareRuns</code> lo pone en <code>false</code> y termina por tiempo, como el experimento del modelo Market en que se inspiró.</p>
       </div>
 
       <h4>La velocidad de la animación la maneja el propio modelo</h4>
-      <p>Un detalle práctico: los estados del ciclo del cultivo cambian la escala de tiempo de la animación. <code>SinSembrar</code> la pone en <code>0,05 × day()</code> —la máquina está trabajando y se mira al detalle— y <code>Creciendo</code> la pone en <code>1 × week()</code>, porque la maduración son meses sin nada que ver.</p>
+      <p>Los estados del ciclo del cultivo cambian la escala de tiempo, pero solo si <code>presentacionLenta</code> vale <code>true</code>: <code>SinSembrar</code> la pone en <code>0,5 × day()</code> (siembra), <code>Creciendo</code> en <code>1 × week()</code> (la maduración son meses sin nada que ver) y <code>Maduro</code> en <code>0,05 × day()</code> (cosecha). <code>CompareRuns</code> la apaga y corre en tiempo virtual. Una limitación conocida: la ventana embebida de <code>CompareRuns</code> puede trabarse después de la segunda corrida; el servidor sigue sano, y abriendo en un navegador normal la dirección que la consola imprime al lanzar el experimento, sigue andando. La causa no está confirmada.</p>
 
-      <h3>El resultado: P(cerrar antes del 15 de noviembre)</h3>
+      <h3>Cómo se compara: sistema base contra sistema alternativo C</h3>
 
       <div class="tw">
         <table>
-          <caption>Probabilidad sobre las 20 campañas históricas</caption>
-          <thead><tr><th>Superficie</th><th class="num">1 turno · 6,3 h/d</th><th class="num">2 turnos · 12,6 h/d</th><th class="num">3 turnos · 18,9 h/d</th></tr></thead>
+          <caption>Los dos sistemas</caption>
+          <thead><tr><th></th><th>Base</th><th>Alternativo C: arrendar más campo</th></tr></thead>
           <tbody>
-            <tr><td>624 ha</td><td class="num ok">100%</td><td class="num ok">100%</td><td class="num ok">100%</td></tr>
-            <tr><td>1.248 ha</td><td class="num no">0%</td><td class="num ok">100%</td><td class="num ok">100%</td></tr>
-            <tr><td>1.872 ha</td><td class="num no">0%</td><td class="num mid">65%</td><td class="num ok">100%</td></tr>
-            <tr><td>2.496 ha</td><td class="num no">0%</td><td class="num no">0%</td><td class="num ok">90%</td></tr>
-            <tr><td>3.120 ha</td><td class="num no">0%</td><td class="num no">0%</td><td class="num mid">35%</td></tr>
+            <tr><td><strong>Superficie</strong></td><td>12 lotes (1.253 ha), campo <strong>propio</strong></td><td>18 lotes (1.879 ha): los 12 propios y 6 arrendados</td></tr>
+            <tr><td><strong>Máquinas</strong></td><td>1 tren (máquina, acoplado y camión)</td><td>2 trenes de 9 lotes</td></tr>
+            <tr><td><strong>Jornada</strong></td><td>1 turno</td><td>1 turno por máquina</td></tr>
           </tbody>
         </table>
       </div>
 
+      <p>El alternativo tiene más campo, pero cada máquina siembra 9 lotes en vez de 12, así que puede terminar antes y perder menos rinde. A cambio paga arrendamiento, una segunda máquina y un segundo operario. Como el modelo tiene un solo tren, el alternativo se simula como <strong>dos corridas de 9 lotes</strong> (<code>tren</code> = 1 y 2) con el mismo clima y la misma madurez y distintas fallas; la campaña termina cuando termina el tren más lento. Los dos trenes no comparten recursos: es una simplificación declarada.</p>
+
+      <p>Las semillas son <strong>comunes</strong> a los dos sistemas: la madurez usa <code>replica + 5 × campaña</code> (100 metas distintas) y las fallas <code>replica + 5 × campaña + 100 × (tren − 1)</code> (200 secuencias, 100 por tren). El tren 1 del alternativo usa las mismas fallas que el base. Así la diferencia entre sistemas se debe al sistema y no a que le tocaron fallas distintas, y las 100 observaciones por sistema se comparan <strong>por pares</strong> (misma <code>campaña</code> y <code>replica</code>).</p>
+
+      <h3>El resultado del barrido de 400 corridas</h3>
+
       <div class="kv">
-        <div><p class="k">Capacidad efectiva</p><p class="v">21,7 ha</p><p class="s">por día y por turno — constante en las 15 combinaciones (21,4 a 22,1)</p></div>
-        <div><p class="k">Eficiencia</p><p class="v">70%</p><p class="s">de la capacidad nominal (31 ha/día). El resto: viajes, esperas, pasadas cortadas</p></div>
-        <div><p class="k">Techo de una máquina</p><p class="v">~2.500 ha</p><p class="s">con los 3 turnos, al 90% de confianza</p></div>
+        <div><p class="k">Diferencia de margen</p><p class="v">+109.164 US$</p><p class="s">alternativo − base, por campaña · IC 95% por clima [100.121 ; 118.207]</p></div>
+        <div><p class="k">Siembra a tiempo</p><p class="v">45% → 95%</p><p class="s">base contra alternativo, antes del 15/11 · McNemar exacto p &lt; 0,001</p></div>
+        <div><p class="k">Margen por hectárea</p><p class="v">750 vs 558</p><p class="s">US$/ha, base contra alternativo: por hectárea gana el base</p></div>
+      </div>
+
+      <div class="tw">
+        <table>
+          <caption>Resultado económico por sistema (promedio de los 100 pares, US$ por campaña)</caption>
+          <thead><tr><th></th><th class="num">Base</th><th class="num">Alternativo</th></tr></thead>
+          <tbody>
+            <tr><td>Ingreso</td><td class="num">1.691.737</td><td class="num">2.549.740</td></tr>
+            <tr><td>− Flete y comercialización</td><td class="num">169.174</td><td class="num">254.974</td></tr>
+            <tr><td>− Insumos</td><td class="num">438.480</td><td class="num">657.720</td></tr>
+            <tr><td>− Arrendamiento</td><td class="num">0</td><td class="num">311.008</td></tr>
+            <tr><td>− Costo fijo de los trenes</td><td class="num">120.000</td><td class="num">240.000</td></tr>
+            <tr><td>− Operarios</td><td class="num">4.605</td><td class="num">7.446</td></tr>
+            <tr><td>− Combustible y mantenimiento</td><td class="num">17.875</td><td class="num">27.117</td></tr>
+            <tr><td>− Reparaciones</td><td class="num">1.473</td><td class="num">2.181</td></tr>
+            <tr><td><strong>= Margen</strong></td><td class="num"><strong>940.130</strong></td><td class="num"><strong>1.049.294</strong></td></tr>
+            <tr><td>Superficie [ha]</td><td class="num">1.253</td><td class="num">1.879</td></tr>
+            <tr><td>Fin de siembra [día]</td><td class="num">46,5</td><td class="num">37,1</td></tr>
+            <tr><td>Horas trabajadas · fallas</td><td class="num">447 · 4,9</td><td class="num">678 · 7,3</td></tr>
+          </tbody>
+        </table>
       </div>
 
       <div class="note">
-        <span class="tag">La respuesta de dimensionamiento</span>
-        <p>Una máquina cubre <strong>~900 ha por turno de operario</strong> con 90% de confianza de cerrar la ventana. Con los 3 turnos posibles, <strong>una máquina topea en ~2.500 ha</strong>; por encima hace falta una segunda.</p>
-        <p>Un turno más y una máquina más aportan <strong>la misma capacidad</strong> (~900 ha), pero el turno solo cuesta un salario y la máquina cuesta alquiler más salario. <strong>Conviene sumar turnos hasta agotar los tres y recién después máquinas.</strong> El punto de quiebre está en las 2.500 ha.</p>
+        <span class="tag">Cómo se lee</span>
+        <p>Con 1 turno y 1 tren, el base no llega a sembrar antes del 15/11 en el <strong>55% de las campañas</strong> y no cumple el 90% mínimo; con dos trenes el riesgo baja al 5%. En margen total conviene el alternativo, porque el intervalo de la diferencia por clima (20 diferencias independientes, t de Student) no incluye el 0. Pero <strong>la ventaja viene sobre todo de sembrar 626 ha más</strong>, no de terminar antes, y por hectárea gana el base. El día medio de fin de siembra es el 46,5 en el base (pasado el 45) y el 37,1 en el alternativo.</p>
+        <p>La media acumulada de la diferencia se estabiliza: varía 1,8% entre las observaciones 75 y 100. Catorce lotes (sumando los dos sistemas) quedaron sin cosechar en el año y conservan el 80% del rinde, un supuesto.</p>
       </div>
 
-      <p>Un resultado que vale reportar por sí mismo: <strong>que la capacidad por turno no se degrade al escalar</strong> significa que la logística acompaña, y que el cuello de botella sigue siendo la máquina, no el acoplado ni el camión.</p>
+      <h3>Sensibilidad económica</h3>
+
+      <p>Se recalculó el mismo barrido cambiando un supuesto por vez (el script lo permite con <code>--param</code>, sin volver a simular). Diferencia de margen alternativo − base, por clima, contra los 109.164 US$ del caso base:</p>
+
+      <div class="tw">
+        <table>
+          <caption>Diferencia de margen (US$ por campaña) y decisión</caption>
+          <thead><tr><th>Parámetro</th><th>Valor</th><th class="num">Diferencia</th><th>IC 95% por clima</th><th>Conviene</th></tr></thead>
+          <tbody>
+            <tr><td rowspan="4"><code>fijo_tren_usd</code></td><td>60.000</td><td class="num">169.164</td><td>[160.121 ; 178.207]</td><td>alternativo</td></tr>
+            <tr><td>180.000</td><td class="num">49.164</td><td>[40.121 ; 58.207]</td><td>alternativo</td></tr>
+            <tr><td><strong>229.000</strong></td><td class="num"><strong>164</strong></td><td>[−8.879 ; 9.207]</td><td><strong>empate</strong></td></tr>
+            <tr><td>300.000</td><td class="num">−70.836</td><td>[−79.879 ; −61.793]</td><td>base</td></tr>
+            <tr><td rowspan="2"><code>precio_usd_t</code></td><td>250</td><td class="num">−3.696</td><td>[−10.403 ; 3.010]</td><td>empate</td></tr>
+            <tr><td>400</td><td class="num">205.304</td><td>[194.271 ; 216.338]</td><td>alternativo</td></tr>
+            <tr><td rowspan="2"><code>arriendo_qq_ha</code></td><td>10</td><td class="num">212.833</td><td>[203.790 ; 221.876]</td><td>alternativo</td></tr>
+            <tr><td>20</td><td class="num">5.495</td><td>[−3.548 ; 14.538]</td><td>empate</td></tr>
+            <tr><td rowspan="2"><code>insumos_usd_ha</code></td><td>250</td><td class="num">171.804</td><td>[162.761 ; 180.847]</td><td>alternativo</td></tr>
+            <tr><td>450</td><td class="num">46.524</td><td>[37.481 ; 55.567]</td><td>alternativo</td></tr>
+            <tr><td rowspan="2"><code>perdida_kg_ha_dia</code></td><td>15</td><td class="num">107.743</td><td>[99.557 ; 115.929]</td><td>alternativo</td></tr>
+            <tr><td>36</td><td class="num">110.728</td><td>[100.713 ; 120.742]</td><td>alternativo</td></tr>
+            <tr><td rowspan="2"><code>rinde_sin_cosechar</code></td><td>0</td><td class="num">122.888</td><td>[85.213 ; 160.562]</td><td>alternativo</td></tr>
+            <tr><td>1</td><td class="num">105.733</td><td>[103.451 ; 108.015]</td><td>alternativo</td></tr>
+            <tr><td><code>salario_mes_usd</code></td><td>2.300</td><td class="num">106.560</td><td>[97.593 ; 115.527]</td><td>alternativo</td></tr>
+          </tbody>
+        </table>
+      </div>
 
       <div class="note warn">
-        <span class="tag">Límite de esta tabla</span>
-        <p>Es un <strong>límite optimista: todavía no hay roturas de máquina</strong>. Cuando entren, la capacidad efectiva baja y todos los umbrales se corren hacia abajo. Quedan además dos celdas de transición sin resolver (1.872 ha con 2 turnos, 65%; y 3.120 ha con 3 turnos, 35%) que un barrido más fino precisaría.</p>
+        <span class="tag">Qué pesa y qué no</span>
+        <p>El alternativo gana mientras el <strong>costo fijo por tren</strong> sea menor a ~229.000 US$, el <strong>precio</strong> mayor a ~250 US$/t y el <strong>arriendo</strong> menor a ~20 qq/ha. Esos tres umbrales están cerca de los valores base, así que la conclusión es sensible a ellos: son los números que hay que respaldar con una fuente. La pérdida por siembra tardía, el rinde de los lotes sin cosechar y el salario casi no mueven el resultado.</p>
+      </div>
+
+      <h3>Los supuestos económicos</h3>
+
+      <p>El modelo calcula lo físico y el script <code>herramientas/analizar_barrido.py</code> calcula la plata. Estos son los valores del diccionario <code>PARAMETROS</code>; los marcados como supuesto no tienen fuente y se declaran como tales.</p>
+
+      <div class="tw">
+        <table>
+          <thead><tr><th>Rubro</th><th>Valor</th><th>Origen</th></tr></thead>
+          <tbody>
+            <tr><td>Rinde potencial</td><td class="num">41 qq/ha</td><td>BCR GEA 2025/26, soja de primera, zona núcleo</td></tr>
+            <tr><td>Pérdida por siembra tardía</td><td class="num">25 kg/ha por día</td><td>Después del 15/11 (zona núcleo; sin publicación de INTA). En la sensibilidad: 15 y 36</td></tr>
+            <tr><td>Precio de la soja</td><td class="num">331 US$/t</td><td>AgBi, campaña 2026/27</td></tr>
+            <tr><td>Lote sembrado sin cosechar a fin de año</td><td class="num">80% del rinde</td><td>Supuesto (la cosecha sigue en octubre)</td></tr>
+            <tr><td>Arrendamiento</td><td class="num">15 qq/ha</td><td>Infocampo y BCR, sudeste de Córdoba. Solo las 626 ha arrendadas del alternativo</td></tr>
+            <tr><td>Insumos</td><td class="num">350 US$/ha</td><td>Supuesto, a partir de los ~700 US$/ha de implantar soja (BCR), sin labores ni cosecha propias</td></tr>
+            <tr><td>Flete y comercialización</td><td class="num">10% del ingreso</td><td>Supuesto</td></tr>
+            <tr><td>Costo fijo por tren y campaña</td><td class="num">120.000 US$</td><td>Supuesto: poseer máquina, acoplado y camión (amortización, interés y seguro). Un contratista cobra ~165 a 190 US$/ha (FACMA 2026/27)</td></tr>
+            <tr><td>Operario</td><td class="num">1.200 US$/mes</td><td>Supuesto, a partir de la escala UATRE (ARS 1.892.406/mes en oct 2026), por tren y por los meses de siembra y cosecha</td></tr>
+            <tr><td>Combustible y mantenimiento</td><td class="num">40 US$ por hora trabajada</td><td>Supuesto (~25 l/h de gasoil)</td></tr>
+            <tr><td>Reparación</td><td class="num">300 US$ por falla</td><td>Supuesto</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note warn">
+        <span class="tag">Límites de estos resultados</span>
+        <p><strong>Costos sin fuente:</strong> los marcados como supuesto se eligieron para que el margen del base dé positivo y deben confirmarse con el grupo antes del informe. <strong>Clima:</strong> las 20 campañas son un conjunto fijo con 5 réplicas de semilla cada una; las observaciones de un mismo clima no son independientes, por eso manda el intervalo por clima y no el de las 100 observaciones. Son menos que los 30 climas del TP 3.</p>
+        <p><strong>Validación del modelo:</strong> la meta de madurez sorteada se ajusta a la triangular (media 1.911,5 contra 1.900 teórica, desvío 81,3 contra 81,6). En cambio las <strong>fallas observadas son 1.218 contra 1.124,8 esperadas</strong> (horas trabajadas / <code>mtbfHoras</code>): un exceso de 8% (z = +2,78) que el script marca REVISAR y todavía <strong>no se explicó</strong>. <strong>Versión de AnyLogic:</strong> todo el barrido se corrió con 8.9.10; con la misma semilla, 8.9.9 daba una falla distinta.</p>
       </div>
     </section>
 
@@ -1402,7 +1623,52 @@ CLIMA dia 1 | lluvia=0.1 etc=4.62
             <tr>
               <td>Máquina parametrizada por modo (siembra/cosecha)</td>
               <td>Un tipo de agente por máquina</td>
-              <td>Mismo límite de 10 tipos. Decisión tomada, todavía sin implementar</td>
+              <td>Mismo límite de 10 tipos. Implementado: el modo se deduce del estado del campo (<code>Main.sembrando()</code>), sin una bandera que pueda desincronizarse</td>
+            </tr>
+            <tr>
+              <td>Una corrida es una campaña, con estado final <code>Cosechado</code></td>
+              <td>Volver de <code>Maduro</code> a <code>SinSembrar</code> y empezar otra vuelta</td>
+              <td>El reinicio obligaba a poner <code>diaCampaña</code> en 0 y la cosecha leía el clima de octubre. Con un estado final el día del modelo coincide con el calendario</td>
+            </tr>
+            <tr>
+              <td>Madurez por grados-día con meta triangular sorteada por corrida</td>
+              <td>Sorteo triangular de días (90–150)</td>
+              <td>El ciclo sale del clima de cada campaña y no de un número inventado; la meta (1.700 / 1.900 / 2.100) aporta la variabilidad entre cultivos. Sin fotoperíodo: es una limitación declarada</td>
+            </tr>
+            <tr>
+              <td>Semilla repuesta por el acoplado, con stock infinito en la cabecera</td>
+              <td>Stock finito repuesto por el camión (el paso 1b)</td>
+              <td>Con estos valores la semilla casi no frena a la máquina; el 1b agregaba complejidad sin cambiar la respuesta. Se declara como supuesto</td>
+            </tr>
+            <tr>
+              <td>Fallas exponenciales en horas de operación, con generador propio</td>
+              <td>Usar el generador del modelo</td>
+              <td>Agregar fallas no mueve los demás sorteos, con un MTBF enorme el resultado queda idéntico al anterior y las réplicas se cambian con la semilla</td>
+            </tr>
+            <tr>
+              <td>Comparar el sistema base contra <strong>un</strong> alternativo (2 trenes, 18 lotes)</td>
+              <td>Una grilla de turnos × máquinas × superficie</td>
+              <td>Es lo que pide la cátedra; son 400 corridas y no miles, y se compara por pares</td>
+            </tr>
+            <tr>
+              <td>Números aleatorios comunes: semillas derivadas de <code>campaña</code>, <code>replica</code> y <code>tren</code></td>
+              <td>Una semilla distinta por escenario</td>
+              <td>Así la diferencia entre sistemas se debe al sistema y no a que les tocaron fallas distintas. Dan 100 metas de madurez y 200 secuencias de fallas</td>
+            </tr>
+            <tr>
+              <td><strong>Costo fijo por tren</strong> y por campaña</td>
+              <td>Pagar la maquinaria por hectárea</td>
+              <td>Si se pagara por hectárea, el costo sería el mismo con 1 o con 2 máquinas y no habría nada que comparar. Es una simplificación declarada</td>
+            </tr>
+            <tr>
+              <td>El modelo calcula lo físico; el script de análisis calcula la plata</td>
+              <td>Rinde y costos dentro del modelo</td>
+              <td>La sensibilidad a precios y costos se recalcula sin volver a simular</td>
+            </tr>
+            <tr>
+              <td>Lote sembrado y sin cosechar al 30/9: conserva el 80% del rinde</td>
+              <td>Descartarlo (rinde 0)</td>
+              <td>Con 0, dos pares de la campaña 7 ensanchaban el IC; la cosecha sigue en octubre. Supuesto, con sensibilidad de 0 a 1</td>
             </tr>
           </tbody>
         </table>
@@ -1414,39 +1680,29 @@ CLIMA dia 1 | lluvia=0.1 etc=4.62
       <span class="part-no">Parte 13</span>
       <h2>Lo que falta, en orden de valor</h2>
 
-      <h3>1 · Fallas de máquina — máxima prioridad</h3>
-      <p>Es lo único que falta para que los entregables #2 y #3 tengan base completa, y además hace que la tabla de probabilidades deje de ser un límite optimista. <strong>El diseño está listo, sin implementar.</strong></p>
-      <p>Sería un <strong>tercer statechart paralelo</strong> en la máquina, junto a <code>tankControl</code> y <code>moveControl</code>:</p>
-      <pre><code>Operativa ──[timeout horasHastaFalla]──&gt; Reparando ──[timeout duracionReparacion]──&gt; Operativa</code></pre>
+      <p>Los pasos 1 a 7 del plan están hechos: la siembra con semilla, las fallas, la madurez por grados-día, las causas de parada, el rinde y los costos (en el script de análisis) y el barrido de 400 corridas. Esto es lo que queda:</p>
+
+      <h3>1 · El exceso de fallas, sin explicar</h3>
+      <p>El barrido observó <strong>1.218 fallas contra 1.124,8 esperadas</strong> (+8%, z = +2,78) y el script lo marca REVISAR. Es el mismo exceso que se había visto en las corridas de siembra. Una hipótesis, <strong>sin verificar</strong>, es que el temporizador de falla corre durante tramos en que <code>trabajando</code> es verdadero pero que no se suman a las horas trabajadas. Hay que entender si sesga los resultados (las fallas pesan poco en el margen: 300 US$ cada una) antes de dar el modelo por validado.</p>
+
+      <h3>2 · Confirmar con el grupo los supuestos económicos</h3>
+      <p>La conclusión del barrido depende de tres números: el costo fijo por tren (hoy 120.000 US$; la ventaja se anula en ~229.000), el precio de la soja (~250 US$/t) y el arriendo (~20 qq/ha). Conviene respaldarlos con una fuente. Quedan además sin fuente <code>velocidadSiembra</code>, <code>densidadSiembra</code>, <code>capacidadSemilla</code>, <code>mtbfHoras</code> y la triangular de grados-día (1.700 / 1.900 / 2.100).</p>
+
+      <h3>3 · Sensibilidad de los parámetros del modelo</h3>
+      <p>La sensibilidad económica está hecha. Falta la de los parámetros que cambian la simulación, de a uno por vez y con los demás en su valor base: <code>umbralPiso</code> (15, 20, 25, 30 mm; el más influyente y sin valor publicado único), <code>mtbfHoras</code> (40, 100, 200 h), <code>velocidadSiembra</code> (5, 7, 9 km/h) y <code>gddObjetivo</code> (1.700, 1.900, 2.100). Cada valor exige un barrido nuevo en el IDE.</p>
+
+      <h3>4 · Presentar los resultados</h3>
       <ul>
-        <li>El reloj de desgaste se consume <strong>solo mientras la máquina trabaja</strong>, con el mismo truco de los niveles: <code>inState( MoveHarvesting ) ? horasHastaFalla : 1e12</code>.</li>
-        <li><strong>Distribución:</strong> exponencial con MTBF en <em>horas de operación</em> (justificable por superposición de procesos de falla, teorema de Drenick). Weibull con β&gt;1 solo si se declara el supuesto de reparación perfecta.</li>
-        <li><strong>Parámetros:</strong> MTBF de 20–40 h de operación (la norma ASABE D497.7 reporta 15 a 72 h por subsistema). Reparación asimétrica, ej. <code>triangular(0.5, 8, 2)</code> horas.</li>
-        <li><strong>Calibración:</strong> apuntar a 0,5–3 fallas esperadas por campaña.</li>
-        <li><strong>Punto de arquitectura:</strong> la parada va como <em>término nuevo en <code>puedeTrabajar()</code></em>, no como mensaje. Exactamente el mismo camino que tomó la jornada legal.</li>
+        <li>El entregable #2 (cuellos de botella) está medido: las horas por causa y por estado del acoplado y del camión están en el CSV. Falta presentarlas.</li>
+        <li>Los gráficos del TP 3 (media acumulada de la diferencia contra el número de observaciones e histograma de las diferencias) salen de <code>salida/diferencias_por_par.csv</code>.</li>
+        <li>El informe tiene que declarar las simplificaciones: trenes independientes sin recursos compartidos, stock de semilla infinito, jornada uniforme sobre los 7 días, clima de reanálisis (subestima levemente los días sin piso) y 20 climas.</li>
       </ul>
-
-      <h3>2 · Acoplamiento térmico: gdd → Maduro</h3>
-      <p>Los <strong>grados-día</strong> (<code>gdd</code>) son la forma agronómica de medir el desarrollo de un cultivo: cada día suma la temperatura media menos una temperatura base, y el cultivo madura al llegar a un total. El modelo los acumula pero <strong>no los usa</strong>: la transición <code>Creciendo → Maduro</code> sigue siendo un sorteo <code>triangular(90, 150, 120)</code>. Para cerrarlo, pasarla a condición <code>gdd &gt;= gddObjetivo</code>.</p>
-      <div class="note warn">
-        <span class="tag">El dato que importa</span>
-        <p>El objetivo calibrado contra la serie real es <strong>1.680 grados-día base 10 °C</strong>, que da un ciclo medio de 119,7 días con dispersión de <strong>101 a 135</strong>. El <code>triangular(90,150,120)</code> actual abarca 60 días de rango cuando la variabilidad real es de <strong>34</strong>: la distribución inventada es casi el doble de ancha y sesga el riesgo hacia arriba.</p>
-      </div>
-
-      <h3>3 · Desglose de <code>horasDetenida</code> por causa</h3>
-      <p>Sin esto el entregable #2 no tiene su número. Tres contadores separados —clima, jornada, logística— imputados en la flecha de parada.</p>
-
-      <h3>4 · Campaña de siembra y acople de rinde</h3>
-      <p>La siembra reusa el patrón de recipientes con el flujo invertido: la semilla sale de la sembradora hacia el lote y los camiones la reponen. Y el acople que le da sentido a todo el trabajo:</p>
-      <pre><code>rindeEfectivo = rindePotencial * penalizacionPorFecha( fechaSiembra )</code></pre>
-      <p>con la curva armada como tabla de consulta a partir de datos de INTA de fecha de siembra contra rendimiento. <strong>Sin este acople, siembra y cosecha son dos simulaciones pegadas y el modelo no puede responder su propia pregunta</strong> — que es cuánto cuesta sembrar tarde.</p>
 
       <h3>5 · Menores</h3>
       <ul>
-        <li>Crecimiento visual: ligar la altura de la figura del cultivo a un <code>progresoCultivo()</code> calculado desde <code>tInicioCrecimiento</code>.</li>
-        <li>Contadores de ocio para el acoplado y el camión (solo está el de la máquina).</li>
-        <li>Avanzar <code>campaña</code> entre campañas de una misma corrida, en vez de repetir la misma serie climática.</li>
-        <li>Corregir la ruta fija del código que escribe el CSV, que apunta a la máquina de otro integrante del equipo y falla en silencio.</li>
+        <li>Ampliar la serie de NASA POWER (disponible desde 1981) para llegar a 30 climas como en el TP 3; el límite de 64 KB por literal de la JVM obliga a partir las series.</li>
+        <li>En la cosecha el camión está ocioso el 97% del tiempo y parece sobredimensionado: es un candidato para comparar tamaños de acoplado y de camión.</li>
+        <li>Si se quisiera estudiar logística compartida (un acoplado para dos máquinas), habría que convertir <code>combine</code>, <code>cart</code> y <code>truck</code> en poblaciones; es un cambio grande y hoy está descartado.</li>
       </ul>
     </section>
 
@@ -1471,7 +1727,7 @@ CLIMA dia 1 | lluvia=0.1 etc=4.62
             </tr>
             <tr>
               <td><strong>Los mensajes no se encolan</strong>, y ante eventos simultáneos se procesa primero el último enviado</td>
-              <td>Un <code>FINISHED_LOADING</code> llegó antes de que el camión estuviera en el estado que lo escucha, se descartó en silencio y el camión se llenó de la nada: <strong>150 t fabricadas</strong></td>
+              <td>Un <code>FINISHED_LOADING</code> llegó antes de que el camión estuviera en el estado que lo escucha, se descartó en silencio y el camión se llenó de la nada: <strong>150 t fabricadas</strong>. Pasar a FIFO ayuda a confirmar el diagnóstico pero tapa el handshake perdido: no es el arreglo</td>
             </tr>
             <tr>
               <td><strong><code>Transition.restart()</code> no existe</strong></td>
@@ -1498,6 +1754,22 @@ CLIMA dia 1 | lluvia=0.1 etc=4.62
               <td>Se usa el literal <code>1e12</code> para desactivar una alarma</td>
             </tr>
             <tr>
+              <td><strong>Una condición que deshace lo que hizo un timeout necesita margen</strong></td>
+              <td>La alarma <code>aPedida</code> dispara con la tolva en 800 kg; por redondeo queda en 800,0000001, la condición de vuelta (<code>semilla &gt; 800</code>) es verdadera y el timeout se recalcula en 0: miles de <code>### PIDE SEMILLA</code> en el mismo instante. Arreglo: histéresis de 1 kg</td>
+            </tr>
+            <tr>
+              <td><strong>Conservar masa no prueba que la fuente sea correcta</strong></td>
+              <td><code>tankControl</code> rearmaba la tasa de cosecha sin mirar <code>puedeTrabajar()</code>: la tolva se llenaba de noche y con el lote embarrado, y la <code>FUGA</code> seguía en 1e-11. Arreglo: la tasa pasó a ser derivada (<code>trabajando</code> y <code>tasaCosechaActual()</code>), no latcheada</td>
+            </tr>
+            <tr>
+              <td><strong><code>java.util.Random</code> con semillas consecutivas da casi el mismo primer número</strong></td>
+              <td>Con las semillas 1, 2 y 3 el primer <code>nextDouble()</code> es 0,7309, 0,7311 y 0,7311: las réplicas habrían sorteado la misma meta de madurez. Arreglo: mezclar la semilla con una constante (<code>* 0x9E3779B97F4A7C15L</code>), en la madurez y en las fallas</td>
+            </tr>
+            <tr>
+              <td><strong>Todo el barrido se corre con una sola versión de AnyLogic</strong></td>
+              <td>Con la misma semilla, 8.9.10 dio una falla más en la cosecha que 8.9.9 (se asume que por el orden de los eventos simultáneos). Con versiones mezcladas se pierde la comparación con semillas comunes</td>
+            </tr>
+            <tr>
               <td><strong>Límites de la PLE</strong></td>
               <td>10 tipos de agente · 200 bloques por tipo · 50.000 agentes dinámicos · 5 h simuladas fuera de Process Modeling</td>
             </tr>
@@ -1510,8 +1782,8 @@ CLIMA dia 1 | lluvia=0.1 etc=4.62
 
   <footer class="foot">
     Optimización de la Ventana de Siembra · Simulación · UTN Rosario<br>
-    Modelo AnyLogic 8.9.9 PLE · 4 agentes · 4 statecharts · unidad de tiempo Week · clima NASA POWER 2005–2025<br>
-    Documento derivado del archivo del modelo y de docs/CONTEXTO-TRASPASO.md, verificado contra corridas instrumentadas.
+    Modelo AnyLogic 8.9.10 PLE · 4 agentes · 8 statecharts · unidad de tiempo Week · clima NASA POWER 2005–2025<br>
+    Actualizado el 30/10/2026. Derivado del archivo del modelo, de docs/PLAN.md, docs/CAMBIOS-2026-10.md y docs/CONTEXTO-TRASPASO.md, verificado contra corridas instrumentadas.
   </footer>
 
 </div>

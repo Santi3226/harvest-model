@@ -47,7 +47,7 @@ Todos los pasos siguen el mismo protocolo, para que cualquiera del grupo pueda r
 | 6 | Crecimiento visual del cultivo | Ninguno | 3 | **Hecho** (tamaño el 27/10; color del campo según el cultivo el 28/10, verificado en el IDE) |
 | 7 | Barrido final de Monte Carlo | #1, #2, #3 | 1 a 5 | **Corrido y analizado el 30/10** (registro de avance). Falta explicar el exceso de fallas (z = +2,78) y confirmar costos con el grupo |
 | 8 | Sensibilidad de los parámetros inciertos | #1, #3 | 7 | Pendiente |
-| 9 | Regenerar el HTML y limpiar el repo | Ninguno | Todos | Pendiente |
+| 9 | Regenerar el HTML y limpiar el repo | Ninguno | Todos | **Hecho** (30/10) |
 
 **Orden recomendado:** 1, 2, 3, 4, 5, 7, 8, 9. El paso 6 se hace si sobra tiempo. Los pasos 2 y 3 son independientes del 1 y se pueden intercambiar.
 
@@ -404,4 +404,4 @@ Se actualiza al terminar cada paso, con la fecha y el commit.
   | `salario_mes_usd` | 2.300 | 106.560 | [97.593 ; 115.527] | alternativo |
 
   **Lectura.** El alternativo gana mientras el precio sea mayor a ~250 US$/t, el arriendo menor a ~20 qq/ha y el fijo por tren menor a ~229.000 US$. La pérdida por siembra tardía, el rinde sin cosechar y el salario casi no mueven el resultado: la ventaja viene sobre todo de sembrar 626 ha más, no de terminar antes. Por hectárea el base gana en todos los casos. **Falta** la sensibilidad de los parámetros del modelo (`umbralPiso`, `mtbfHoras`, `velocidadSiembra`, `gddObjetivo`), que exige correr de nuevo el barrido en el IDE.
-- [ ] Paso 9. Cierre del repositorio (el informe queda fuera del plan).
+- [x] Paso 9. Cierre del repositorio (el informe queda fuera del plan). **Hecho el 2026-10-30** en `chore/cierre-repo`: `docs/ventana-siembra.html` regenerado al 30/10 (cabecera, partes 1, 3, 6, 9, 11, 12, 13 y retoques en las demás; parsea sin etiquetas sin cerrar; el log anotado de la parte 10 sigue siendo de agosto), `backups/` reducido a 2 copias, borrados `CONTEXTO-TRASPASO.md.bak` y `debug.log` (ahora ignorados) y README reescrito.
