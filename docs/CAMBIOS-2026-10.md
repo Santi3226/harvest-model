@@ -1217,3 +1217,70 @@ El `.alp` se editó por script y parsea. Los 25 elementos nuevos están en su no
 - Que los tres gráficos se dibujan y crecen.
 - Que al cerrar la siembra la columna SIEMBRA queda fija y cumple Little: q · T ≈ n · d.
 - Que la corrida verificada (campaña 0, 12 lotes) da los mismos días de fin que antes. Con la misma semilla tiene que repetir al dígito, porque no cambió nada que sortee.
+
+---
+
+## 20. CompareRuns: link a localhost, sliders y AnyLogic Cloud (4/11)
+
+Rama `fix/compare-runs`. Respaldo previo: `backups/2026-11-04-pre-fix-compare-runs.alp`.
+
+### El link a localhost no se imprimía
+
+`anunciarDireccion()` buscaba el puerto del servidor web con `netstat -ano -p TCP` y el estado `LISTENING`. Fallaba por tres motivos, verificados en la máquina de Santiago (Windows 11, compilación 26300):
+
+1. `-p TCP` lista solo IPv4, y un `ServerSocket` de Java escucha en IPv6 de modo dual (`::`).
+2. En esta compilación de Windows, `netstat` directamente no muestra el puerto de Java, y a otros puertos que están escuchando (135, 445) les pone estados equivocados (`FIN_WAIT_1`, `CLOSED`). `Get-NetTCPConnection` sí lo ve, aunque con el estado vacío.
+3. El `catch` mudo lo escondía, y en Linux no podía funcionar nunca, porque esa sintaxis de `netstat` es de Windows.
+
+**Arreglo:**
+- Windows: `Get-NetTCPConnection -OwningProcess <pid>`, tomando los sockets con puerto remoto 0, que son los que escuchan. Si no encuentra nada, prueba `netstat -ano` con el mismo criterio (dirección remota `:0`), sin mirar el texto del estado.
+- Linux: `/proc/net/tcp` y `tcp6`, cruzados con los sockets de `/proc/self/fd`.
+- Si no encuentra el puerto, o si hay un error, avisa con `!!!`.
+
+Se probó compilando y ejecutando el cuerpo real de la función con la JRE de AnyLogic, contra un puerto abierto por la prueba. Después, en el IDE, imprimió `http://localhost:23222/`. La rama de Linux compila pero no se probó.
+
+### Los sliders "no toman los valores" en localhost: dos clientes en la misma sesión
+
+Se reprodujo desde un navegador con la sesión de `CompareRuns` abierta:
+- Al mover el slider, el navegador manda `POST /uuid/action?id=<control>&value=7` y el servidor responde 200, pero `eCampaña` no cambia: la corrida usa campaña 0 y el slider vuelve a 0.
+- El ID del mismo slider cambió entre intentos (3598, 7331).
+- La consola del navegador mostraba sin parar cuadros perdidos y desordenados ("Reordering or packet loss", "Server response timeout. Requesting full frame"), aun sin corridas y con los gráficos vacíos.
+
+**Causa:** el cliente web pide los cuadros a `/uuid/frames?fullFrame=false&time=…` sin identificarse, y el servidor manda diferencias contra el último cuadro que envió. AnyLogic abre su propia ventana al lanzar el experimento. Si además se abre el link en un navegador, hay **dos clientes en la misma sesión**: cada uno se lleva parte de los cuadros, los dos quedan desincronizados, y el slider manda IDs de control viejos que el servidor acepta sin aplicar.
+
+**Confirmación:** con un solo cliente (la ventana de AnyLogic, sin el navegador) los sliders funcionan bien. Probablemente sea también la causa del bloqueo después de la 2.ª corrida (sección 18), en las pruebas donde había un navegador abierto.
+
+**Regla de uso:** una sola vista por sesión. Para usar el navegador, cerrar antes la ventana de AnyLogic, o no abrir el link mientras la ventana esté abierta. No es un error del modelo, así que no hay nada que arreglar en el `.alp`.
+
+**Diagnóstico agregado:**
+- Cada corrida imprime `CompareRuns | corrida N | sliders: … | modelo: …`, con lo que marcaban los sliders y lo que usó el modelo, y avisa con `!!!` si difieren.
+- La leyenda de cada curva sale de los parámetros del modelo (`root.*`), no de las variables de los sliders.
+
+### AnyLogic Cloud: la Run Configuration era la del ejemplo
+
+Cloud no sube los experimentos del modelo (`Simulation`, `CompareRuns`, `ParametersVariation`): arma los suyos con la **Run Configuration**, y los controles del panel de Cloud son sus entradas. La nuestra venía del ejemplo Harvest Simulator:
+- Tenía una sola entrada, `HarvestDensity`, que casi no mueve los resultados. Todo lo demás corría con su valor por defecto.
+- Paraba en la semana 2.104.040, con `StopNever = true`.
+
+**Arreglo:**
+- **Entradas nuevas:** `campaña`, `replica`, `tren`, `cantidadLotes`, `turnos`, `umbralPiso`, `mtbfHoras` y `velocidadSiembra`.
+- **Parada:** en la semana 52 (30/9/2006), igual que el barrido, con `StopNever = false`.
+
+**Salidas (agregadas en el IDE).** Cinco elementos *Output* en `Main`, calculados al final de la simulación y declarados como salidas de la Run Configuration:
+
+| Output | Nombre en Cloud | Valor |
+|---|---|---|
+| `outDiaFinSiembra` | Día de fin de siembra | `diaFinSiembra` |
+| `outDiaFinCosecha` | Día de fin de cosecha | `diaFinCosecha` |
+| `outSiembraATiempo` | Siembra antes del 15/11 | `siembraCompleta && diaFinSiembra <= diaLimiteSiembra` |
+| `outFallas` | Fallas de la máquina | `fallas` |
+| `outDemoraSiembra` | d(n) siembra: demora media de un lote | `lkSiembra[ 4 ]`, o −1 si la siembra no cerró |
+
+**Cloud no reproduce las pantallas de los experimentos del IDE.** Arma sus propios experimentos (*Simulation*, *Variation*, *Monte Carlo*) con paneles generados a partir de estas entradas y salidas. Lo más parecido a `Simulation` es un experimento de Cloud con animación, que muestra la pantalla de `Main`: el campo, el panel de la sección 19 y los statecharts. Superponer corridas como `CompareRuns` no tiene equivalente directo, y los pares base contra alternativo del barrido siguen en `analizar_barrido.py`.
+
+La versión 1 subida a Cloud (exportada por Genaro) usa una Run Configuration que no está en el repo: 5 entradas y 4 DataSet. La próxima exportación desde este `.alp` la reemplaza.
+
+**Pendiente:**
+- Exportar a Cloud. Va a quedar como versión 2.
+- En la versión 2, armar los experimentos de Cloud: animación, y una variación del base (campaña 0–19 × réplica 1–5).
+- En el panel de Cloud, definir el rango de cada entrada (por ejemplo, campaña de 0 a 19).
