@@ -18,6 +18,11 @@ Que hace (parte 4.5 de docs/PLAN.md):
    (test de McNemar) y media acumulada de la diferencia (convergencia, como en el TP 3).
 5. Valida el modelo sin teoria cerrada, al estilo del TP 2.2: la meta de madurez contra la media
    y el desvio de la triangular, y las fallas contra horas trabajadas / MTBF.
+6. Medidas de desempeño de Law y Kelton, adaptadas (servidor = tren, clientes = lotes que llegan
+   todos al abrir la labor): b(n) de la maquina, del carro y del camion, q(n) y d(n), con IC.
+7. Horizonte de la simulacion: muestra que es una simulacion con fin natural (terminante) y que
+   la cola de lotes se vacia en todas las replicas, asi que no hay estado estable que estimar.
+Con --salida escribe ademas los graficos SVG del informe (herramientas/graficos_svg.py).
 
 Solo usa la biblioteca estandar.
 """
@@ -304,7 +309,71 @@ def evaluar_pares(pares, P):
     for p in pares:
         p["res_base"] = evaluar([p["base"]], 0, P)
         p["res_alt"] = evaluar(p["alt"], max(0, 2 * P["lotes_alt_por_tren"] - P["lotes_propios"]), P)
+        for pasada in ("s", "c"):
+            p["lk_base_" + pasada] = lk_sistema([p["base"]], pasada)
+            p["lk_alt_" + pasada] = lk_sistema(p["alt"], pasada)
     return pares
+
+
+# =============================================================================================
+# Medidas de desempeño de Law y Kelton, adaptadas
+# =============================================================================================
+# Law y Kelton definen, para una cola con un servidor: d(n) = demora media en cola de los n clientes,
+# q(n) = numero medio en cola en el tiempo (area bajo Q(t) / T(n)) y b(n) o u(n) = fraccion del tiempo
+# en que el servidor esta ocupado (area bajo B(t) / T(n)). Adaptacion (la misma que el panel de Main):
+#  - servidor: el tren de maquinas (maquina, carro y camion); clientes: los lotes.
+#  - llegadas: todos los lotes llegan juntos al abrir la labor (siembra: dia 0 = 1/10; cosecha: dia de madurez).
+#  - un lote entra en servicio cuando termina el anterior; el primero no espera. Traslados y paradas
+#    (lluvia, jornada, fallas) son tiempo de servicio del lote en curso, no de cola.
+#  - b(n) de la maquina = horas trabajando / horas de la labor; del carro y del camion = 1 - fraccion ociosa.
+# Al cerrar la labor vale la ley de Little: q(n) * T(n) = n * d(n).
+CARRO = ["carroOcioso", "carroViajando", "carroConLaMaquina", "carroEsperaCamion", "carroDescargando", "carroCargaSemilla"]
+CAMION = ["camionEsperaCarro", "camionCargando", "camionViajando", "camionDescargando"]
+
+
+def lk_tren(f, pasada):
+    """Medidas de una corrida (un tren) en la siembra ('s') o la cosecha ('c'). None si la labor no cerro."""
+    fin = f["diasSiembraLote"] if pasada == "s" else f["diasCosechaLote"]
+    llegada = 0.0 if pasada == "s" else f["diaMadurez"]
+    if not fin or llegada is None or any(x is None for x in fin) or f[pasada + "_trabajando"] is None:
+        return None
+    inicios = [llegada] + fin[:-1]
+    T = fin[-1] - llegada
+    demoras = [i - llegada for i in inicios]
+    carro = [f[pasada + "_" + c] or 0.0 for c in CARRO]
+    camion = [f[pasada + "_" + c] or 0.0 for c in CAMION]
+    return {"n": len(fin), "T": T, "llegada": llegada, "inicios": inicios, "demoras": demoras,
+            "d": mean(demoras), "q": sum(demoras) / T,
+            "b_maquina": f[pasada + "_trabajando"] / (24.0 * T),
+            "b_carro": 1.0 - carro[0] / sum(carro) if sum(carro) > 0 else 0.0,
+            "b_camion": 1.0 - camion[0] / sum(camion) if sum(camion) > 0 else 0.0}
+
+
+def lk_sistema(trenes, pasada):
+    """Un sistema de uno o mas trenes en paralelo: d sobre todos los lotes, q = suma de las colas de los trenes
+    (cada una promediada en su propia labor), b = promedio por servidor, T = la labor del tren mas lento."""
+    ts = [lk_tren(t, pasada) for t in trenes]
+    if any(t is None for t in ts):
+        return None
+    dem = [x for t in ts for x in t["demoras"]]
+    return {"trenes": ts, "n": len(dem), "T": max(t["T"] for t in ts), "d": mean(dem), "q": sum(t["q"] for t in ts),
+            "b_maquina": mean(t["b_maquina"] for t in ts), "b_carro": mean(t["b_carro"] for t in ts),
+            "b_camion": mean(t["b_camion"] for t in ts)}
+
+
+def cola_promedio(sistemas, paso=0.5):
+    """Q(t) promedio de las replicas, con t en dias desde la apertura de la labor de cada tren.
+    Q(t) = lotes que todavia no entraron en servicio (los trenes de un sistema se suman)."""
+    tmax = max(t["T"] for s in sistemas for t in s["trenes"])
+    xs = [i * paso for i in range(int(tmax / paso) + 2)]
+    ys = []
+    for x in xs:
+        tot = 0
+        for s in sistemas:
+            for t in s["trenes"]:
+                tot += sum(1 for i in t["inicios"] if i - t["llegada"] > x)
+        ys.append(tot / len(sistemas))
+    return xs, ys
 
 
 # =============================================================================================
@@ -450,6 +519,47 @@ def informe(pares, incompletos, avisos, P, esperadas, salida=None, sintetico=Fal
     print(f"fallas: {fallas:.0f} observadas contra {esperadas_f:.1f} esperadas (horas trabajadas / MTBF = "
           f"{pts(horas)} h / {P['mtbf_horas']:.0f} h), z = {zf:+.2f}  {'OK' if abs(zf) < 1.96 else 'REVISAR'}")
 
+    seccion("8. Medidas de desempeño de Law y Kelton (adaptadas: servidor = tren, clientes = lotes)")
+    print("b(n): fraccion de la labor en que el recurso esta ocupado. q(n): lotes en cola, promedio en el tiempo.")
+    print("d(n): demora media de un lote en la cola [dias]. T(n): duracion de la labor [dias]. IC 95% con t de Student.")
+    medidas = [("b_maquina", "b(n) maquina", 1), ("b_carro", "b(n) carro", 1), ("b_camion", "b(n) camion", 1),
+               ("q", "q(n) [lotes]", 0), ("d", "d(n) [dias]", 0), ("T", "T(n) [dias]", 0)]
+    lk = {}
+    for pasada, nombre_p in (("s", "SIEMBRA"), ("c", "COSECHA")):
+        validos = [p for p in pares if p["lk_base_" + pasada] and p["lk_alt_" + pasada]]
+        print(f"\n{nombre_p}: {len(validos)} pares con la labor cerrada en los dos sistemas"
+              + (f" ({len(pares) - len(validos)} excluidos: la labor no cerro antes del 30/9)" if len(validos) < len(pares) else ""))
+        print(f"{'':<16}{'base':>24}{'alternativo':>26}{'diferencia (alt - base)':>34}")
+        for clave, nombre, es_pct in medidas:
+            b = [p["lk_base_" + pasada][clave] for p in validos]
+            a = [p["lk_alt_" + pasada][clave] for p in validos]
+            dif = [y - x for x, y in zip(b, a)]
+            rb, ra, rd = ic_media(b, alfa), ic_media(a, alfa), ic_media(dif, alfa)
+            lk[(pasada, clave)] = (rb, ra)
+            f = (lambda v: f"{100 * v:5.1f}%") if es_pct else (lambda v: f"{v:6.2f}")
+            print(f"{nombre:<16}{f(rb[0]):>9} [{f(rb[3])};{f(rb[4])}]{f(ra[0]):>10} [{f(ra[3])};{f(ra[4])}]"
+                  f"{f(rd[0]):>13} [{f(rd[3])};{f(rd[4])}]")
+        # ley de Little por tren: q * T = n * d al cerrar la labor (control de la adaptacion)
+        err = max(abs(t["q"] * t["T"] - t["n"] * t["d"]) for p in validos
+                  for s in (p["lk_base_" + pasada], p["lk_alt_" + pasada]) for t in s["trenes"])
+        print(f"ley de Little por tren, max |q*T - n*d| = {err:.2e} lotes-dia")
+        lk[pasada] = validos
+
+    seccion("9. Horizonte de la simulacion: terminante, sin estado estable")
+    for pasada, nombre_p in (("s", "siembra"), ("c", "cosecha")):
+        for sis in ("base", "alt"):
+            todos = [p["lk_" + sis + "_" + pasada] for p in pares]
+            ok = [s for s in todos if s]
+            if not ok:
+                continue
+            Ts = [s["T"] for s in ok]
+            print(f"{nombre_p:<8} {sis:<5}: la labor cierra en {len(ok)} de {len(todos)} replicas; "
+                  f"T(n) entre {min(Ts):.1f} y {max(Ts):.1f} dias (media {mean(Ts):.1f}); al cerrar Q(t) = 0")
+    print("Cada corrida es una campaña con un evento de fin natural (cosecha cerrada, o el 30/9 si no cierra) y\n"
+          "condiciones iniciales fijas (1/10, campo sin sembrar). Q(t) arranca en n - 1 y baja a 0 en cada labor: el\n"
+          "sistema no tiene un regimen estacionario, asi que no se descarta un periodo de calentamiento y se usan\n"
+          "replicas independientes (docs/CAMBIOS-2026-10.md, seccion 19).")
+
     if salida:
         os.makedirs(salida, exist_ok=True)
         with open(os.path.join(salida, "diferencias_por_par.csv"), "w", encoding="utf-8", newline="") as f:
@@ -460,7 +570,50 @@ def informe(pares, incompletos, avisos, P, esperadas, salida=None, sintetico=Fal
                 w.writerow([p["campaña"], p["replica"], round(p["res_base"]["margen"], 2),
                             round(p["res_alt"]["margen"], 2), round(d[i], 2), round(acum[i], 2),
                             int(p["res_base"]["a_tiempo"]), int(p["res_alt"]["a_tiempo"])])
-        print(f"\nescrito: {os.path.join(salida, 'diferencias_por_par.csv')} (para graficar la media acumulada y el histograma)")
+        print(f"\nescrito: {os.path.join(salida, 'diferencias_por_par.csv')}")
+        graficos(salida, d, acum, ic_media(d, alfa), ic_media(d_clima, alfa), lk, pares, sintetico)
+
+
+def graficos(salida, d, acum, ic_obs, ic_clima, lk, pares, sintetico):
+    """Graficos SVG del informe (herramientas/graficos_svg.py)."""
+    import graficos_svg as g
+    carpeta = g.asegurar(os.path.join(salida, "graficos"))
+    marca = " [DATOS SINTETICOS]" if sintetico else ""
+    hechos = [
+        g.media_acumulada(os.path.join(carpeta, "1_media_acumulada.svg"), acum, ic_obs[3], ic_obs[4], ic_obs[0]),
+        g.histograma(os.path.join(carpeta, "2_histograma_diferencias.svg"), d,
+                     (ic_obs[0], ic_obs[3], ic_obs[4]), (ic_clima[0], ic_clima[3], ic_clima[4])),
+    ]
+    for i, (pasada, nombre) in enumerate((("s", "siembra"), ("c", "cosecha"))):
+        panel = []
+        for clave, titulo, unidad, factor, dec in (("b_maquina", "b(n) máquina", "%", 100, 1),
+                                                   ("b_carro", "b(n) carro", "%", 100, 1),
+                                                   ("q", "q(n)", "lotes", 1, 1), ("d", "d(n)", "días", 1, 1)):
+            rb, ra = lk[(pasada, clave)]
+            panel.append((titulo, unidad, tuple(factor * rb[k] for k in (0, 3, 4)),
+                          tuple(factor * ra[k] for k in (0, 3, 4)), dec))
+        hechos.append(g.barras_pareadas(
+            os.path.join(carpeta, f"{3 + i}_law_kelton_{nombre}.svg"),
+            f"Medidas de Law y Kelton en la {nombre}{marca}",
+            f"Media de {len(lk[pasada])} réplicas con IC 95%. Servidor = tren de máquinas, clientes = lotes.", panel))
+    for i, (pasada, nombre) in enumerate((("s", "siembra"), ("c", "cosecha"))):
+        validos = lk[pasada]
+        xb, yb = cola_promedio([p["lk_base_" + pasada] for p in validos])
+        xa, ya = cola_promedio([p["lk_alt_" + pasada] for p in validos])
+        n = max(len(xb), len(xa))
+        xs = [k * 0.5 for k in range(n)]
+        yb += [0.0] * (n - len(yb))
+        ya += [0.0] * (n - len(ya))
+        marcas = [(45, "15/11")] if pasada == "s" else []
+        hechos.append(g.curvas(
+            os.path.join(carpeta, f"{5 + i}_cola_{nombre}.svg"),
+            f"Q(t) promedio en la {nombre}: la cola se vacía, no hay estado estable{marca}",
+            f"Lotes que todavía no entraron en servicio, promedio de {len(validos)} réplicas. "
+            f"t = días desde la apertura de la labor" + (" (1/10)." if pasada == "s" else " (madurez)."),
+            xs, [("Base: 12 lotes, 1 tren", yb, g.AZUL), ("Alternativo C: 18 lotes, 2 trenes", ya, g.NARANJA)],
+            "días desde la apertura de la labor", "lotes en cola", marcas=marcas, dec_y=0))
+    for h in hechos:
+        print("escrito:", h)
 
 
 # =============================================================================================

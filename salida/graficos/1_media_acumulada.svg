@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="420" viewBox="0 0 760 420" role="img" aria-label="Convergencia de la diferencia de margen (alternativo - base)">
+<rect width="760" height="420" fill="#fcfcfb"/>
+<text x="24" y="30" style="font-family:Segoe UI,Helvetica,Arial,sans-serif;font-size:16px;font-weight:600" fill="#0b0b0b">Convergencia de la diferencia de margen (alternativo - base)</text>
+<text x="24" y="50" style="font-family:Segoe UI,Helvetica,Arial,sans-serif;font-size:12px" fill="#52514e">Media acumulada par a par, US$ por campaña. Banda: IC 95% con las 100 observaciones.</text>
+<line x1="90" x2="730" y1="345.0" y2="345.0" stroke="#e4e3df" stroke-width="1"/>
+<text x="82.0" y="349.0" text-anchor="end" style="font-family:Segoe UI,Helvetica,Arial,sans-serif;font-size:11px;font-weight:400" fill="#52514e">0</text>
+<line x1="90" x2="730" y1="291.0" y2="291.0" stroke="#e4e3df" stroke-width="1"/>
+<text x="82.0" y="295.0" text-anchor="end" style="font-family:Segoe UI,Helvetica,Arial,sans-serif;font-size:11px;font-weight:400" fill="#52514e">25.000</text>
+<line x1="90" x2="730" y1="237.0" y2="237.0" stroke="#e4e3df" stroke-width="1"/>
+<text x="82.0" y="241.0" text-anchor="end" style="font-family:Segoe UI,Helvetica,Arial,sans-serif;font-size:11px;font-weight:400" fill="#52514e">50.000</text>
+<line x1="90" x2="730" y1="183.0" y2="183.0" stroke="#e4e3df" stroke-width="1"/>
+<text x="82.0" y="187.0" text-anchor="end" style="font-family:Segoe UI,Helvetica,Arial,sans-serif;font-size:11px;font-weight:400" fill="#52514e">75.000</text>
+<line x1="90" x2="730" y1="129.0" y2="129.0" stroke="#e4e3df" stroke-width="1"/>
+<text x="82.0" y="133.0" text-anchor="end" style="font-family:Segoe UI,Helvetica,Arial,sans-serif;font-size:11px;font-weight:400" fill="#52514e">100.000</text>
+<line x1="90" x2="730" y1="75.0" y2="75.0" stroke="#e4e3df" stroke-width="1"/>
+<text x="82.0" y="79.0" text-anchor="end" style="font-family:Segoe UI,Helvetica,Arial,sans-serif;font-size:11px;font-weight:400" fill="#52514e">125.000</text>
+<text x="212.8" y="363.0" text-anchor="middle" style="font-family:Segoe UI,Helvetica,Arial,sans-serif;font-size:11px;font-weight:400" fill="#52514e">20</text>
+<text x="342.1" y="363.0" text-anchor="middle" style="font-family:Segoe UI,Helvetica,Arial,sans-serif;font-size:11px;font-weight:400" fill="#52514e">40</text>
+<text x="471.4" y="363.0" text-anchor="middle" style="font-family:Segoe UI,Helvetica,Arial,sans-serif;font-size:11px;font-weight:400" fill="#52514e">60</text>
+<text x="600.7" y="363.0" text-anchor="middle" style="font-family:Segoe UI,Helvetica,Arial,sans-serif;font-size:11px;font-weight:400" fill="#52514e">80</text>
+<text x="730.0" y="363.0" text-anchor="middle" style="font-family:Segoe UI,Helvetica,Arial,sans-serif;font-size:11px;font-weight:400" fill="#52514e">100</text>
+<line x1="90" x2="730" y1="345" y2="345" stroke="#52514e" stroke-width="1"/>
+<text x="410.0" y="383.0" text-anchor="middle" style="font-family:Segoe UI,Helvetica,Arial,sans-serif;font-size:11px;font-weight:400" fill="#52514e">observaciones (pares campaña, réplica)</text>
+<text transform="translate(38,210.0) rotate(-90)" text-anchor="middle" style="font-family:Segoe UI,Helvetica,Arial,sans-serif;font-size:11px" fill="#52514e">media acumulada [US$]</text>
+<rect x="90" y="98.0" width="640" height="22.4" fill="#cde2fb" opacity="0.7"/>
+<line x1="90" x2="730" y1="345.0" y2="345.0" stroke="#52514e" stroke-width="1.5" stroke-dasharray="4 4"/>
+<text x="94.0" y="340.0" text-anchor="start" style="font-family:Segoe UI,Helvetica,Arial,sans-serif;font-size:11px;font-weight:400" fill="#0b0b0b">0</text>
+<polyline points="90.0,122.6 96.5,122.5 102.9,123.5 109.4,124.1 115.9,123.7 122.3,121.6 128.8,119.7 135.3,117.1 141.7,115.5 148.2,115.3 154.6,115.3 161.1,115.2 167.6,115.3 174.0,115.5 180.5,115.6 187.0,116.3 193.4,116.7 199.9,117.0 206.4,117.3 212.8,117.5 219.3,117.6 225.8,117.9 232.2,118.0 238.7,118.2 245.2,118.3 251.6,118.6 258.1,118.8 264.5,119.1 271.0,119.3 277.5,119.6 283.9,119.4 290.4,119.2 296.9,118.9 303.3,118.6 309.8,118.3 316.3,116.9 322.7,115.7 329.2,106.9 335.7,95.8 342.1,95.3 348.6,95.6 355.1,95.9 361.5,96.3 368.0,96.6 374.4,96.8 380.9,97.2 387.4,97.4 393.8,97.7 400.3,97.9 406.8,98.1 413.2,98.6 419.7,99.1 426.2,99.5 432.6,100.0 439.1,100.4 445.6,100.4 452.0,100.6 458.5,100.7 464.9,100.7 471.4,100.8 477.9,101.3 484.3,101.6 490.8,102.0 497.3,102.3 503.7,102.5 510.2,102.7 516.7,102.9 523.1,103.1 529.6,103.3 536.1,103.5 542.5,103.8 549.0,104.1 555.5,104.4 561.9,104.6 568.4,104.9 574.8,105.2 581.3,105.4 587.8,105.7 594.2,105.9 600.7,106.1 607.2,106.3 613.6,106.5 620.1,106.7 626.6,106.9 633.0,107.1 639.5,107.3 646.0,107.5 652.4,107.7 658.9,107.9 665.4,108.1 671.8,108.2 678.3,108.3 684.7,108.4 691.2,108.5 697.7,108.6 704.1,108.7 710.6,108.8 717.1,108.9 723.5,109.1 730.0,109.2" fill="none" stroke="#2a78d6" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<line x1="90" x2="730" y1="109.2" y2="109.2" stroke="#2a78d6" stroke-width="1.5" stroke-dasharray="2 3"/>
+<text x="726.0" y="104.2" text-anchor="end" style="font-family:Segoe UI,Helvetica,Arial,sans-serif;font-size:11px;font-weight:400" fill="#0b0b0b">media final 109.164</text>
+</svg>
