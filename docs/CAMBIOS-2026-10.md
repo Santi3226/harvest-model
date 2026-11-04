@@ -1087,3 +1087,109 @@ Por eso se agregó el parámetro **`presentacionLenta`** (`true` por defecto):
 Respaldo: `backups/2026-10-29-pre-ritmo-compare-runs.alp`.
 
 Respaldos: `backups/2026-10-29-pre-compare-runs.alp` (antes de las series de datos) y `backups/2026-10-29-pre-compare-runs-experimento.alp` (antes del experimento).
+
+---
+
+## 19. Panel de estadísticas, lógica visible y medidas de Law y Kelton (4/11)
+
+Pedido de la cátedra: que la corrida muestre **visualización, estadísticas y lógica**, que las medidas de desempeño sean las de Law y Kelton (b(n), q(n), d(n)) y que se justifique el tratamiento del estado estable. Rama `feat/panel-estadisticas`. Respaldo previo: `backups/2026-11-04-pre-panel-estadisticas.alp`.
+
+### Pantalla principal de `Simulation`
+
+La ventana mide 1560 × 800 (antes 740 de alto) y el área `viewArea2D` cubre 1550 × 750, así que entran tres zonas:
+
+| Zona | Dónde | Qué muestra |
+|---|---|---|
+| Campo (como antes) | x 0–950, y 0–600 | Máquina, carro, camión, lote, lluvia y avance |
+| **Estadísticas** (nueva) | x 965–1550, y 0–745 | Tabla de Law y Kelton en vivo, horas detenida por causa y tres gráficos |
+| **Lógica** (nueva) | x 0–955, y 605–745 | Los statecharts `cicloCultivo` y `climaControl`, animados, con un texto que explica el estado activo y su condición de salida |
+
+**Tabla de Law y Kelton** (`textLkNombres`, `textLkSiembra`, `textLkCosecha`): columnas siembra y cosecha. Durante la labor los valores están en vivo (`medidasLabor()`); al cerrarla queda la foto (`lkSiembra`, `lkCosecha`, tomadas en `onCompleted()` antes de que `reportarPasada()` reinicie las bases). Una labor que no empezó muestra `-`.
+
+**Gráficos** (`plotAvance`, `plotHumedad`, `plotCola`): las series son los DataSet de `Main` y se agregan en el arranque con `addDataSet` (la misma llamada que usa `CompareRuns`, verificada con `javap` en 8.9.10). El eje x está en semanas desde el 1/10 (la unidad del modelo).
+- Hectáreas sembradas y cosechadas acumuladas.
+- Humedad de la capa superficial: es lo que decide si hay piso.
+- Q(t), lotes en cola de la labor en curso (DataSet nuevo `colaDS` = `lotesEnCola()`, con interpolación en escalón): el gráfico clásico de Law y Kelton.
+
+**Lógica.** Los dos statecharts de `Main` se movieron a una franja bajo el campo. `cicloCultivo` se corrió 110 px a la izquierda y 15 px hacia abajo; `climaControl`, 340 px a la derecha y 120 px hacia arriba, y el bucle de `tickDiario` se achicó de 77 a 35 px para que no invada el campo. AnyLogic los anima: el estado activo se resalta. Los textos `textoLogicaCultivo()` y `textoLogicaClima()` dicen qué hace el estado activo, con `gdd` contra `gddMeta`, y muestran el balance hídrico del día (lluvia, humedad, umbral y si da piso). No se muestra la lógica del movimiento de la máquina, el carro y el camión: no es la del modelo, es la de la animación.
+
+**Velocidad.** `Simulation` arranca en **x1/250**: 1/250 de semana por segundo real, unos 40 minutos simulados por segundo. Es el `RealTimeScale` del experimento y el `setRealTimeScale( week() / 250 )` del entry de `SinSembrar`. La siembra dura unos 24 minutos reales y se acelera con el control de velocidad. Crecimiento y cosecha siguen igual (1 semana/s y 0,05 días/s). No cambia ningún resultado.
+
+### Medidas de Law y Kelton, adaptadas
+
+Law y Kelton (cap. 1, cola de un servidor) definen tres medidas:
+- **d(n)**: demora media en cola de los n clientes.
+- **q(n)**: número medio en cola, promediado en el tiempo (área bajo Q(t) dividida por T(n)).
+- **u(n)** o **b(n)**: fracción del tiempo en que el servidor está ocupado (área bajo B(t) dividida por T(n)).
+
+El modelo no es una cola M/M/1, pero cada labor (siembra o cosecha) se puede leer como una:
+
+| Concepto | En el modelo |
+|---|---|
+| Servidor | El tren de máquinas (máquina, carro y camión). El alternativo C tiene dos servidores en paralelo |
+| Clientes | Los lotes (12 en el base, 9 por tren en el alternativo) |
+| Llegadas | Todos juntos al abrir la labor: el 1/10 (día 0) en la siembra y el día de madurez en la cosecha |
+| Inicio de servicio | Un lote entra en servicio cuando termina el anterior. El primero no espera |
+| Tiempo de servicio | Desde el inicio hasta el fin del lote, **con** traslados y paradas por lluvia, jornada y fallas |
+| B(t) de la máquina | 1 mientras trabaja (estado `MoveHarvesting`), 0 si no. b(n) = horas trabajando / horas de la labor |
+| B(t) del carro y del camión | 1 fuera del estado ocioso (carro: `ocioso`; camión: `esperaCarro`). Sale de las horas por estado de la sección 14 |
+
+Con todas las llegadas en t = 0, la cola solo baja: Q(t) arranca en n − 1 y se vacía cuando empieza el último lote. Al cerrar la labor vale la **ley de Little**, q(n) · T(n) = n · d(n). El script la controla por tren y da un error de 1e-13 (redondeo).
+
+**Qué responde cada medida:**
+- b(n) de la máquina: cuánto de la ventana se aprovecha. Con un turno de 44 h semanales el techo es 26%. Lo que falta hasta ahí lo explican las causas de parada: falla, sin semilla, sin piso y espera del carro.
+- d(n) y q(n): cuánto esperan los lotes para ser sembrados. Eso es lo que se pierde en rinde.
+- b(n) del carro y del camión: si son cuello de botella. En la cosecha el carro está ocupado el 74% del tiempo y el camión el 4%.
+
+**Dónde está.**
+- En el modelo: `Main.medidasLabor()`, `ocupacion()`, `lotesEnCola()` y `columnaMedidas()`, más las variables `diaInicioLabor`, `lkSiembra` y `lkCosecha`.
+- En el análisis: `herramientas/analizar_barrido.py`, sección 8. Lo calcula desde el CSV, **sin volver a simular**: los días de fin de cada lote, `diaMadurez`, las horas trabajando y las horas por estado ya estaban.
+- En el alternativo, d(n) promedia los 18 lotes, q(n) suma las colas de los dos trenes y b(n) es el promedio por servidor.
+- Una diferencia con el panel: en la cosecha, el script toma la llegada en el día entero `diaMadurez` y el panel usa el instante exacto. Puede haber una diferencia de horas.
+
+**Resultados del barrido de 400 corridas** (media e IC del 95%):
+
+| Medida | Siembra base | Siembra alternativo | Cosecha base | Cosecha alternativo |
+|---|---|---|---|---|
+| b(n) máquina | 17,9% [17,5 ; 18,3] | 17,0% [16,6 ; 17,4] | 15,6% [15,2 ; 16,1] | 14,4% [14,0 ; 14,9] |
+| b(n) carro | 0,4% | 0,4% | 74,1% [72,4 ; 75,7] | 73,6% [72,1 ; 75,2] |
+| b(n) camión | 0,0% | 0,0% | 3,6% | 3,3% |
+| q(n) [lotes] | 5,80 [5,71 ; 5,89] | 8,13 [7,97 ; 8,29] | 5,78 | 8,49 |
+| d(n) [días] | 22,7 [22,0 ; 23,5] | 16,9 [16,1 ; 17,6] | 33,4 [32,0 ; 34,7] | 26,6 [25,5 ; 27,7] |
+| T(n) [días] | 46,9 [45,8 ; 47,9] | 37,4 [36,5 ; 38,3] | 69,2 [66,9 ; 71,5] | 57,0 [55,0 ; 59,0] |
+
+El alternativo tiene más lotes en cola en total (q(n) suma dos colas con 18 lotes), pero cada lote espera 5,9 días menos para ser sembrado (d(n)), y eso es lo que mueve el rinde. La cosecha se mide sobre 98 pares: en 2 la cosecha del base no cierra antes del 30/9.
+
+### Gráficos del análisis
+
+`python herramientas/analizar_barrido.py --salida salida` escribe en `salida/graficos/` seis SVG para el informe. Usan solo la biblioteca estándar, con `herramientas/graficos_svg.py`:
+
+| Archivo | Qué muestra |
+|---|---|
+| `1_media_acumulada.svg` | Media acumulada de la diferencia de margen contra el número de observaciones, con la banda del IC del 95% (como en el TP 3) |
+| `2_histograma_diferencias.svg` | Histograma de las 100 diferencias, con la media y los dos IC. Las dos colas a la derecha son los pares de la campaña 7 |
+| `3_law_kelton_siembra.svg`, `4_law_kelton_cosecha.svg` | b(n) de la máquina y del carro, q(n) y d(n): base contra alternativo, con IC. Un panel por medida, cada uno con su escala |
+| `5_cola_siembra.svg`, `6_cola_cosecha.svg` | Q(t) promedio de las réplicas: la cola se vacía en cada labor (ver abajo) |
+
+### Estado estable: por qué no se estima
+
+Law y Kelton separan las simulaciones **con fin natural (terminantes)** de las **sin fin natural**. Solo en las segundas tiene sentido hablar de estado estable y descartar un período de calentamiento. Esta es terminante, por cuatro razones:
+
+1. **Tiene un evento de fin natural.** Una corrida es una campaña: arranca el 1/10 con el campo sin sembrar y termina al cerrar la cosecha, o el 30/9 si no cierra (`terminarAlCerrarCampaña`, parada en la semana 52). El horizonte lo fija el calendario agrícola, no el analista.
+2. **Las condiciones iniciales son parte del sistema.** La siembra empieza siempre el 1/10 con todos los lotes pendientes. Eso no es un sesgo a eliminar con un calentamiento: es justamente el transitorio que se quiere medir. La ventana de siembra es un fenómeno transitorio por definición.
+3. **No hay régimen estacionario al que converger.** Q(t) arranca en n − 1 y baja a 0 en todas las réplicas, en las dos labores (`5_cola_siembra.svg`, `6_cola_cosecha.svg`, sección 9 del script). El clima es estacional: la serie de NASA POWER cambia con el mes, y el cultivo pasa por estados que no se repiten (`SinSembrar` → `Creciendo` → `Maduro` → `Cosechado`). Ninguna medida tiene un valor de largo plazo.
+4. **Lo que importa son medidas de la campaña**, no promedios de largo plazo: el día de fin de la siembra, si termina antes del 15/11 y el margen de la campaña.
+
+**Consecuencia para el análisis.** Se usa el **método de réplicas independientes**, que es el que corresponde a una simulación terminante. Cada corrida da una observación de cada medida. Con 100 réplicas por sistema se arman IC con t de Student (el TCL sobre la media de las réplicas), y la diferencia se compara por pares con semillas comunes. No se descarta un calentamiento ni se usan lotes (*batch means*).
+
+**Lo que la media acumulada no es.** El gráfico de media acumulada muestra que el **estimador** se estabiliza al sumar réplicas: con 40 o más la media se mueve menos de 10%. Eso es convergencia del estimador entre réplicas, no un estado estable del sistema dentro de una corrida. Hay que decirlo así en la presentación.
+
+### Verificación pendiente (en el IDE)
+
+El `.alp` se editó por script y parsea. Los 25 elementos nuevos están en su nodo padre (`Variables`, `Functions`, `AnalysisData` o `Level/Presentation` de `Main`), y los campos que se leen de `Cart`, `Truck` y `Combine` son públicos. Falta correr `Simulation` y comprobar:
+
+- Que compila.
+- Que la ventana muestra el panel y la franja de lógica sin cortes. Si la pantalla es chica, subir o bajar `Frame/Height`.
+- Que los tres gráficos se dibujan y crecen.
+- Que al cerrar la siembra la columna SIEMBRA queda fija y cumple Little: q · T ≈ n · d.
+- Que la corrida verificada (campaña 0, 12 lotes) da los mismos días de fin que antes. Con la misma semilla tiene que repetir al dígito, porque no cambió nada que sortee.
