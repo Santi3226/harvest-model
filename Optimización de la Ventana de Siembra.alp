@@ -4095,6 +4095,108 @@ for (int i = 0; i < n; i++) {
 				<InheritedFromParentAgentType>true</InheritedFromParentAgentType>
 			</ScaleRuler>
 			<CurrentLevel>1567517860768</CurrentLevel>
+			<Outputs>
+				<Output>
+					<Id>1793799357765</Id>
+					<Name><![CDATA[outDiaFinSiembra]]></Name>
+					<X>2300</X><Y>-360</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Type><![CDATA[int]]></Type>
+					<UnitType><![CDATA[NONE]]></UnitType>
+					<Value Class="CodeValue">
+						<Code><![CDATA[diaFinSiembra]]></Code>
+					</Value>
+					<ComputationMoment>ON_SIMULATION_END</ComputationMoment>
+					<ComputationTimeCode Class="CodeUnitValue">
+						<Code><![CDATA[]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</ComputationTimeCode>
+					<ComputationDate>1793865600000</ComputationDate>
+				</Output>
+				<Output>
+					<Id>1793799401911</Id>
+					<Name><![CDATA[outDiaFinCosecha]]></Name>
+					<X>2300</X><Y>-380</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Type><![CDATA[int]]></Type>
+					<UnitType><![CDATA[NONE]]></UnitType>
+					<Value Class="CodeValue">
+						<Code><![CDATA[diaFinCosecha]]></Code>
+					</Value>
+					<ComputationMoment>ON_SIMULATION_END</ComputationMoment>
+					<ComputationTimeCode Class="CodeUnitValue">
+						<Code><![CDATA[]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</ComputationTimeCode>
+					<ComputationDate>1793865600000</ComputationDate>
+				</Output>
+				<Output>
+					<Id>1793799411961</Id>
+					<Name><![CDATA[outSiembraATiempo]]></Name>
+					<X>2300</X><Y>-400</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Type><![CDATA[boolean]]></Type>
+					<UnitType><![CDATA[NONE]]></UnitType>
+					<Value Class="CodeValue">
+						<Code><![CDATA[siembraCompleta && diaFinSiembra <= diaLimiteSiembra]]></Code>
+					</Value>
+					<ComputationMoment>ON_SIMULATION_END</ComputationMoment>
+					<ComputationTimeCode Class="CodeUnitValue">
+						<Code><![CDATA[]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</ComputationTimeCode>
+					<ComputationDate>1793865600000</ComputationDate>
+				</Output>
+				<Output>
+					<Id>1793799420330</Id>
+					<Name><![CDATA[outFallas]]></Name>
+					<X>2300</X><Y>-420</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Type><![CDATA[int]]></Type>
+					<UnitType><![CDATA[NONE]]></UnitType>
+					<Value Class="CodeValue">
+						<Code><![CDATA[fallas]]></Code>
+					</Value>
+					<ComputationMoment>ON_SIMULATION_END</ComputationMoment>
+					<ComputationTimeCode Class="CodeUnitValue">
+						<Code><![CDATA[]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</ComputationTimeCode>
+					<ComputationDate>1793865600000</ComputationDate>
+				</Output>
+				<Output>
+					<Id>1793799430842</Id>
+					<Name><![CDATA[outDemoraSiembra]]></Name>
+					<X>2300</X><Y>-440</Y>
+					<Label><X>20</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Type><![CDATA[double]]></Type>
+					<UnitType><![CDATA[NONE]]></UnitType>
+					<Value Class="CodeValue">
+						<Code><![CDATA[lkSiembra != null ? lkSiembra[ 4 ] : -1]]></Code>
+					</Value>
+					<ComputationMoment>ON_SIMULATION_END</ComputationMoment>
+					<ComputationTimeCode Class="CodeUnitValue">
+						<Code><![CDATA[]]></Code>
+						<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+					</ComputationTimeCode>
+					<ComputationDate>1793865600000</ComputationDate>
+				</Output>
+			</Outputs>
 			<Variables>
 				<Variable Class="PlainVariable">
 					<Id>1169735952665</Id>
@@ -10325,11 +10427,11 @@ return txt;]]></Body>
 			<StopOption><![CDATA[Stop at specified date]]></StopOption>
 			<InitialDate><![CDATA[1128135600000]]></InitialDate>	
 			<InitialTime><![CDATA[0.0]]></InitialTime>	
-			<FinalDate><![CDATA[1650079200000]]></FinalDate>	
-			<FinalTime><![CDATA[2104040.0]]></FinalTime>	
+			<FinalDate><![CDATA[1159585200000]]></FinalDate>	
+			<FinalTime><![CDATA[52.0]]></FinalTime>	
 		</ModelTimeProperties>
 		<AnimationProperties>
-			<StopNever>true</StopNever>
+			<StopNever>false</StopNever>
 			<ExecutionMode>virtualTime</ExecutionMode>
 			<RealTimeScale>50.0</RealTimeScale>
 			<EnableZoomAndPanning>false</EnableZoomAndPanning>
@@ -10338,16 +10440,124 @@ return txt;]]></Body>
 		</AnimationProperties>
 		<Inputs>
     		<RunConfigurationInput>
-				<Id>1478771407312</Id>
-				<Name><![CDATA[Harvest density]]></Name>
+				<Id>1813000000001</Id>
+				<Name><![CDATA[Campaña climática (0 a 19, 0 = 2005/06)]]></Name>
 				<InputReference>
 					<PackageName><![CDATA[harvest_simulator]]></PackageName>
 					<ClassName><![CDATA[Main]]></ClassName>
-					<ItemName><![CDATA[HarvestDensity]]></ItemName>
+					<ItemName><![CDATA[campaña]]></ItemName>
+				</InputReference>
+    		</RunConfigurationInput>
+    		<RunConfigurationInput>
+				<Id>1813000000002</Id>
+				<Name><![CDATA[Réplica (semillas de fallas y madurez, 1 a 5)]]></Name>
+				<InputReference>
+					<PackageName><![CDATA[harvest_simulator]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[replica]]></ItemName>
+				</InputReference>
+    		</RunConfigurationInput>
+    		<RunConfigurationInput>
+				<Id>1813000000003</Id>
+				<Name><![CDATA[Tren (1 o 2: semilla de fallas del alternativo)]]></Name>
+				<InputReference>
+					<PackageName><![CDATA[harvest_simulator]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[tren]]></ItemName>
+				</InputReference>
+    		</RunConfigurationInput>
+    		<RunConfigurationInput>
+				<Id>1813000000004</Id>
+				<Name><![CDATA[Cantidad de lotes de 104 ha]]></Name>
+				<InputReference>
+					<PackageName><![CDATA[harvest_simulator]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[cantidadLotes]]></ItemName>
+				</InputReference>
+    		</RunConfigurationInput>
+    		<RunConfigurationInput>
+				<Id>1813000000005</Id>
+				<Name><![CDATA[Turnos de operarios por día (1 a 3)]]></Name>
+				<InputReference>
+					<PackageName><![CDATA[harvest_simulator]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[turnos]]></ItemName>
+				</InputReference>
+    		</RunConfigurationInput>
+    		<RunConfigurationInput>
+				<Id>1813000000006</Id>
+				<Name><![CDATA[Umbral de humedad para piso [mm]]]></Name>
+				<InputReference>
+					<PackageName><![CDATA[harvest_simulator]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[umbralPiso]]></ItemName>
+				</InputReference>
+    		</RunConfigurationInput>
+    		<RunConfigurationInput>
+				<Id>1813000000007</Id>
+				<Name><![CDATA[MTBF de la máquina [h]]]></Name>
+				<InputReference>
+					<PackageName><![CDATA[harvest_simulator]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[mtbfHoras]]></ItemName>
+				</InputReference>
+    		</RunConfigurationInput>
+    		<RunConfigurationInput>
+				<Id>1813000000008</Id>
+				<Name><![CDATA[Velocidad de siembra [km/h]]]></Name>
+				<InputReference>
+					<PackageName><![CDATA[harvest_simulator]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[velocidadSiembra]]></ItemName>
 				</InputReference>
     		</RunConfigurationInput>		
 		</Inputs>
 		<Outputs>
+    		<RunConfigurationOutput>
+				<Id>1793799683170</Id>
+				<Name><![CDATA[Día de fin de cosecha]]></Name>
+				<OutputReference>
+					<PackageName><![CDATA[harvest_simulator]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[outDiaFinCosecha]]></ItemName>
+				</OutputReference>
+    		</RunConfigurationOutput>
+    		<RunConfigurationOutput>
+				<Id>1793799685050</Id>
+				<Name><![CDATA[d(n) siembra: demora media de un lote]]></Name>
+				<OutputReference>
+					<PackageName><![CDATA[harvest_simulator]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[outDemoraSiembra]]></ItemName>
+				</OutputReference>
+    		</RunConfigurationOutput>
+    		<RunConfigurationOutput>
+				<Id>1793799686934</Id>
+				<Name><![CDATA[Día de fin de siembra]]></Name>
+				<OutputReference>
+					<PackageName><![CDATA[harvest_simulator]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[outDiaFinSiembra]]></ItemName>
+				</OutputReference>
+    		</RunConfigurationOutput>
+    		<RunConfigurationOutput>
+				<Id>1793799690225</Id>
+				<Name><![CDATA[Fallas de la máquina]]></Name>
+				<OutputReference>
+					<PackageName><![CDATA[harvest_simulator]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[outFallas]]></ItemName>
+				</OutputReference>
+    		</RunConfigurationOutput>
+    		<RunConfigurationOutput>
+				<Id>1793799691863</Id>
+				<Name><![CDATA[Siembra antes del 15/11]]></Name>
+				<OutputReference>
+					<PackageName><![CDATA[harvest_simulator]]></PackageName>
+					<ClassName><![CDATA[Main]]></ClassName>
+					<ItemName><![CDATA[outSiembraATiempo]]></ItemName>
+				</OutputReference>
+    		</RunConfigurationOutput>
 		</Outputs>
 	</RunConfiguration>
 	<Experiments>
@@ -12315,7 +12525,14 @@ for ( int i = 0; i < n; i++ ) if ( o.get( i ) < 9999 ) ds.add( o.get( i ), ( i +
 			<AfterSimulationRunCode><![CDATA[parametersOfRuns.add( new Object[] { (double) eCampaña, (double) eReplica, (double) eTren, (double) eLotes, (double) eTurnos } );
 int numberOfRuns = getEngine().getRunCount();
 Color color = spectrumColor( (numberOfRuns * 4) % 21, 21 );
-String nombre = "Run " + numberOfRuns + ": " + eLotes + " lotes, tren " + eTren + ", campaña " + eCampaña + ", replica " + eReplica;
+// el nombre de la curva sale de los parametros que uso el MODELO, no de los sliders: si difieren, se ve
+String nombre = "Run " + numberOfRuns + ": " + root.cantidadLotes + " lotes, tren " + root.tren + ", campaña " + root.campaña + ", replica " + root.replica;
+traceln( "CompareRuns | corrida " + numberOfRuns + " | sliders: campaña=" + eCampaña + " replica=" + eReplica + " tren=" + eTren
+         + " lotes=" + eLotes + " turnos=" + eTurnos + " | modelo: campaña=" + root.campaña + " replica=" + root.replica
+         + " tren=" + root.tren + " lotes=" + root.cantidadLotes + " turnos=" + root.turnos
+         + " | fin siembra dia " + root.diaFinSiembra );
+if ( root.campaña != eCampaña || root.replica != eReplica || root.tren != eTren || root.cantidadLotes != eLotes || root.turnos != eTurnos )
+	traceln( "!!! CompareRuns: la corrida NO uso los valores de los sliders" );
 Plot[] graficos = { chart0, chart1, chart2, chart3 };
 DataSet[] series = { root.haSembradasDS, root.haCosechadasDS, root.humedadDS, root.fallasDS };
 for ( int i = 0; i < graficos.length; i++ ) {
@@ -12477,23 +12694,64 @@ edit_eTurnos.setValue( (Double) values[4], true );
 					<PresentationFlag>false</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Body><![CDATA[// imprime la direccion web de la sesion apenas se lanza el experimento, antes de apretar Play.
-// Al construirse el experimento el servidor puede no estar escuchando todavia: se reintenta unos segundos en un hilo aparte.
+// Busca los puertos en escucha del propio proceso. El servidor web de Java escucha en IPv6 de modo dual ([::]),
+// por eso no alcanza con mirar IPv4 (la version anterior usaba "netstat -p TCP" y nunca lo encontraba).
+// Windows: Get-NetTCPConnection (respaldo: netstat -ano). Linux: /proc/net/tcp y tcp6 contra los sockets de /proc/self/fd.
+// Al construirse el experimento el servidor puede no estar escuchando todavia: se reintenta en un hilo aparte.
 Thread hilo = new Thread( () -> {
-	for ( int intento = 0; intento < 40; intento++ ) {
-		try {
-			String pid = String.valueOf( ProcessHandle.current().pid() );
-			Process pr = new ProcessBuilder( "netstat", "-ano", "-p", "TCP" ).redirectErrorStream( true ).start();
-			java.io.BufferedReader br = new java.io.BufferedReader( new java.io.InputStreamReader( pr.getInputStream() ) );
-			String ln;
-			while ( ( ln = br.readLine() ) != null ) {
-				String[] c = ln.trim().split( "\\s+" );
-				if ( c.length >= 5 && c[ 3 ].equals( "LISTENING" ) && c[ 4 ].equals( pid ) ) {
-					traceln( "CompareRuns disponible en http://localhost:" + c[ 1 ].substring( c[ 1 ].lastIndexOf( ':' ) + 1 ) );
-					return;
+	String pid = String.valueOf( ProcessHandle.current().pid() );
+	boolean windows = System.getProperty( "os.name" ).toLowerCase().contains( "win" );
+	try {
+		for ( int intento = 0; intento < 40; intento++ ) {
+			java.util.TreeSet<Integer> puertos = new java.util.TreeSet<Integer>();
+			if ( windows ) {
+				// 1) PowerShell: Get-NetTCPConnection ve el socket IPv6 de Java. Un socket en escucha tiene puerto remoto 0.
+				//    No se filtra por State: en algunas compilaciones de Windows viene vacio o equivocado.
+				Process pr = new ProcessBuilder( "powershell", "-NoProfile", "-Command",
+					"(Get-NetTCPConnection -OwningProcess " + pid + " -ErrorAction SilentlyContinue | Where-Object { $_.RemotePort -eq 0 }).LocalPort" )
+					.redirectErrorStream( true ).start();
+				java.io.BufferedReader br = new java.io.BufferedReader( new java.io.InputStreamReader( pr.getInputStream() ) );
+				String ln;
+				while ( ( ln = br.readLine() ) != null ) if ( ln.trim().matches( "\\d+" ) ) puertos.add( Integer.parseInt( ln.trim() ) );
+				// 2) respaldo: netstat -ano (IPv4 e IPv6), reconociendo la escucha por la direccion remota :0 y no por
+				//    el texto del estado, que puede venir traducido o equivocado
+				if ( puertos.isEmpty() ) {
+					pr = new ProcessBuilder( "netstat", "-ano" ).redirectErrorStream( true ).start();
+					br = new java.io.BufferedReader( new java.io.InputStreamReader( pr.getInputStream() ) );
+					while ( ( ln = br.readLine() ) != null ) {
+						String[] c = ln.trim().split( "\\s+" );
+						if ( c.length >= 5 && c[ 0 ].equals( "TCP" ) && c[ 4 ].equals( pid ) && c[ 2 ].endsWith( ":0" ) )
+							puertos.add( Integer.parseInt( c[ 1 ].substring( c[ 1 ].lastIndexOf( ':' ) + 1 ) ) );
+					}
+				}
+			} else {
+				java.util.HashSet<String> inodos = new java.util.HashSet<String>();
+				for ( java.io.File fd : new java.io.File( "/proc/self/fd" ).listFiles() ) {
+					try {
+						String destino = java.nio.file.Files.readSymbolicLink( fd.toPath() ).toString();
+						if ( destino.startsWith( "socket:[" ) ) inodos.add( destino.substring( 8, destino.length() - 1 ) );
+					} catch ( Exception e ) { }
+				}
+				for ( String tabla : new String[] { "/proc/net/tcp", "/proc/net/tcp6" } ) {
+					for ( String ln : java.nio.file.Files.readAllLines( java.nio.file.Paths.get( tabla ) ) ) {
+						String[] c = ln.trim().split( "\\s+" );
+						// sl local_address rem_address st ... inode; st = 0A es LISTEN
+						if ( c.length > 9 && c[ 3 ].equals( "0A" ) && inodos.contains( c[ 9 ] ) )
+							puertos.add( Integer.parseInt( c[ 1 ].substring( c[ 1 ].lastIndexOf( ':' ) + 1 ), 16 ) );
+					}
 				}
 			}
+			if ( !puertos.isEmpty() ) {
+				String txt = "CompareRuns disponible en http://localhost:" + puertos.first();
+				if ( puertos.size() > 1 ) txt += "   (el proceso escucha tambien en: " + puertos.tailSet( puertos.first(), false ) + ")";
+				traceln( txt );
+				return;
+			}
 			Thread.sleep( 500 );
-		} catch ( Throwable e ) { return; }
+		}
+		traceln( "!!! CompareRuns: no se encontro el puerto web del proceso " + pid + " en 20 s" );
+	} catch ( Throwable e ) {
+		traceln( "!!! CompareRuns: no se pudo averiguar la direccion web: " + e );
 	}
 } );
 hilo.setDaemon( true );
