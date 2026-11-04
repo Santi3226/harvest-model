@@ -1184,6 +1184,30 @@ Law y Kelton separan las simulaciones **con fin natural (terminantes)** de las *
 
 **Lo que la media acumulada no es.** El gráfico de media acumulada muestra que el **estimador** se estabiliza al sumar réplicas: con 40 o más la media se mueve menos de 10%. Eso es convergencia del estimador entre réplicas, no un estado estable del sistema dentro de una corrida. Hay que decirlo así en la presentación.
 
+### Gráficos en `ParametersVariation` (4/11)
+
+Antes, la ventana del barrido solo mostraba el contador de iteraciones y los parámetros. Ahora, a la derecha, hay un resumen y tres gráficos que se llenan a medida que se completan los pares (`campaña`, `replica`). Respaldo previo: `backups/2026-11-04-pre-graficos-barrido.alp`.
+
+| Elemento | Qué muestra |
+|---|---|
+| `textResumenBarrido` | Pares completos, proporción de siembras a tiempo y d(n) medio de la siembra, por sistema |
+| `plotProbSiembra` | **P(siembra terminada antes del día x)**: la distribución acumulada empírica del día de fin de siembra, base contra alternativo, con la línea del 15/11. Es la curva del entregable #1 |
+| `plotATiempo` | Proporción de siembras a tiempo, acumulada por pares: se ve cómo se estabiliza al sumar réplicas |
+| `plotDemora` | d(n) medio de la siembra, acumulado por pares. Es el mismo número que muestra el panel de `Simulation` |
+
+**Cómo arma los pares.** Igual que `analizar_barrido.py`:
+- El base es la corrida de 12 lotes con `tren = 1`. El alternativo son las dos corridas de 9 lotes. Las de 12 lotes con `tren = 2` se ignoran.
+- El alternativo termina la siembra cuando termina su tren más lento, y su d(n) es el promedio de los dos trenes (9 lotes cada uno).
+- Un par entra en los gráficos cuando llegaron sus tres corridas.
+
+El fin de siembra es `diaFinSiembra` (día entero, a tiempo si es ≤ 45). d(n) es la foto `lkSiembra[4]` de `Main`. Si la siembra no cierra, se carga 9999: cuenta en n, pero la curva no llega a 1.
+
+**Detalles de implementación:**
+- Variables y la función `curvaAcumulada()` en el experimento (antes no tenía `Variables` ni `Functions`).
+- El *Before each experiment run* vacía las series y engancha los `DataSet` a los gráficos una sola vez (`seriesListas`).
+- El código del *After simulation run* va en `synchronized ( this )`, porque el experimento corre con `AllowParallelEvaluations = true`.
+- El margen y los IC siguen en Python, para no duplicar los costos supuestos.
+
 ### Verificación pendiente (en el IDE)
 
 El `.alp` se editó por script y parsea. Los 25 elementos nuevos están en su nodo padre (`Variables`, `Functions`, `AnalysisData` o `Level/Presentation` de `Main`), y los campos que se leen de `Cart`, `Truck` y `Combine` son públicos. Falta correr `Simulation` y comprobar:

@@ -10704,6 +10704,23 @@ try {
     w.close();
 } catch ( Exception e ) {
     traceln( "!!! NO SE PUDO INICIAR resultados.csv: " + e );
+}
+// graficos del barrido: se vacian al empezar y las series se enganchan a los graficos una sola vez
+paresSiembra.clear(); finesBase.clear(); finesAlt.clear();
+paresCompletos = 0; aTiempoBase = 0; aTiempoAlt = 0; sumaDemoraBase = 0; sumaDemoraAlt = 0;
+for ( DataSet ds : new DataSet[] { dsProbBase, dsProbAlt, dsLimite, dsATiempoBase, dsATiempoAlt, dsDemoraBase, dsDemoraAlt } ) ds.reset();
+dsLimite.add( 45, 0 );
+dsLimite.add( 45, 1 );
+if ( !seriesListas ) {
+	java.awt.Color azul = new java.awt.Color( 42, 120, 214 ), naranja = new java.awt.Color( 235, 104, 52 ), gris = new java.awt.Color( 82, 81, 78 );
+	plotProbSiembra.addDataSet( dsProbBase, "Base: 12 lotes, 1 tren", azul, true, Chart.INTERPOLATION_STEP, 2, Chart.POINT_NONE );
+	plotProbSiembra.addDataSet( dsProbAlt, "Alternativo C: 18 lotes, 2 trenes (el tren mas lento)", naranja, true, Chart.INTERPOLATION_STEP, 2, Chart.POINT_NONE );
+	plotProbSiembra.addDataSet( dsLimite, "15/11 (dia 45)", gris, true, Chart.INTERPOLATION_LINEAR, 1, Chart.POINT_NONE );
+	plotATiempo.addDataSet( dsATiempoBase, "Base", azul, true, Chart.INTERPOLATION_LINEAR, 2, Chart.POINT_NONE );
+	plotATiempo.addDataSet( dsATiempoAlt, "Alternativo C", naranja, true, Chart.INTERPOLATION_LINEAR, 2, Chart.POINT_NONE );
+	plotDemora.addDataSet( dsDemoraBase, "Base", azul, true, Chart.INTERPOLATION_LINEAR, 2, Chart.POINT_NONE );
+	plotDemora.addDataSet( dsDemoraAlt, "Alternativo C", naranja, true, Chart.INTERPOLATION_LINEAR, 2, Chart.POINT_NONE );
+	seriesListas = true;
 }]]></BeforeEachExperimentRunCode>
 			<AfterSimulationRunCode><![CDATA[try {
     java.io.PrintWriter w = new java.io.PrintWriter( new java.io.OutputStreamWriter(
@@ -10717,11 +10734,318 @@ try {
     // el catch mudo era el problema: el barrido corria, no escribia nada
     // y no habia forma de enterarse hasta ir a buscar el archivo
     traceln( "!!! NO SE PUDO ESCRIBIR resultados.csv: " + e );
+}
+// ---- graficos del barrido: arma los pares (campaña, replica) como herramientas/analizar_barrido.py ----
+// base = 12 lotes con tren 1; alternativo = las dos corridas de 9 lotes (tren 1 y 2). Las de 12 lotes con
+// tren 2 no se usan. Las corridas pueden terminar en paralelo: el bloque se sincroniza.
+synchronized ( this ) {
+	int k = root.cantidadLotes == 12 && root.tren == 1 ? 0 : root.cantidadLotes == 9 ? ( root.tren == 1 ? 2 : 4 ) : -1;
+	if ( k >= 0 ) {
+		int clave = root.campaña * 100 + root.replica;
+		double[] p = paresSiembra.get( clave );
+		if ( p == null ) {
+			p = new double[] { Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN };
+			paresSiembra.put( clave, p );
+		}
+		// dia de fin de siembra (9999 si no cerro) y d(n) de la siembra, la misma foto que muestra el panel de Main
+		p[ k ] = root.siembraCompleta ? root.diaFinSiembra : 9999;
+		p[ k + 1 ] = root.lkSiembra != null ? root.lkSiembra[ 4 ] : Double.NaN;
+		if ( !Double.isNaN( p[ 0 ] ) && !Double.isNaN( p[ 2 ] ) && !Double.isNaN( p[ 4 ] ) ) {
+			// par completo: el alternativo termina cuando termina su tren mas lento; d(n) promedia sus 18 lotes
+			double finAlt = max( p[ 2 ], p[ 4 ] );
+			paresCompletos++;
+			if ( p[ 0 ] <= root.diaLimiteSiembra ) aTiempoBase++;
+			if ( finAlt <= root.diaLimiteSiembra ) aTiempoAlt++;
+			sumaDemoraBase += p[ 1 ];
+			sumaDemoraAlt += ( p[ 3 ] + p[ 5 ] ) / 2;
+			finesBase.add( p[ 0 ] );
+			finesAlt.add( finAlt );
+			curvaAcumulada( dsProbBase, finesBase );
+			curvaAcumulada( dsProbAlt, finesAlt );
+			dsATiempoBase.add( paresCompletos, (double) aTiempoBase / paresCompletos );
+			dsATiempoAlt.add( paresCompletos, (double) aTiempoAlt / paresCompletos );
+			dsDemoraBase.add( paresCompletos, sumaDemoraBase / paresCompletos );
+			dsDemoraAlt.add( paresCompletos, sumaDemoraAlt / paresCompletos );
+		}
+	}
 }]]></AfterSimulationRunCode>
 			<SeedValue>1</SeedValue>
 			<SelectionModeForSimultaneousEvents>LIFO</SelectionModeForSimultaneousEvents>
 			<VmArgs><![CDATA[]]></VmArgs>
 			<LoadRootFromSnapshot>false</LoadRootFromSnapshot>
+			<Variables>
+				<Variable Class="PlainVariable">
+					<Id>1812000000001</Id>
+					<Name><![CDATA[paresSiembra]]></Name>
+					<X>-350</X><Y>20</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[java.util.HashMap<Integer, double[]>]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[new java.util.HashMap<Integer, double[]>()]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1812000000002</Id>
+					<Name><![CDATA[finesBase]]></Name>
+					<X>-350</X><Y>50</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[java.util.ArrayList<Double>]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[new java.util.ArrayList<Double>()]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1812000000003</Id>
+					<Name><![CDATA[finesAlt]]></Name>
+					<X>-350</X><Y>80</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[java.util.ArrayList<Double>]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[new java.util.ArrayList<Double>()]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1812000000004</Id>
+					<Name><![CDATA[paresCompletos]]></Name>
+					<X>-350</X><Y>110</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1812000000005</Id>
+					<Name><![CDATA[aTiempoBase]]></Name>
+					<X>-350</X><Y>140</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1812000000006</Id>
+					<Name><![CDATA[aTiempoAlt]]></Name>
+					<X>-350</X><Y>170</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1812000000007</Id>
+					<Name><![CDATA[sumaDemoraBase]]></Name>
+					<X>-350</X><Y>200</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1812000000008</Id>
+					<Name><![CDATA[sumaDemoraAlt]]></Name>
+					<X>-350</X><Y>230</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1812000000009</Id>
+					<Name><![CDATA[dsProbBase]]></Name>
+					<X>-350</X><Y>260</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[DataSet]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[new DataSet( 150 )]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1812000000010</Id>
+					<Name><![CDATA[dsProbAlt]]></Name>
+					<X>-350</X><Y>290</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[DataSet]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[new DataSet( 150 )]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1812000000011</Id>
+					<Name><![CDATA[dsLimite]]></Name>
+					<X>-350</X><Y>320</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[DataSet]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[new DataSet( 2 )]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1812000000012</Id>
+					<Name><![CDATA[dsATiempoBase]]></Name>
+					<X>-350</X><Y>350</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[DataSet]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[new DataSet( 150 )]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1812000000013</Id>
+					<Name><![CDATA[dsATiempoAlt]]></Name>
+					<X>-350</X><Y>380</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[DataSet]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[new DataSet( 150 )]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1812000000014</Id>
+					<Name><![CDATA[dsDemoraBase]]></Name>
+					<X>-350</X><Y>410</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[DataSet]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[new DataSet( 150 )]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1812000000015</Id>
+					<Name><![CDATA[dsDemoraAlt]]></Name>
+					<X>-350</X><Y>440</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[DataSet]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[new DataSet( 150 )]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1812000000016</Id>
+					<Name><![CDATA[seriesListas]]></Name>
+					<X>-350</X><Y>470</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[boolean]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[false]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+			</Variables>
+			<Functions>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[void]]></ReturnType>
+					<Id>1812000000017</Id>
+					<Name><![CDATA[curvaAcumulada]]></Name>
+					<X>-350</X><Y>520</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>false</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[ds]]></Name>
+						<Type><![CDATA[DataSet]]></Type>
+					</Parameter>
+					<Parameter>
+						<Name><![CDATA[valores]]></Name>
+						<Type><![CDATA[java.util.ArrayList<Double>]]></Type>
+					</Parameter>
+					<Body><![CDATA[// probabilidad acumulada empirica: P( fin de siembra <= x ) con los pares completos.
+// Un punto por observacion; con interpolacion en escalon el grafico sube 1/n en cada fin de siembra.
+// Las siembras que no cerraron (9999) cuentan en n pero no se dibujan: la curva no llega a 1.
+ds.reset();
+java.util.ArrayList<Double> o = new java.util.ArrayList<Double>( valores );
+java.util.Collections.sort( o );
+int n = o.size();
+if ( n == 0 ) return;
+ds.add( o.get( 0 ), 0 );
+for ( int i = 0; i < n; i++ ) if ( o.get( i ) < 9999 ) ds.add( o.get( i ), ( i + 1.0 ) / n );]]></Body>
+				</Function>
+			</Functions>
 
 			<Presentation>
 				<Text>
@@ -10737,7 +11061,7 @@ try {
 					<Z>0</Z>
 					<Rotation>0.0</Rotation>
 					<Color>-12490271</Color>
-					<Text><![CDATA[Optimización de la Ventana de Siembra : ParametersVariation]]></Text>
+					<Text><![CDATA[Variación de Parametros]]></Text>
 					<Font>
 						<Name>SansSerif</Name>
 						<Size>24</Size>
@@ -11428,6 +11752,290 @@ try {
 					</Font>
 					<Alignment>RIGHT</Alignment>
 				</Text>
+				<Text>
+					<Id>1812000000018</Id>
+					<Name><![CDATA[textTituloBarrido]]></Name>
+					<X>520</X><Y>20</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Resultados del barrido: sistema base (12 lotes, 1 tren) contra alternativo C (18 lotes, 2 trenes)]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>13</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+				<Text>
+					<Id>1812000000019</Id>
+					<Name><![CDATA[textResumenBarrido]]></Name>
+					<X>520</X><Y>42</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Pares completos: 0]]></Text>
+					<TextCode><![CDATA["Pares completos: " + paresCompletos + " de 100   |   siembra antes del 15/11: base "
++ ( paresCompletos > 0 ? String.format( "%.1f %%", 100.0 * aTiempoBase / paresCompletos ) : "-" )
++ ", alternativo " + ( paresCompletos > 0 ? String.format( "%.1f %%", 100.0 * aTiempoAlt / paresCompletos ) : "-" )
++ "   |   d(n) siembra: base " + ( paresCompletos > 0 ? String.format( "%.1f", sumaDemoraBase / paresCompletos ) : "-" )
++ ", alternativo " + ( paresCompletos > 0 ? String.format( "%.1f", sumaDemoraAlt / paresCompletos ) : "-" ) + " dias"]]></TextCode>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>11</Size>
+						<Style>0</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+				<Text>
+					<Id>1812000000020</Id>
+					<Name><![CDATA[textTituloProb]]></Name>
+					<X>520</X><Y>72</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Probabilidad de terminar la siembra antes del dia x (x = dias desde el 1/10; la linea vertical es el 15/11)]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>11</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+    			<Plot>
+					<Id>1812000000022</Id>
+					<Name><![CDATA[plotProbSiembra]]></Name>
+					<X>510</X><Y>90</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<AutoUpdate>false</AutoUpdate>
+					<RecurrenceProperties>
+						<Id>1812000000021</Id>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1128135600000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[0]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+						</RecurrenceCode>
+					</RecurrenceProperties>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Width>1020</Width>
+					<Height>300</Height>
+					<BackgroundColor/>
+					<BorderColor/>
+					<ChartArea>
+						<XOffset>50</XOffset>
+						<YOffset>10</YOffset>
+						<Width>945</Width>
+						<Height>230</Height>
+						<BackgroundColor>-1</BackgroundColor>
+						<BorderColor>-9868951</BorderColor>
+						<GridColor>-12566464</GridColor>
+					</ChartArea>
+					<Legend>
+						<Place>SOUTH</Place>
+						<TextColor>-16777216</TextColor>
+						<Size>30</Size>
+					</Legend>
+					<Labels>
+						<HorLabelsPosition>DEFAULT</HorLabelsPosition>
+						<VerLabelsPosition>DEFAULT</VerLabelsPosition>
+						<TextColor>-12566464</TextColor>
+					</Labels>
+					<ShowLegend>true</ShowLegend>
+					<VerScaleFromExpression><![CDATA[0]]></VerScaleFromExpression>
+					<VerScaleToExpression><![CDATA[1]]></VerScaleToExpression>
+					<VerScaleType>AUTO</VerScaleType>
+					<DrawLine>true</DrawLine>
+					<Interpolation>LINEAR</Interpolation>
+					<SamplesToKeep>150</SamplesToKeep>
+					<HorScaleFromExpression><![CDATA[0]]></HorScaleFromExpression>
+					<HorScaleToExpression><![CDATA[1]]></HorScaleToExpression>
+					<HorScaleType>AUTO</HorScaleType>
+    			</Plot>
+				<Text>
+					<Id>1812000000023</Id>
+					<Name><![CDATA[textTituloATiempo]]></Name>
+					<X>520</X><Y>405</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[Proporcion de siembras a tiempo, acumulada por pares completos]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>11</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+    			<Plot>
+					<Id>1812000000025</Id>
+					<Name><![CDATA[plotATiempo]]></Name>
+					<X>510</X><Y>420</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<AutoUpdate>false</AutoUpdate>
+					<RecurrenceProperties>
+						<Id>1812000000024</Id>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1128135600000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[0]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+						</RecurrenceCode>
+					</RecurrenceProperties>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Width>505</Width>
+					<Height>280</Height>
+					<BackgroundColor/>
+					<BorderColor/>
+					<ChartArea>
+						<XOffset>50</XOffset>
+						<YOffset>10</YOffset>
+						<Width>430</Width>
+						<Height>210</Height>
+						<BackgroundColor>-1</BackgroundColor>
+						<BorderColor>-9868951</BorderColor>
+						<GridColor>-12566464</GridColor>
+					</ChartArea>
+					<Legend>
+						<Place>SOUTH</Place>
+						<TextColor>-16777216</TextColor>
+						<Size>30</Size>
+					</Legend>
+					<Labels>
+						<HorLabelsPosition>DEFAULT</HorLabelsPosition>
+						<VerLabelsPosition>DEFAULT</VerLabelsPosition>
+						<TextColor>-12566464</TextColor>
+					</Labels>
+					<ShowLegend>true</ShowLegend>
+					<VerScaleFromExpression><![CDATA[0]]></VerScaleFromExpression>
+					<VerScaleToExpression><![CDATA[1]]></VerScaleToExpression>
+					<VerScaleType>AUTO</VerScaleType>
+					<DrawLine>true</DrawLine>
+					<Interpolation>LINEAR</Interpolation>
+					<SamplesToKeep>150</SamplesToKeep>
+					<HorScaleFromExpression><![CDATA[0]]></HorScaleFromExpression>
+					<HorScaleToExpression><![CDATA[1]]></HorScaleToExpression>
+					<HorScaleType>AUTO</HorScaleType>
+    			</Plot>
+				<Text>
+					<Id>1812000000026</Id>
+					<Name><![CDATA[textTituloDemora]]></Name>
+					<X>1035</X><Y>405</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D</DrawMode>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Z>0</Z>
+					<Rotation>0.0</Rotation>
+					<Color>-16777216</Color>
+					<Text><![CDATA[d(n) de la siembra (demora media de un lote) [dias], acumulada]]></Text>
+					<Font>
+						<Name>SansSerif</Name>
+						<Size>11</Size>
+						<Style>1</Style>
+					</Font>
+					<Alignment>LEFT</Alignment>
+				</Text>
+    			<Plot>
+					<Id>1812000000028</Id>
+					<Name><![CDATA[plotDemora]]></Name>
+					<X>1025</X><Y>420</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>true</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<AutoUpdate>false</AutoUpdate>
+					<RecurrenceProperties>
+						<Id>1812000000027</Id>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1128135600000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[0]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+						</RecurrenceCode>
+					</RecurrenceProperties>
+					<EmbeddedIcon>false</EmbeddedIcon>
+					<Width>505</Width>
+					<Height>280</Height>
+					<BackgroundColor/>
+					<BorderColor/>
+					<ChartArea>
+						<XOffset>50</XOffset>
+						<YOffset>10</YOffset>
+						<Width>430</Width>
+						<Height>210</Height>
+						<BackgroundColor>-1</BackgroundColor>
+						<BorderColor>-9868951</BorderColor>
+						<GridColor>-12566464</GridColor>
+					</ChartArea>
+					<Legend>
+						<Place>SOUTH</Place>
+						<TextColor>-16777216</TextColor>
+						<Size>30</Size>
+					</Legend>
+					<Labels>
+						<HorLabelsPosition>DEFAULT</HorLabelsPosition>
+						<VerLabelsPosition>DEFAULT</VerLabelsPosition>
+						<TextColor>-12566464</TextColor>
+					</Labels>
+					<ShowLegend>true</ShowLegend>
+					<VerScaleFromExpression><![CDATA[0]]></VerScaleFromExpression>
+					<VerScaleToExpression><![CDATA[1]]></VerScaleToExpression>
+					<VerScaleType>AUTO</VerScaleType>
+					<DrawLine>true</DrawLine>
+					<Interpolation>LINEAR</Interpolation>
+					<SamplesToKeep>150</SamplesToKeep>
+					<HorScaleFromExpression><![CDATA[0]]></HorScaleFromExpression>
+					<HorScaleToExpression><![CDATA[1]]></HorScaleToExpression>
+					<HorScaleType>AUTO</HorScaleType>
+    			</Plot>
 			</Presentation>
 
 			<AllowParallelEvaluations>true</AllowParallelEvaluations>
