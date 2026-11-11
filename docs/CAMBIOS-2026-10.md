@@ -362,7 +362,7 @@ Respaldo: `backups/2026-10-28-pre-colores-campo.alp`.
 
 - **Por qué `Maduro` distingue antes y después de arrancar.** Al terminar la siembra, `XCompleted` queda en el ancho del lote, así que la parte trabajada cubre el campo entero durante el crecimiento. Recién vuelve a 0 cuando empieza el primer lote de cosecha. Hasta entonces (`!combine.enCampo && lotesCompletados == 0`) se pinta del color del cultivo maduro.
 - **Barro y lluvia siguen primero**, con los mismos colores de antes.
-- Los cuadraditos de `rectLote` no cambian.
+- Los cuadraditos de `rectLote` no cambian (desde el 2026-11-11 van a la derecha del campo, 6 por fila).
 - **Detalle visual sin resolver:** en la siembra, con la máquina parada, puede verse una línea clara de una hilera de ancho, a unas 3 hileras del borde de lo sembrado y de toda la altura del campo. Por el ancho parece la hilera en curso (`rectangle1`/`rectangle2`), pero esas figuras usan el mismo `XCompleted` que la parte trabajada y no se encontró la causa. No afecta resultados.
 
 Respaldo: `backups/2026-10-28-pre-color-cultivo.alp`.
@@ -1284,3 +1284,38 @@ La versión 1 subida a Cloud (exportada por Genaro) usa una Run Configuration qu
 - Exportar a Cloud. Va a quedar como versión 2.
 - En la versión 2, armar los experimentos de Cloud: animación, y una variación del base (campaña 0–19 × réplica 1–5).
 - En el panel de Cloud, definir el rango de cada entrada (por ejemplo, campaña de 0 a 19).
+
+---
+
+## 21. Cuatro pestañas: 2D, 3D, Lógica y Estadísticas (11/11)
+
+Pedido de la cátedra: respetar las vistas habituales de un modelo de simulación, en pestañas separadas. Referencia: el modelo `Production_Line` de AnyLogic Cloud, que muestra `3D`, `2D`, `Logic` y `Statistics` (más `Settings`, que es el panel de entradas de Cloud). Respaldo previo: `backups/2026-11-11-pre-pestanas.alp`.
+
+**Cómo funciona.** Cloud (y la ventana web de AnyLogic) muestra como pestaña cada **área de vista** (`Area`) de `Main`, con su `Title`. Antes había dos, `3D` y `2D`, y la 2D abarcaba la pantalla entera (campo, estadísticas y lógica juntos). Ahora hay cuatro, en este orden:
+
+| Pestaña | Área | Región del lienzo | Contenido |
+|---|---|---|---|
+| `2D` | `viewArea2D` | x −20, y −20, 990 × 620 | El campo: máquina, carro, camión, lluvia y avance |
+| `3D` | `viewArea3D` | x 0, y −750, 950 × 550 | La ventana 3D (`window3d`) |
+| `Logica` | `viewAreaLogica` | x 0, y 600, 970 × 380 | Los statecharts `cicloCultivo` y `climaControl` con su texto |
+| `Estadisticas` | `viewAreaEstadisticas` | x 965, y 0, 1170 × 520 | Tabla de Law y Kelton, horas detenidas por causa y tres gráficos |
+
+**Qué se movió** (solo posiciones; no cambia ningún resultado):
+- **Estadísticas en horizontal.** El panel era una columna de 585 × 750, que en una ventana apaisada queda angosto y con márgenes. Ahora la tabla de Law y Kelton queda a la izquierda, las horas por causa (`textParadas`) a la derecha, y los tres gráficos (`plotAvance`, `plotHumedad`, `plotCola`) en una fila de 385 × 300 debajo. `fondoEstadisticas` pasó a 1170 × 520.
+- **Lógica en dos filas.** `climaControl` bajó debajo de `cicloCultivo` (estado `Dia` a (190, 820), su punto de entrada y la transición `tickDiario` con él) y su texto, `textLogicaClima`, a (20, 885). `fondoLogica` pasó de 150 a 380 de alto, para que la pestaña no sea una franja angosta.
+- **Se quitaron** los botones `Switch to 3D` y `Switch to 2D` y la barra gris del 3D (`rectangle10`): las pestañas los reemplazan.
+
+**Sin verificar en el IDE.** El `.alp` se editó por script y parsea; los 4 `Area` están en `Main` y no se repite ningún `Id` nuevo. Falta abrirlo y comprobar:
+- que `Simulation` muestre las cuatro pestañas y cada una se vea completa;
+- que los gráficos y el texto de `Logica` no se pisen con los statecharts (posiciones elegidas a ojo);
+- que la pestaña `Logica` siga animando el estado activo;
+- que en Cloud aparezcan las mismas pestañas al exportar la versión 2.
+
+Si el título de una pestaña no se ve bien, el texto es el `Title` del `Area`.
+### 21 bis. Navegación entre pestañas y tamaño uniforme (2026-11-11)
+
+- **Navegación por botones.** El reproductor del IDE no dibuja pestañas (solo la lista del *Developer panel*) y no se sabe si Cloud replica esa lista. Cada área tiene una fila de cuatro botones (`tab_<área>_<destino>`, acción `viewAreaX.navigateTo()`); el de la vista actual queda deshabilitado y en negrita. Son controles del modelo, así que Cloud los dibuja igual.
+- **Vista inicial.** `Main` termina su código de arranque con `viewArea2D.navigateTo();`; sin eso el reproductor arranca mostrando el lienzo entero con las otras vistas pegadas.
+- **Tamaño uniforme.** Las cuatro áreas miden 1200 × 640 y están separadas en el lienzo para que ninguna muestre a la vecina: `2D` en (-20, -20), `3D` en (0, -785) con una franja superior para los botones (la ventana 3D se dibuja encima de cualquier control), `Logica` en (0, 700) y `Estadisticas` en (1400, 0).
+- **Gráficos de Estadisticas.** El área interna (`ChartArea`) de `plotAvance`, `plotHumedad` y `plotCola` se achicó a 320 × 200: con 510 × 115 no entraba en el gráfico de 385 × 300 y AnyLogic abortaba con *Chart picture must be located within the chart area*.
+- Sin verificar en Cloud.
