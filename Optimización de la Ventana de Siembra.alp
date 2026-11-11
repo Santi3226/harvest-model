@@ -4276,7 +4276,7 @@ viewArea2D.navigateTo();]]></StartupCode>
 				<Variable Class="PlainVariable">
 					<Id>1786000000401</Id>
 					<Name><![CDATA[nivelSilo]]></Name>
-					<X>1000</X><Y>-600</Y>
+					<X>2680</X><Y>-1100</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4291,7 +4291,7 @@ viewArea2D.navigateTo();]]></StartupCode>
 				<Variable Class="PlainVariable">
 					<Id>1786000000402</Id>
 					<Name><![CDATA[tasaSilo]]></Name>
-					<X>1000</X><Y>-560</Y>
+					<X>2680</X><Y>-1060</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4306,7 +4306,7 @@ viewArea2D.navigateTo();]]></StartupCode>
 				<Variable Class="PlainVariable">
 					<Id>1786000000403</Id>
 					<Name><![CDATA[tUltimoSilo]]></Name>
-					<X>1000</X><Y>-520</Y>
+					<X>2680</X><Y>-1020</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4321,7 +4321,7 @@ viewArea2D.navigateTo();]]></StartupCode>
 				<Variable Class="PlainVariable">
 					<Id>1786000000405</Id>
 					<Name><![CDATA[CapacidadSilo]]></Name>
-					<X>1000</X><Y>-480</Y>
+					<X>2680</X><Y>-980</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4336,7 +4336,7 @@ viewArea2D.navigateTo();]]></StartupCode>
 				<Variable Class="PlainVariable">
 					<Id>1786000000406</Id>
 					<Name><![CDATA[totalCosechado]]></Name>
-					<X>1000</X><Y>-440</Y>
+					<X>2680</X><Y>-940</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4351,7 +4351,7 @@ viewArea2D.navigateTo();]]></StartupCode>
 				<Variable Class="PlainVariable">
 					<Id>1786000000407</Id>
 					<Name><![CDATA[masaDescartada]]></Name>
-					<X>1000</X><Y>-400</Y>
+					<X>2680</X><Y>-900</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4366,7 +4366,7 @@ viewArea2D.navigateTo();]]></StartupCode>
 				<Variable Class="PlainVariable">
 					<Id>1786000000408</Id>
 					<Name><![CDATA[masaInventada]]></Name>
-					<X>1000</X><Y>-360</Y>
+					<X>2680</X><Y>-860</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4381,7 +4381,7 @@ viewArea2D.navigateTo();]]></StartupCode>
 				<Variable Class="PlainVariable">
 					<Id>1786000000410</Id>
 					<Name><![CDATA[tInicioCrecimiento]]></Name>
-					<X>1000</X><Y>-320</Y>
+					<X>2680</X><Y>-820</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4396,7 +4396,7 @@ viewArea2D.navigateTo();]]></StartupCode>
 				<Variable Class="PlainVariable">
 					<Id>1786000000501</Id>
 					<Name><![CDATA[horasTrabajando]]></Name>
-					<X>1000</X><Y>-260</Y>
+					<X>2680</X><Y>-760</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4411,7 +4411,7 @@ viewArea2D.navigateTo();]]></StartupCode>
 				<Variable Class="PlainVariable">
 					<Id>1786000000502</Id>
 					<Name><![CDATA[horasDetenida]]></Name>
-					<X>1000</X><Y>-220</Y>
+					<X>2680</X><Y>-720</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4426,7 +4426,7 @@ viewArea2D.navigateTo();]]></StartupCode>
 				<Variable Class="PlainVariable">
 					<Id>1786000000503</Id>
 					<Name><![CDATA[viajesCamion]]></Name>
-					<X>1000</X><Y>-180</Y>
+					<X>2680</X><Y>-680</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -4441,7 +4441,7 @@ viewArea2D.navigateTo();]]></StartupCode>
 				<Variable Class="PlainVariable">
 					<Id>1786000000601</Id>
 					<Name><![CDATA[climaLluvia]]></Name>
-					<X>1200</X><Y>-660</Y>
+					<X>2640</X><Y>-580</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>false</PresentationFlag>
@@ -4456,7 +4456,7 @@ viewArea2D.navigateTo();]]></StartupCode>
 				<Variable Class="PlainVariable">
 					<Id>1786000000602</Id>
 					<Name><![CDATA[climaTmedia]]></Name>
-					<X>1200</X><Y>-640</Y>
+					<X>2640</X><Y>-560</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>false</PresentationFlag>
@@ -4471,7 +4471,7 @@ viewArea2D.navigateTo();]]></StartupCode>
 				<Variable Class="PlainVariable">
 					<Id>1786000000603</Id>
 					<Name><![CDATA[climaEt0]]></Name>
-					<X>1200</X><Y>-620</Y>
+					<X>2640</X><Y>-540</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>false</PresentationFlag>
@@ -4486,7 +4486,7 @@ viewArea2D.navigateTo();]]></StartupCode>
 				<Variable Class="PlainVariable">
 					<Id>1786000000611</Id>
 					<Name><![CDATA[lluviaDiaria]]></Name>
-					<X>1200</X><Y>-600</Y>
+					<X>2640</X><Y>-520</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>false</PresentationFlag>
@@ -4501,7 +4501,7 @@ viewArea2D.navigateTo();]]></StartupCode>
 				<Variable Class="PlainVariable">
 					<Id>1786000000612</Id>
 					<Name><![CDATA[tmediaDiaria]]></Name>
-					<X>1200</X><Y>-560</Y>
+					<X>2640</X><Y>-480</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>false</PresentationFlag>
@@ -4516,7 +4516,7 @@ viewArea2D.navigateTo();]]></StartupCode>
 				<Variable Class="PlainVariable">
 					<Id>1786000000613</Id>
 					<Name><![CDATA[et0Diaria]]></Name>
-					<X>1200</X><Y>-520</Y>
+					<X>2640</X><Y>-440</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>false</PresentationFlag>
@@ -4531,7 +4531,7 @@ viewArea2D.navigateTo();]]></StartupCode>
 				<Variable Class="PlainVariable">
 					<Id>1786000000604</Id>
 					<Name><![CDATA[diaCampaña]]></Name>
-					<X>1200</X><Y>-480</Y>
+					<X>2640</X><Y>-400</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>false</PresentationFlag>
@@ -4546,7 +4546,7 @@ viewArea2D.navigateTo();]]></StartupCode>
 				<Variable Class="PlainVariable">
 					<Id>1786000000605</Id>
 					<Name><![CDATA[humedadSuperficie]]></Name>
-					<X>1200</X><Y>-440</Y>
+					<X>2640</X><Y>-360</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>false</PresentationFlag>
@@ -4561,7 +4561,7 @@ viewArea2D.navigateTo();]]></StartupCode>
 				<Variable Class="PlainVariable">
 					<Id>1786000000606</Id>
 					<Name><![CDATA[gdd]]></Name>
-					<X>1200</X><Y>-400</Y>
+					<X>2640</X><Y>-320</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>false</PresentationFlag>
@@ -4576,7 +4576,7 @@ viewArea2D.navigateTo();]]></StartupCode>
 				<Variable Class="PlainVariable">
 					<Id>1786000000607</Id>
 					<Name><![CDATA[daPiso]]></Name>
-					<X>1200</X><Y>-360</Y>
+					<X>2640</X><Y>-280</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>false</PresentationFlag>
@@ -4591,7 +4591,7 @@ viewArea2D.navigateTo();]]></StartupCode>
 				<Variable Class="PlainVariable">
 					<Id>1786000000608</Id>
 					<Name><![CDATA[lotesCompletados]]></Name>
-					<X>1200</X><Y>-320</Y>
+					<X>2640</X><Y>-240</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>false</PresentationFlag>
@@ -4606,7 +4606,7 @@ viewArea2D.navigateTo();]]></StartupCode>
 				<Variable Class="PlainVariable">
 					<Id>1786000000609</Id>
 					<Name><![CDATA[diaFinSiembra]]></Name>
-					<X>1200</X><Y>-280</Y>
+					<X>2640</X><Y>-200</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>false</PresentationFlag>
@@ -5446,7 +5446,7 @@ viewArea2D.navigateTo();]]></StartupCode>
 				<Variable Class="Parameter">
 					<Id>1786000000701</Id>
 					<Name><![CDATA[campaña]]></Name>
-					<X>1200</X><Y>-240</Y>
+					<X>2640</X><Y>-160</Y>
 					<Label><X>20</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>false</PresentationFlag>
@@ -5472,7 +5472,7 @@ viewArea2D.navigateTo();]]></StartupCode>
 				<Variable Class="Parameter">
 					<Id>1786000000702</Id>
 					<Name><![CDATA[cantidadLotes]]></Name>
-					<X>1200</X><Y>-200</Y>
+					<X>2640</X><Y>-120</Y>
 					<Label><X>20</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>false</PresentationFlag>
@@ -5498,7 +5498,7 @@ viewArea2D.navigateTo();]]></StartupCode>
 				<Variable Class="Parameter">
 					<Id>1786000000703</Id>
 					<Name><![CDATA[capacidadSuperficie]]></Name>
-					<X>1200</X><Y>-160</Y>
+					<X>2640</X><Y>-80</Y>
 					<Label><X>20</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>false</PresentationFlag>
@@ -5812,12 +5812,12 @@ viewArea2D.navigateTo();]]></StartupCode>
 				<StatechartElement Class="State" ParentState="ROOT_NODE">
 					<Id>1785872291055</Id>
 					<Name><![CDATA[SinSembrar]]></Name>
-					<X>240</X><Y>800</Y>
+					<X>231.889</X><Y>869.332</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Properties Width="100" Height="30">
+					<Properties Width="139.8608782883014" Height="55.33402857440818">
 						<EntryAction><![CDATA[// arranca la campaña: el campo esta sin sembrar y la maquina sale a sembrar
 // (Combine Parked -> GoingToField espera a Main.laborPendiente(); el tick horario la reevalua).
 // ritmo de presentacion: x1/250 (1/250 de semana por segundo real, unos 40 minutos simulados por segundo).
@@ -5829,12 +5829,12 @@ if ( presentacionLenta ) getEngine().setRealTimeScale( week() / 250 );]]></Entry
 				<StatechartElement Class="State" ParentState="ROOT_NODE">
 					<Id>1785872297912</Id>
 					<Name><![CDATA[Creciendo]]></Name>
-					<X>390</X><Y>800</Y>
+					<X>441.68</X><Y>869.332</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Properties Width="100" Height="30">
+					<Properties Width="139.8608782883014" Height="55.33402857440818">
 						<EntryAction><![CDATA[// la madurez depende del clima de la campaña: el tick diario suma grados-dia
 // mientras se este en este estado y la salida es la condicion gdd >= gddMeta
 gdd = 0;
@@ -5852,12 +5852,12 @@ if ( presentacionLenta ) getEngine().setRealTimeScale( 1 * week() );]]></EntryAc
 				<StatechartElement Class="State" ParentState="ROOT_NODE">
 					<Id>1785872303710</Id>
 					<Name><![CDATA[Maduro]]></Name>
-					<X>540</X><Y>800</Y>
+					<X>651.471</X><Y>869.332</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Properties Width="100" Height="30">
+					<Properties Width="139.8608782883014" Height="55.33402857440818">
 						<EntryAction><![CDATA[diaMadurez = diaCampaña;
 // los lotes "llegan" a la cola de la cosecha al madurar (medidas de Law y Kelton del panel)
 diaInicioLabor = time( DAY );
@@ -5880,12 +5880,12 @@ combine.moveControl.onChange();]]></EntryAction>
 				<StatechartElement Class="State" ParentState="ROOT_NODE">
 					<Id>1790500000031</Id>
 					<Name><![CDATA[Cosechado]]></Name>
-					<X>690</X><Y>800</Y>
+					<X>861.262</X><Y>869.332</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Properties Width="100" Height="30">
+					<Properties Width="139.8608782883014" Height="55.33402857440818">
 						<EntryAction><![CDATA[// fin de campaña: el campo quedo cosechado. Es el estado final (una corrida = una campaña).
 traza( "Campo cosechado el dia " + diaCampaña + " — fin de campaña" );
 // ritmo de presentacion: ya no hay nada que mirar
@@ -5896,26 +5896,26 @@ if ( presentacionLenta ) getEngine().setRealTimeScale( 1 * week() );]]></EntryAc
 				<StatechartElement Class="State" ParentState="ROOT_NODE">
 					<Id>1786000001002</Id>
 					<Name><![CDATA[Dia]]></Name>
-					<X>470</X><Y>935</Y>
+					<X>553.569</X><Y>1118.335</Y>
 					<Label><X>35</X><Y>20.325</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<Properties Width="100" Height="40.325">
+					<Properties Width="139.8608782883014" Height="74.37815674210033">
 						<FillColor>-7288071</FillColor>
 					</Properties>
 				</StatechartElement>
 				<StatechartElement Class="EntryPoint" ParentState="ROOT_NODE">
 					<Id>1785872289061</Id>
 					<Name><![CDATA[cicloCultivo]]></Name>
-					<X>180</X><Y>820</Y>
+					<X>147.972</X><Y>906.221</Y>
 					<Label><X>-20</X><Y>25</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Points>
 						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>60</X><Y>0</Y></Point>
+						<Point><X>83.916</X><Y>0</Y></Point>
 					</Points>
 					<Properties Target="1785872291055">
 					</Properties>	
@@ -5923,14 +5923,14 @@ if ( presentacionLenta ) getEngine().setRealTimeScale( 1 * week() );]]></EntryAc
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1785872350764</Id>
 					<Name><![CDATA[transition1]]></Name>
-					<X>490</X><Y>820</Y>
+					<X>581.541</X><Y>906.221</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<Points>
 						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>50</X><Y>0</Y></Point>
+						<Point><X>69.93</X><Y>0</Y></Point>
 					</Points>
 					<IconOffset>20.0</IconOffset>
 					<Properties Source="1785872297912" Target="1785872303710" Trigger="condition">
@@ -5953,14 +5953,14 @@ if ( presentacionLenta ) getEngine().setRealTimeScale( 1 * week() );]]></EntryAc
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1785872339158</Id>
 					<Name><![CDATA[transition]]></Name>
-					<X>340</X><Y>820</Y>
+					<X>371.75</X><Y>906.221</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<Points>
 						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>50</X><Y>0</Y></Point>
+						<Point><X>69.93</X><Y>0</Y></Point>
 					</Points>
 					<IconOffset>20.0</IconOffset>
 					<Properties Source="1785872291055" Target="1785872297912" Trigger="condition">
@@ -5983,14 +5983,14 @@ if ( presentacionLenta ) getEngine().setRealTimeScale( 1 * week() );]]></EntryAc
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1785874175951</Id>
 					<Name><![CDATA[transition2]]></Name>
-					<X>640</X><Y>815</Y>
+					<X>791.332</X><Y>896.999</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<Points>
 						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>50</X><Y>0</Y></Point>
+						<Point><X>69.93</X><Y>0</Y></Point>
 					</Points>
 					<IconOffset>20.0</IconOffset>
 					<Properties Source="1785872303710" Target="1790500000031" Trigger="condition">
@@ -6013,14 +6013,14 @@ if ( presentacionLenta ) getEngine().setRealTimeScale( 1 * week() );]]></EntryAc
 				<StatechartElement Class="EntryPoint" ParentState="ROOT_NODE">
 					<Id>1786000001001</Id>
 					<Name><![CDATA[climaControl]]></Name>
-					<X>390</X><Y>955</Y>
+					<X>441.68</X><Y>1155.224</Y>
 					<Label><X>-10</X><Y>-25</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Points>
 						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>80</X><Y>0</Y></Point>
+						<Point><X>111.889</X><Y>0</Y></Point>
 					</Points>
 					<Properties Target="1786000001002">
 					</Properties>	
@@ -6028,16 +6028,16 @@ if ( presentacionLenta ) getEngine().setRealTimeScale( 1 * week() );]]></EntryAc
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1786000001003</Id>
 					<Name><![CDATA[tickDiario]]></Name>
-					<X>560</X><Y>935</Y>
+					<X>679.444</X><Y>1118.335</Y>
 					<Label><X>-75</X><Y>-25</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<Points>
 						<Point><X>0</X><Y>0</Y></Point>
-						<Point><X>0</X><Y>-45</Y></Point>
-						<Point><X>-80</X><Y>-45</Y></Point>
-						<Point><X>-80</X><Y>0</Y></Point>
+						<Point><X>0</X><Y>-83.001</Y></Point>
+						<Point><X>-111.889</X><Y>-83.001</Y></Point>
+						<Point><X>-111.889</X><Y>0</Y></Point>
 					</Points>
 					<IconOffset>20.0</IconOffset>
 					<Properties Source="1786000001002" Target="1786000001002" Trigger="timeout">
@@ -6110,7 +6110,6 @@ combine.registrarCausa();]]></Action>
 					<ShowLabel>true</ShowLabel>
 					<Body><![CDATA[int hrs = (int)( time() / hour() );
 int min = (int)( ( time() % hour() ) / minute() );
-textTimeCompleted.setText( "Completed in " + hrs + " hours " + min + " minutes" );
 // Lo llama Combine al terminar UN lote. Si faltan lotes, la maquina vuelve a salir
 // sola: laborPendiente() sigue en true y la condicion de Parked -> GoingToField la deja pasar.
 // dia (con fraccion) en que termina cada lote: el rinde depende de la fecha de siembra de cada uno (paso 5)
@@ -6155,7 +6154,7 @@ cicloCultivo.onChange();]]></Body>
 					<ReturnType><![CDATA[void]]></ReturnType>
 					<Id>1802000000003</Id>
 					<Name><![CDATA[traza]]></Name>
-					<X>1000</X><Y>-660</Y>
+					<X>2680</X><Y>-1160</Y>
 					<Label><X>20</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -6172,7 +6171,7 @@ if ( trazas ) traceln( texto );]]></Body>
 					<ReturnType><![CDATA[void]]></ReturnType>
 					<Id>1786000000404</Id>
 					<Name><![CDATA[actualizarSilo]]></Name>
-					<X>1000</X><Y>-620</Y>
+					<X>2680</X><Y>-1120</Y>
 					<Label><X>20</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -6186,7 +6185,7 @@ tUltimoSilo = time();]]></Body>
 					<ReturnType><![CDATA[void]]></ReturnType>
 					<Id>1786000000409</Id>
 					<Name><![CDATA[auditarMasa]]></Name>
-					<X>1000</X><Y>-580</Y>
+					<X>2680</X><Y>-1080</Y>
 					<Label><X>20</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7160,7 +7159,7 @@ return s + ";" + c;]]></Body>
 				<Rectangle>
 					<Id>1256808074605</Id>
 					<Name><![CDATA[rectangle5]]></Name>
-					<X>-20</X><Y>-20</Y>
+					<X>-12.442</X><Y>-19.968</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7173,8 +7172,8 @@ return s + ";" + c;]]></Body>
 					<LineColor/>
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
-					<Width>990</Width>
-					<Height>620</Height>
+					<Width>1192.237354085603</Width>
+					<Height>639.9356913183279</Height>
 					<Rotation>0.0</Rotation>
 					<FillColor>-8355840</FillColor>
 					<FillMaterial>earth</FillMaterial>
@@ -7182,7 +7181,7 @@ return s + ";" + c;]]></Body>
 				<Rectangle>
 					<Id>1269852436968</Id>
 					<Name><![CDATA[rectangle6]]></Name>
-					<X>50</X><Y>349</Y>
+					<X>71.858</X><Y>360.897</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7195,8 +7194,8 @@ return s + ";" + c;]]></Body>
 					<LineColor/>
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
-					<Width>141</Width>
-					<Height>41</Height>
+					<Width>169.80350194552528</Width>
+					<Height>42.31832797427652</Height>
 					<Rotation>0.0</Rotation>
 					<FillColor>-1644806</FillColor>
 					<FillMaterial>null</FillMaterial>
@@ -7204,7 +7203,7 @@ return s + ";" + c;]]></Body>
 				<Rectangle>
 					<Id>1269852529517</Id>
 					<Name><![CDATA[rectangle7]]></Name>
-					<X>600</X><Y>500</Y>
+					<X>734.212</X><Y>516.752</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7217,8 +7216,8 @@ return s + ";" + c;]]></Body>
 					<LineColor/>
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
-					<Width>141</Width>
-					<Height>41</Height>
+					<Width>169.80350194552528</Width>
+					<Height>42.31832797427652</Height>
 					<Rotation>0.0</Rotation>
 					<FillColor>-1644806</FillColor>
 					<FillMaterial>null</FillMaterial>
@@ -7226,7 +7225,7 @@ return s + ";" + c;]]></Body>
 				<Rectangle>
 					<Id>1269852541467</Id>
 					<Name><![CDATA[rectangle8]]></Name>
-					<X>49</X><Y>499</Y>
+					<X>70.654</X><Y>515.72</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7239,8 +7238,8 @@ return s + ";" + c;]]></Body>
 					<LineColor/>
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
-					<Width>141</Width>
-					<Height>41</Height>
+					<Width>169.80350194552528</Width>
+					<Height>42.31832797427652</Height>
 					<Rotation>0.0</Rotation>
 					<FillColor>-1644806</FillColor>
 					<FillMaterial>null</FillMaterial>
@@ -7248,7 +7247,7 @@ return s + ";" + c;]]></Body>
 				<Rectangle>
 					<Id>1269852543214</Id>
 					<Name><![CDATA[rectangle9]]></Name>
-					<X>50</X><Y>449</Y>
+					<X>71.858</X><Y>464.113</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7261,8 +7260,8 @@ return s + ";" + c;]]></Body>
 					<LineColor/>
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
-					<Width>141</Width>
-					<Height>41</Height>
+					<Width>169.80350194552528</Width>
+					<Height>42.31832797427652</Height>
 					<Rotation>0.0</Rotation>
 					<FillColor>-1644806</FillColor>
 					<FillMaterial>null</FillMaterial>
@@ -7270,7 +7269,7 @@ return s + ";" + c;]]></Body>
 				<Line>
 					<Id>1170017475421</Id>
 					<Name><![CDATA[line2]]></Name>
-					<X>190</X><Y>520</Y>
+					<X>240.457</X><Y>537.395</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7287,14 +7286,14 @@ return s + ";" + c;]]></Body>
 					<BeginArrowStyle>0</BeginArrowStyle>
 					<EndArrowSize>1</EndArrowSize>
 					<EndArrowStyle>0</EndArrowStyle>
-					<Dx>410</Dx>
+					<Dx>493</Dx>
 					<Dy>0</Dy>
 					<Dz>0</Dz>
 				</Line>
 				<Text>
 					<Id>1170017443568</Id>
 					<Name><![CDATA[text6]]></Name>
-					<X>670</X><Y>510</Y>
+					<X>818.512</X><Y>527.074</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7315,7 +7314,7 @@ return s + ";" + c;]]></Body>
 				<Text>
 					<Id>1170015026793</Id>
 					<Name><![CDATA[text2]]></Name>
-					<X>120</X><Y>360</Y>
+					<X>156.158</X><Y>372.251</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7336,7 +7335,7 @@ return s + ";" + c;]]></Body>
 				<Text>
 					<Id>1170014957171</Id>
 					<Name><![CDATA[text1]]></Name>
-					<X>120</X><Y>460</Y>
+					<X>156.158</X><Y>475.466</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7357,7 +7356,7 @@ return s + ";" + c;]]></Body>
 				<Text>
 					<Id>1170014846290</Id>
 					<Name><![CDATA[text]]></Name>
-					<X>120</X><Y>510</Y>
+					<X>156.158</X><Y>527.074</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7378,7 +7377,7 @@ return s + ";" + c;]]></Body>
 				<Rectangle>
 					<Id>1169735952632</Id>
 					<Name><![CDATA[field]]></Name>
-					<X>250</X><Y>30</Y>
+					<X>312.714</X><Y>31.64</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7403,7 +7402,7 @@ colorCampo()]]></FillColorCode>
 				<Oval>
 					<Id>1169814222241</Id>
 					<Name><![CDATA[truckParking]]></Name>
-					<X>120</X><Y>520</Y>
+					<X>156.158</X><Y>537.395</Y>
 					<Label><X>15</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7417,7 +7416,7 @@ colorCampo()]]></FillColorCode>
 					<LineColor>-16777216</LineColor>
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
-					<RadiusX>10</RadiusX>
+					<RadiusX>12.042801556420233</RadiusX>
 					<RadiusY>10</RadiusY>
 					<Rotation>0.0</Rotation>
 					<FillColor/>
@@ -7426,7 +7425,7 @@ colorCampo()]]></FillColorCode>
 				<Oval>
 					<Id>1169814245917</Id>
 					<Name><![CDATA[truckUnloading]]></Name>
-					<X>670</X><Y>521</Y>
+					<X>818.512</X><Y>538.428</Y>
 					<Label><X>-90</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7440,7 +7439,7 @@ colorCampo()]]></FillColorCode>
 					<LineColor>-16777216</LineColor>
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
-					<RadiusX>10</RadiusX>
+					<RadiusX>12.042801556420233</RadiusX>
 					<RadiusY>10</RadiusY>
 					<Rotation>0.0</Rotation>
 					<FillColor/>
@@ -7449,7 +7448,7 @@ colorCampo()]]></FillColorCode>
 				<Oval>
 					<Id>1169814264133</Id>
 					<Name><![CDATA[cartParking]]></Name>
-					<X>120</X><Y>470</Y>
+					<X>156.158</X><Y>485.788</Y>
 					<Label><X>15</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7463,7 +7462,7 @@ colorCampo()]]></FillColorCode>
 					<LineColor>-16777216</LineColor>
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
-					<RadiusX>10</RadiusX>
+					<RadiusX>12.042801556420233</RadiusX>
 					<RadiusY>10</RadiusY>
 					<Rotation>0.0</Rotation>
 					<FillColor/>
@@ -7472,7 +7471,7 @@ colorCampo()]]></FillColorCode>
 				<Oval>
 					<Id>1169814405316</Id>
 					<Name><![CDATA[combineParking]]></Name>
-					<X>120</X><Y>370</Y>
+					<X>156.158</X><Y>382.572</Y>
 					<Label><X>20</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7486,7 +7485,7 @@ colorCampo()]]></FillColorCode>
 					<LineColor>-16777216</LineColor>
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
-					<RadiusX>10</RadiusX>
+					<RadiusX>12.042801556420233</RadiusX>
 					<RadiusY>10</RadiusY>
 					<Rotation>0.0</Rotation>
 					<FillColor/>
@@ -7495,7 +7494,7 @@ colorCampo()]]></FillColorCode>
 				<Group>
 					<Id>1169815996693</Id>
 					<Name><![CDATA[groupField]]></Name>
-					<X>250</X><Y>30</Y>
+					<X>312.714</X><Y>31.64</Y>
 					<Label><X>-70</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7670,7 +7669,7 @@ colorTrabajada()]]></FillColorCode>
 				<Text>
 					<Id>1170015109058</Id>
 					<Name><![CDATA[text3]]></Name>
-					<X>60</X><Y>571</Y>
+					<X>83.901</X><Y>590.035</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7691,7 +7690,7 @@ colorTrabajada()]]></FillColorCode>
 				<Line>
 					<Id>1170015147313</Id>
 					<Name><![CDATA[line]]></Name>
-					<X>60</X><Y>570</Y>
+					<X>83.901</X><Y>589.003</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7708,14 +7707,14 @@ colorTrabajada()]]></FillColorCode>
 					<BeginArrowStyle>0</BeginArrowStyle>
 					<EndArrowSize>1</EndArrowSize>
 					<EndArrowStyle>0</EndArrowStyle>
-					<Dx>120</Dx>
+					<Dx>144</Dx>
 					<Dy>0</Dy>
 					<Dz>0</Dz>
 				</Line>
 				<Line>
 					<Id>1170015211937</Id>
 					<Name><![CDATA[line1]]></Name>
-					<X>60</X><Y>420</Y>
+					<X>83.901</X><Y>434.18</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7732,14 +7731,14 @@ colorTrabajada()]]></FillColorCode>
 					<BeginArrowStyle>0</BeginArrowStyle>
 					<EndArrowSize>1</EndArrowSize>
 					<EndArrowStyle>0</EndArrowStyle>
-					<Dx>120</Dx>
+					<Dx>144</Dx>
 					<Dy>0</Dy>
 					<Dz>0</Dz>
 				</Line>
 				<Text>
 					<Id>1170015211939</Id>
 					<Name><![CDATA[text4]]></Name>
-					<X>60</X><Y>408</Y>
+					<X>83.901</X><Y>421.794</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7760,7 +7759,7 @@ colorTrabajada()]]></FillColorCode>
 				<Text>
 					<Id>1170016454954</Id>
 					<Name><![CDATA[text5]]></Name>
-					<X>820</X><Y>550</Y>
+					<X>999.154</X><Y>568.36</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7781,7 +7780,7 @@ colorTrabajada()]]></FillColorCode>
 				<Text>
 					<Id>1170071174742</Id>
 					<Name><![CDATA[text7]]></Name>
-					<X>130</X><Y>40</Y>
+					<X>168.2</X><Y>41.961</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7804,7 +7803,7 @@ de Operaciones Agricolas]]></Text>
 				<Text>
 					<Id>1170071455776</Id>
 					<Name><![CDATA[text8]]></Name>
-					<X>130</X><Y>140</Y>
+					<X>168.2</X><Y>145.177</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7824,30 +7823,9 @@ de la Cosechadora]]></Text>
 					<Alignment>CENTER</Alignment>
 				</Text>
 				<Text>
-					<Id>1170071582007</Id>
-					<Name><![CDATA[textTimeCompleted]]></Name>
-					<X>120</X><Y>240</Y>
-					<Label><X>0</X><Y>-10</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<Rotation>0.0</Rotation>
-					<Color>-16744448</Color>
-					<Text><![CDATA[ ]]></Text>
-					<Font>
-						<Name>SansSerif</Name>
-						<Size>11</Size>
-						<Style>1</Style>
-					</Font>
-					<Alignment>CENTER</Alignment>
-				</Text>
-				<Text>
 					<Id>1790500000041</Id>
 					<Name><![CDATA[textAvance]]></Name>
-					<X>460</X><Y>400</Y>
+					<X>565.613</X><Y>413.537</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -8205,7 +8183,7 @@ T(n) duracion de la labor [dias]]]></Text>
 				<Text>
 					<Id>1811000000028</Id>
 					<Name><![CDATA[textLogicaCultivo]]></Name>
-					<X>160</X><Y>860</Y>
+					<X>120</X><Y>980</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -8227,7 +8205,7 @@ T(n) duracion de la labor [dias]]]></Text>
 				<Text>
 					<Id>1811000000029</Id>
 					<Name><![CDATA[textLogicaClima]]></Name>
-					<X>300</X><Y>1000</Y>
+					<X>315.805</X><Y>1238.225</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -8249,7 +8227,7 @@ T(n) duracion de la labor [dias]]]></Text>
 				<Text>
 					<Id>1794000000002</Id>
 					<Name><![CDATA[textSueloPiso]]></Name>
-					<X>460</X><Y>420</Y>
+					<X>565.613</X><Y>434.18</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -8272,7 +8250,7 @@ T(n) duracion de la labor [dias]]]></Text>
 				<Text>
 					<Id>1794000000003</Id>
 					<Name><![CDATA[textSueloSinPiso]]></Name>
-					<X>460</X><Y>418</Y>
+					<X>565.613</X><Y>432.116</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -8295,7 +8273,7 @@ T(n) duracion de la labor [dias]]]></Text>
 				<Line>
 					<Id>1794000000004</Id>
 					<Name><![CDATA[gotaLluvia]]></Name>
-					<X>250</X><Y>30</Y>
+					<X>312.714</X><Y>31.64</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -8319,14 +8297,14 @@ T(n) duracion de la labor [dias]]]></Text>
 					<BeginArrowStyle>0</BeginArrowStyle>
 					<EndArrowSize>1</EndArrowSize>
 					<EndArrowStyle>0</EndArrowStyle>
-					<Dx>-4</Dx>
+					<Dx>-5</Dx>
 					<Dy>14</Dy>
 					<Dz>0</Dz>
 				</Line>
 				<Line>
 					<Id>1794000000005</Id>
 					<Name><![CDATA[gotaLluvia3D]]></Name>
-					<X>250</X><Y>30</Y>
+					<X>312.714</X><Y>31.64</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -8351,21 +8329,21 @@ T(n) duracion de la labor [dias]]]></Text>
 					<BeginArrowStyle>0</BeginArrowStyle>
 					<EndArrowSize>1</EndArrowSize>
 					<EndArrowStyle>0</EndArrowStyle>
-					<Dx>-2</Dx>
+					<Dx>-3</Dx>
 					<Dy>0</Dy>
 					<Dz>-10</Dz>
 				</Line>
 				<Rectangle>
 					<Id>1790500000042</Id>
 					<Name><![CDATA[rectLote]]></Name>
-					<X>250</X><Y>362</Y>
+					<X>312.714</X><Y>374.315</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<XCode><![CDATA[250 + ( index % 20 ) * 16]]></XCode>
-					<YCode><![CDATA[362 + ( index / 20 ) * 16]]></YCode>
+					<XCode><![CDATA[870 + ( index % 6 ) * 22]]></XCode>
+					<YCode><![CDATA[40 + ( index / 6 ) * 22]]></YCode>
 					<ReplicationCode Class="CodeValue">
 						<Code><![CDATA[cantidadLotes]]></Code>
 					</ReplicationCode>
@@ -8377,8 +8355,8 @@ T(n) duracion de la labor [dias]]]></Text>
 					<LineColorCode><![CDATA[( index == lotesCompletados && ( inState( SinSembrar ) || inState( Maduro ) ) ) ? new java.awt.Color( 0, 0, 0 ) : null]]></LineColorCode>
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
-					<Width>14</Width>
-					<Height>14</Height>
+					<Width>16.859922178988327</Width>
+					<Height>14.450160771704178</Height>
 					<Rotation>0.0</Rotation>
 					<FillColor>-4342339</FillColor>
 					<FillColorCode><![CDATA[inState( Creciendo ) ? new java.awt.Color( 76, 175, 80 )
@@ -8390,7 +8368,7 @@ T(n) duracion de la labor [dias]]]></Text>
 				<Group>
 					<Id>1256807869888</Id>
 					<Name><![CDATA[group]]></Name>
-					<X>800</X><Y>471</Y>
+					<X>975.068</X><Y>486.82</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -8592,7 +8570,7 @@ T(n) duracion de la labor [dias]]]></Text>
 				<Group>
 					<Id>1527596809057</Id>
 					<Name><![CDATA[clock]]></Name>
-					<X>130</X><Y>250</Y>
+					<X>168.2</X><Y>258.714</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -8864,7 +8842,7 @@ T(n) duracion de la labor [dias]]]></Text>
 				<StorageTank>
 					<Id>1527596980055</Id>
 					<Name><![CDATA[storageTank]]></Name>
-					<X>820</X><Y>491</Y>
+					<X>999.154</X><Y>507.463</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -8873,20 +8851,20 @@ T(n) duracion de la labor [dias]]]></Text>
 					<Z>0</Z>
 					<LineColor>1077952576</LineColor>
 					<LineMaterial>null</LineMaterial>
-					<Diameter>80</Diameter>				
+					<Diameter>96.34241245136187</Diameter>				
 					<Height>100</Height>				
 				</StorageTank>
 				<Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
 					<Id>1169819928737</Id>
 					<Name><![CDATA[button]]></Name>
-					<X>130</X><Y>425</Y>
+					<X>168.2</X><Y>439.341</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<BasicProperties Width="50" Height="20">
+					<BasicProperties Width="60.21400778210116" Height="20.643086816720256">
                         <EmbeddedIcon>false</EmbeddedIcon>	
 						<TextColor>-16777216</TextColor>
 						<Enabled>true</Enabled>
@@ -8902,13 +8880,13 @@ T(n) duracion de la labor [dias]]]></Text>
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
 					<Id>1169819969707</Id>
 					<Name><![CDATA[button1]]></Name>
-					<X>60</X><Y>425</Y>
+					<X>83.901</X><Y>439.341</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<BasicProperties Width="50" Height="20">
+					<BasicProperties Width="60.21400778210116" Height="20.643086816720256">
                         <EmbeddedIcon>false</EmbeddedIcon>	
 						<TextColor>-16777216</TextColor>
 						<Enabled>true</Enabled>
@@ -8924,13 +8902,13 @@ T(n) duracion de la labor [dias]]]></Text>
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
 					<Id>1169892135501</Id>
 					<Name><![CDATA[button2]]></Name>
-					<X>60</X><Y>545</Y>
+					<X>83.901</X><Y>563.199</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<BasicProperties Width="50" Height="20">
+					<BasicProperties Width="60.21400778210116" Height="20.643086816720256">
                         <EmbeddedIcon>false</EmbeddedIcon>	
 						<TextColor>-16777216</TextColor>
 						<Enabled>true</Enabled>
@@ -8946,13 +8924,13 @@ T(n) duracion de la labor [dias]]]></Text>
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
 					<Id>1169892135503</Id>
 					<Name><![CDATA[button3]]></Name>
-					<X>130</X><Y>545</Y>
+					<X>168.2</X><Y>563.199</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<BasicProperties Width="50" Height="20">
+					<BasicProperties Width="60.21400778210116" Height="20.643086816720256">
                         <EmbeddedIcon>false</EmbeddedIcon>	
 						<TextColor>-16777216</TextColor>
 						<Enabled>true</Enabled>
@@ -8968,13 +8946,13 @@ T(n) duracion de la labor [dias]]]></Text>
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
 					<Id>1170076158327</Id>
 					<Name><![CDATA[checkBox]]></Name>
-					<X>60</X><Y>170</Y>
+					<X>83.901</X><Y>176.141</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<BasicProperties Width="140" Height="30">
+					<BasicProperties Width="168.59922178988327" Height="30.964630225080384">
                         <EmbeddedIcon>false</EmbeddedIcon>	
 						<TextColor>-16777216</TextColor>
 						<Enabled>true</Enabled>
@@ -8990,9 +8968,9 @@ T(n) duracion de la labor [dias]]]></Text>
 				<Control Type="Window3D">
 					<Id>1256807067672</Id>
 					<Name><![CDATA[window3d]]></Name>
-					<X>0</X><Y>-750</Y>
-					<Width>950</Width>
-					<Height>550</Height>
+					<X>80</X><Y>-740</Y>
+					<Width>1053.636</Width>
+					<Height>610</Height>
 					<MakeDefaultViewArea>false</MakeDefaultViewArea>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<ShowLabel>false</ShowLabel>
@@ -9340,7 +9318,7 @@ T(n) duracion de la labor [dias]]]></Text>
 				<Group>
 					<Id>1727101706393</Id>
 					<Name><![CDATA[group1]]></Name>
-					<X>0</X><Y>0</Y>
+					<X>11.644</X><Y>0.675</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -9375,7 +9353,7 @@ T(n) duracion de la labor [dias]]]></Text>
 				<Group>
 					<Id>1727101706395</Id>
 					<Name><![CDATA[group2]]></Name>
-					<X>0</X><Y>0</Y>
+					<X>11.644</X><Y>0.675</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -9410,7 +9388,7 @@ T(n) duracion de la labor [dias]]]></Text>
 				<Group>
 					<Id>1727101706397</Id>
 					<Name><![CDATA[group3]]></Name>
-					<X>0</X><Y>0</Y>
+					<X>11.644</X><Y>0.675</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>

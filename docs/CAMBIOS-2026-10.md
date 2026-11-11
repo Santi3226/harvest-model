@@ -362,7 +362,7 @@ Respaldo: `backups/2026-10-28-pre-colores-campo.alp`.
 
 - **Por qué `Maduro` distingue antes y después de arrancar.** Al terminar la siembra, `XCompleted` queda en el ancho del lote, así que la parte trabajada cubre el campo entero durante el crecimiento. Recién vuelve a 0 cuando empieza el primer lote de cosecha. Hasta entonces (`!combine.enCampo && lotesCompletados == 0`) se pinta del color del cultivo maduro.
 - **Barro y lluvia siguen primero**, con los mismos colores de antes.
-- Los cuadraditos de `rectLote` no cambian.
+- Los cuadraditos de `rectLote` no cambian (desde el 2026-11-11 van a la derecha del campo, 6 por fila).
 - **Detalle visual sin resolver:** en la siembra, con la máquina parada, puede verse una línea clara de una hilera de ancho, a unas 3 hileras del borde de lo sembrado y de toda la altura del campo. Por el ancho parece la hilera en curso (`rectangle1`/`rectangle2`), pero esas figuras usan el mismo `XCompleted` que la parte trabajada y no se encontró la causa. No afecta resultados.
 
 Respaldo: `backups/2026-10-28-pre-color-cultivo.alp`.
