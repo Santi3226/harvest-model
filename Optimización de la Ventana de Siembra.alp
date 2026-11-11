@@ -3993,7 +3993,10 @@ for (int i = 0; i < n; i++) {
     int fila = i / columnas;
     Xunits[i] = col * espaciadoX;
     Yunits[i] = fila * espaciadoY;
-}]]></StartupCode>
+}
+
+// la simulacion arranca en la pestaña 2D (sin esto el reproductor muestra el lienzo entero, con las otras vistas pegadas)
+viewArea2D.navigateTo();]]></StartupCode>
 			<Generic>false</Generic>
 			<GenericParameter>
 				<Id>1413196536476</Id>
@@ -5809,7 +5812,7 @@ for (int i = 0; i < n; i++) {
 				<StatechartElement Class="State" ParentState="ROOT_NODE">
 					<Id>1785872291055</Id>
 					<Name><![CDATA[SinSembrar]]></Name>
-					<X>100</X><Y>645</Y>
+					<X>240</X><Y>800</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5826,7 +5829,7 @@ if ( presentacionLenta ) getEngine().setRealTimeScale( week() / 250 );]]></Entry
 				<StatechartElement Class="State" ParentState="ROOT_NODE">
 					<Id>1785872297912</Id>
 					<Name><![CDATA[Creciendo]]></Name>
-					<X>250</X><Y>645</Y>
+					<X>390</X><Y>800</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5849,7 +5852,7 @@ if ( presentacionLenta ) getEngine().setRealTimeScale( 1 * week() );]]></EntryAc
 				<StatechartElement Class="State" ParentState="ROOT_NODE">
 					<Id>1785872303710</Id>
 					<Name><![CDATA[Maduro]]></Name>
-					<X>400</X><Y>645</Y>
+					<X>540</X><Y>800</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5877,7 +5880,7 @@ combine.moveControl.onChange();]]></EntryAction>
 				<StatechartElement Class="State" ParentState="ROOT_NODE">
 					<Id>1790500000031</Id>
 					<Name><![CDATA[Cosechado]]></Name>
-					<X>550</X><Y>645</Y>
+					<X>690</X><Y>800</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5893,7 +5896,7 @@ if ( presentacionLenta ) getEngine().setRealTimeScale( 1 * week() );]]></EntryAc
 				<StatechartElement Class="State" ParentState="ROOT_NODE">
 					<Id>1786000001002</Id>
 					<Name><![CDATA[Dia]]></Name>
-					<X>790</X><Y>660</Y>
+					<X>470</X><Y>935</Y>
 					<Label><X>35</X><Y>20.325</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5905,7 +5908,7 @@ if ( presentacionLenta ) getEngine().setRealTimeScale( 1 * week() );]]></EntryAc
 				<StatechartElement Class="EntryPoint" ParentState="ROOT_NODE">
 					<Id>1785872289061</Id>
 					<Name><![CDATA[cicloCultivo]]></Name>
-					<X>40</X><Y>665</Y>
+					<X>180</X><Y>820</Y>
 					<Label><X>-20</X><Y>25</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5920,7 +5923,7 @@ if ( presentacionLenta ) getEngine().setRealTimeScale( 1 * week() );]]></EntryAc
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1785872350764</Id>
 					<Name><![CDATA[transition1]]></Name>
-					<X>350</X><Y>665</Y>
+					<X>490</X><Y>820</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5950,7 +5953,7 @@ if ( presentacionLenta ) getEngine().setRealTimeScale( 1 * week() );]]></EntryAc
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1785872339158</Id>
 					<Name><![CDATA[transition]]></Name>
-					<X>200</X><Y>665</Y>
+					<X>340</X><Y>820</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -5980,7 +5983,7 @@ if ( presentacionLenta ) getEngine().setRealTimeScale( 1 * week() );]]></EntryAc
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1785874175951</Id>
 					<Name><![CDATA[transition2]]></Name>
-					<X>500</X><Y>660</Y>
+					<X>640</X><Y>815</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -6010,7 +6013,7 @@ if ( presentacionLenta ) getEngine().setRealTimeScale( 1 * week() );]]></EntryAc
 				<StatechartElement Class="EntryPoint" ParentState="ROOT_NODE">
 					<Id>1786000001001</Id>
 					<Name><![CDATA[climaControl]]></Name>
-					<X>710</X><Y>680</Y>
+					<X>390</X><Y>955</Y>
 					<Label><X>-10</X><Y>-25</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -6025,7 +6028,7 @@ if ( presentacionLenta ) getEngine().setRealTimeScale( 1 * week() );]]></EntryAc
 				<StatechartElement Class="Transition" ParentState="ROOT_NODE">
 					<Id>1786000001003</Id>
 					<Name><![CDATA[tickDiario]]></Name>
-					<X>880</X><Y>660</Y>
+					<X>560</X><Y>935</Y>
 					<Label><X>-75</X><Y>-25</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7113,7 +7116,7 @@ return s + ";" + c;]]></Body>
 				<Rectangle>
 					<Id>1811000000013</Id>
 					<Name><![CDATA[fondoEstadisticas]]></Name>
-					<X>965</X><Y>0</Y>
+					<X>1400</X><Y>0</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7126,8 +7129,8 @@ return s + ";" + c;]]></Body>
 					<LineColor>-2302756</LineColor>
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
-					<Width>585</Width>
-					<Height>750</Height>
+					<Width>1200</Width>
+					<Height>640</Height>
 					<Rotation>0.0</Rotation>
 					<FillColor>-657931</FillColor>
 					<FillMaterial>null</FillMaterial>
@@ -7135,7 +7138,7 @@ return s + ";" + c;]]></Body>
 				<Rectangle>
 					<Id>1811000000014</Id>
 					<Name><![CDATA[fondoLogica]]></Name>
-					<X>0</X><Y>600</Y>
+					<X>0</X><Y>700</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7148,32 +7151,10 @@ return s + ";" + c;]]></Body>
 					<LineColor>-2302756</LineColor>
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
-					<Width>970</Width>
-					<Height>150</Height>
+					<Width>1200</Width>
+					<Height>640</Height>
 					<Rotation>0.0</Rotation>
 					<FillColor>-657931</FillColor>
-					<FillMaterial>null</FillMaterial>
-				</Rectangle>
-				<Rectangle>
-					<Id>1527596619767</Id>
-					<Name><![CDATA[rectangle10]]></Name>
-					<X>0</X><Y>-800</Y>
-					<Label><X>10</X><Y>10</Y></Label>
-					<PublicFlag>true</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<DrawMode>SHAPE_DRAW_2D</DrawMode>
-					<EmbeddedIcon>false</EmbeddedIcon>
-					<Z>0</Z>
-					<ZHeight>10</ZHeight>
-					<LineWidth>1</LineWidth>
-					<LineColor/>
-					<LineMaterial>null</LineMaterial>
-					<LineStyle>SOLID</LineStyle>
-					<Width>950</Width>
-					<Height>50</Height>
-					<Rotation>0.0</Rotation>
-					<FillColor>-5383962</FillColor>
 					<FillMaterial>null</FillMaterial>
 				</Rectangle>
 				<Rectangle>
@@ -7893,7 +7874,7 @@ de la Cosechadora]]></Text>
 				<Text>
 					<Id>1811000000015</Id>
 					<Name><![CDATA[textTituloEstadisticas]]></Name>
-					<X>980</X><Y>6</Y>
+					<X>1415</X><Y>6</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7914,7 +7895,7 @@ de la Cosechadora]]></Text>
 				<Text>
 					<Id>1811000000016</Id>
 					<Name><![CDATA[textSubtituloLK]]></Name>
-					<X>980</X><Y>26</Y>
+					<X>1415</X><Y>26</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7936,7 +7917,7 @@ clientes = lotes (llegan todos al abrir la labor).]]></Text>
 				<Text>
 					<Id>1811000000017</Id>
 					<Name><![CDATA[textLkNombres]]></Name>
-					<X>980</X><Y>58</Y>
+					<X>1415</X><Y>58</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7963,7 +7944,7 @@ T(n) duracion de la labor [dias]]]></Text>
 				<Text>
 					<Id>1811000000018</Id>
 					<Name><![CDATA[textLkSiembra]]></Name>
-					<X>1420</X><Y>58</Y>
+					<X>1855</X><Y>58</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -7985,7 +7966,7 @@ T(n) duracion de la labor [dias]]]></Text>
 				<Text>
 					<Id>1811000000019</Id>
 					<Name><![CDATA[textLkCosecha]]></Name>
-					<X>1530</X><Y>58</Y>
+					<X>1965</X><Y>58</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -8007,7 +7988,7 @@ T(n) duracion de la labor [dias]]]></Text>
 				<Text>
 					<Id>1811000000020</Id>
 					<Name><![CDATA[textParadas]]></Name>
-					<X>980</X><Y>162</Y>
+					<X>2015</X><Y>58</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -8029,7 +8010,7 @@ T(n) duracion de la labor [dias]]]></Text>
     			<Plot>
 					<Id>1811000000022</Id>
 					<Name><![CDATA[plotAvance]]></Name>
-					<X>970</X><Y>212</Y>
+					<X>1405</X><Y>215</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -8050,15 +8031,15 @@ T(n) duracion de la labor [dias]]]></Text>
 						</RecurrenceCode>
 					</RecurrenceProperties>
 					<EmbeddedIcon>false</EmbeddedIcon>
-					<Width>575</Width>
-					<Height>165</Height>
+					<Width>385</Width>
+					<Height>300</Height>
 					<BackgroundColor/>
 					<BorderColor/>
 					<ChartArea>
 						<XOffset>45</XOffset>
 						<YOffset>8</YOffset>
-						<Width>510</Width>
-						<Height>115</Height>
+						<Width>320</Width>
+						<Height>200</Height>
 						<BackgroundColor>-1</BackgroundColor>
 						<BorderColor>-9868951</BorderColor>
 						<GridColor>-12566464</GridColor>
@@ -8087,7 +8068,7 @@ T(n) duracion de la labor [dias]]]></Text>
     			<Plot>
 					<Id>1811000000024</Id>
 					<Name><![CDATA[plotHumedad]]></Name>
-					<X>970</X><Y>380</Y>
+					<X>1795</X><Y>215</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -8108,15 +8089,15 @@ T(n) duracion de la labor [dias]]]></Text>
 						</RecurrenceCode>
 					</RecurrenceProperties>
 					<EmbeddedIcon>false</EmbeddedIcon>
-					<Width>575</Width>
-					<Height>165</Height>
+					<Width>385</Width>
+					<Height>300</Height>
 					<BackgroundColor/>
 					<BorderColor/>
 					<ChartArea>
 						<XOffset>45</XOffset>
 						<YOffset>8</YOffset>
-						<Width>510</Width>
-						<Height>115</Height>
+						<Width>320</Width>
+						<Height>200</Height>
 						<BackgroundColor>-1</BackgroundColor>
 						<BorderColor>-9868951</BorderColor>
 						<GridColor>-12566464</GridColor>
@@ -8145,7 +8126,7 @@ T(n) duracion de la labor [dias]]]></Text>
     			<Plot>
 					<Id>1811000000026</Id>
 					<Name><![CDATA[plotCola]]></Name>
-					<X>970</X><Y>548</Y>
+					<X>2185</X><Y>215</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -8166,15 +8147,15 @@ T(n) duracion de la labor [dias]]]></Text>
 						</RecurrenceCode>
 					</RecurrenceProperties>
 					<EmbeddedIcon>false</EmbeddedIcon>
-					<Width>575</Width>
-					<Height>165</Height>
+					<Width>385</Width>
+					<Height>300</Height>
 					<BackgroundColor/>
 					<BorderColor/>
 					<ChartArea>
 						<XOffset>45</XOffset>
 						<YOffset>8</YOffset>
-						<Width>510</Width>
-						<Height>115</Height>
+						<Width>320</Width>
+						<Height>200</Height>
 						<BackgroundColor>-1</BackgroundColor>
 						<BorderColor>-9868951</BorderColor>
 						<GridColor>-12566464</GridColor>
@@ -8203,7 +8184,7 @@ T(n) duracion de la labor [dias]]]></Text>
 				<Text>
 					<Id>1811000000027</Id>
 					<Name><![CDATA[textTituloLogica]]></Name>
-					<X>10</X><Y>610</Y>
+					<X>10</X><Y>710</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -8224,7 +8205,7 @@ T(n) duracion de la labor [dias]]]></Text>
 				<Text>
 					<Id>1811000000028</Id>
 					<Name><![CDATA[textLogicaCultivo]]></Name>
-					<X>20</X><Y>705</Y>
+					<X>160</X><Y>860</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -8246,7 +8227,7 @@ T(n) duracion de la labor [dias]]]></Text>
 				<Text>
 					<Id>1811000000029</Id>
 					<Name><![CDATA[textLogicaClima]]></Name>
-					<X>640</X><Y>705</Y>
+					<X>300</X><Y>1000</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -9022,15 +9003,36 @@ T(n) duracion de la labor [dias]]]></Text>
 				</Control>
 				<Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>1256808754884</Id>
-					<Name><![CDATA[button5]]></Name>
-					<X>820</X><Y>10</Y>
+					<Id>1815000000001</Id>
+					<Name><![CDATA[tab_viewArea2D_viewArea2D]]></Name>
+					<X>785</X><Y>-16</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
-					<PublicFlag>true</PublicFlag>
+					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<BasicProperties Width="120" Height="30">
+					<BasicProperties Width="90" Height="22">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<TextColor>-16777216</TextColor>
+						<Enabled>false</Enabled>
+						<ActionCode><![CDATA[viewArea2D.navigateTo();]]></ActionCode>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="1"/>
+						<LabelText><![CDATA[2D]]></LabelText>
+					</ExtendedProperties>
+				</Control>
+				<Control Type="Button">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1815000000002</Id>
+					<Name><![CDATA[tab_viewArea2D_viewArea3D]]></Name>
+					<X>880</X><Y>-16</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="90" Height="22">
                         <EmbeddedIcon>false</EmbeddedIcon>	
 						<TextColor>-16777216</TextColor>
 						<Enabled>true</Enabled>
@@ -9038,20 +9040,62 @@ T(n) duracion de la labor [dias]]]></Text>
 					</BasicProperties>
 					<ExtendedProperties>
 						<Font Name="Dialog" Size="11" Style="0"/>
-						<LabelText><![CDATA[Switch to 3D]]></LabelText>
+						<LabelText><![CDATA[3D]]></LabelText>
 					</ExtendedProperties>
 				</Control>
 				<Control Type="Button">
 				 	<EmbeddedIcon>false</EmbeddedIcon>				
-					<Id>1527593906095</Id>
-					<Name><![CDATA[button4]]></Name>
-					<X>820</X><Y>-790</Y>
+					<Id>1815000000003</Id>
+					<Name><![CDATA[tab_viewArea2D_viewAreaLogica]]></Name>
+					<X>975</X><Y>-16</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
-					<PublicFlag>true</PublicFlag>
+					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
-					<BasicProperties Width="120" Height="30">
+					<BasicProperties Width="90" Height="22">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<TextColor>-16777216</TextColor>
+						<Enabled>true</Enabled>
+						<ActionCode><![CDATA[viewAreaLogica.navigateTo();]]></ActionCode>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="0"/>
+						<LabelText><![CDATA[Logica]]></LabelText>
+					</ExtendedProperties>
+				</Control>
+				<Control Type="Button">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1815000000004</Id>
+					<Name><![CDATA[tab_viewArea2D_viewAreaEstadisticas]]></Name>
+					<X>1070</X><Y>-16</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="90" Height="22">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<TextColor>-16777216</TextColor>
+						<Enabled>true</Enabled>
+						<ActionCode><![CDATA[viewAreaEstadisticas.navigateTo();]]></ActionCode>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="0"/>
+						<LabelText><![CDATA[Estadisticas]]></LabelText>
+					</ExtendedProperties>
+				</Control>
+				<Control Type="Button">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1815000000005</Id>
+					<Name><![CDATA[tab_viewArea3D_viewArea2D]]></Name>
+					<X>805</X><Y>-781</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="90" Height="22">
                         <EmbeddedIcon>false</EmbeddedIcon>	
 						<TextColor>-16777216</TextColor>
 						<Enabled>true</Enabled>
@@ -9059,7 +9103,238 @@ T(n) duracion de la labor [dias]]]></Text>
 					</BasicProperties>
 					<ExtendedProperties>
 						<Font Name="Dialog" Size="11" Style="0"/>
-						<LabelText><![CDATA[Switch to 2D]]></LabelText>
+						<LabelText><![CDATA[2D]]></LabelText>
+					</ExtendedProperties>
+				</Control>
+				<Control Type="Button">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1815000000006</Id>
+					<Name><![CDATA[tab_viewArea3D_viewArea3D]]></Name>
+					<X>900</X><Y>-781</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="90" Height="22">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<TextColor>-16777216</TextColor>
+						<Enabled>false</Enabled>
+						<ActionCode><![CDATA[viewArea3D.navigateTo();]]></ActionCode>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="1"/>
+						<LabelText><![CDATA[3D]]></LabelText>
+					</ExtendedProperties>
+				</Control>
+				<Control Type="Button">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1815000000007</Id>
+					<Name><![CDATA[tab_viewArea3D_viewAreaLogica]]></Name>
+					<X>995</X><Y>-781</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="90" Height="22">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<TextColor>-16777216</TextColor>
+						<Enabled>true</Enabled>
+						<ActionCode><![CDATA[viewAreaLogica.navigateTo();]]></ActionCode>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="0"/>
+						<LabelText><![CDATA[Logica]]></LabelText>
+					</ExtendedProperties>
+				</Control>
+				<Control Type="Button">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1815000000008</Id>
+					<Name><![CDATA[tab_viewArea3D_viewAreaEstadisticas]]></Name>
+					<X>1090</X><Y>-781</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="90" Height="22">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<TextColor>-16777216</TextColor>
+						<Enabled>true</Enabled>
+						<ActionCode><![CDATA[viewAreaEstadisticas.navigateTo();]]></ActionCode>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="0"/>
+						<LabelText><![CDATA[Estadisticas]]></LabelText>
+					</ExtendedProperties>
+				</Control>
+				<Control Type="Button">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1815000000009</Id>
+					<Name><![CDATA[tab_viewAreaLogica_viewArea2D]]></Name>
+					<X>805</X><Y>704</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="90" Height="22">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<TextColor>-16777216</TextColor>
+						<Enabled>true</Enabled>
+						<ActionCode><![CDATA[viewArea2D.navigateTo();]]></ActionCode>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="0"/>
+						<LabelText><![CDATA[2D]]></LabelText>
+					</ExtendedProperties>
+				</Control>
+				<Control Type="Button">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1815000000010</Id>
+					<Name><![CDATA[tab_viewAreaLogica_viewArea3D]]></Name>
+					<X>900</X><Y>704</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="90" Height="22">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<TextColor>-16777216</TextColor>
+						<Enabled>true</Enabled>
+						<ActionCode><![CDATA[viewArea3D.navigateTo();]]></ActionCode>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="0"/>
+						<LabelText><![CDATA[3D]]></LabelText>
+					</ExtendedProperties>
+				</Control>
+				<Control Type="Button">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1815000000011</Id>
+					<Name><![CDATA[tab_viewAreaLogica_viewAreaLogica]]></Name>
+					<X>995</X><Y>704</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="90" Height="22">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<TextColor>-16777216</TextColor>
+						<Enabled>false</Enabled>
+						<ActionCode><![CDATA[viewAreaLogica.navigateTo();]]></ActionCode>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="1"/>
+						<LabelText><![CDATA[Logica]]></LabelText>
+					</ExtendedProperties>
+				</Control>
+				<Control Type="Button">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1815000000012</Id>
+					<Name><![CDATA[tab_viewAreaLogica_viewAreaEstadisticas]]></Name>
+					<X>1090</X><Y>704</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="90" Height="22">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<TextColor>-16777216</TextColor>
+						<Enabled>true</Enabled>
+						<ActionCode><![CDATA[viewAreaEstadisticas.navigateTo();]]></ActionCode>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="0"/>
+						<LabelText><![CDATA[Estadisticas]]></LabelText>
+					</ExtendedProperties>
+				</Control>
+				<Control Type="Button">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1815000000013</Id>
+					<Name><![CDATA[tab_viewAreaEstadisticas_viewArea2D]]></Name>
+					<X>2205</X><Y>3</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="90" Height="22">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<TextColor>-16777216</TextColor>
+						<Enabled>true</Enabled>
+						<ActionCode><![CDATA[viewArea2D.navigateTo();]]></ActionCode>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="0"/>
+						<LabelText><![CDATA[2D]]></LabelText>
+					</ExtendedProperties>
+				</Control>
+				<Control Type="Button">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1815000000014</Id>
+					<Name><![CDATA[tab_viewAreaEstadisticas_viewArea3D]]></Name>
+					<X>2300</X><Y>3</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="90" Height="22">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<TextColor>-16777216</TextColor>
+						<Enabled>true</Enabled>
+						<ActionCode><![CDATA[viewArea3D.navigateTo();]]></ActionCode>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="0"/>
+						<LabelText><![CDATA[3D]]></LabelText>
+					</ExtendedProperties>
+				</Control>
+				<Control Type="Button">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1815000000015</Id>
+					<Name><![CDATA[tab_viewAreaEstadisticas_viewAreaLogica]]></Name>
+					<X>2395</X><Y>3</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="90" Height="22">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<TextColor>-16777216</TextColor>
+						<Enabled>true</Enabled>
+						<ActionCode><![CDATA[viewAreaLogica.navigateTo();]]></ActionCode>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="0"/>
+						<LabelText><![CDATA[Logica]]></LabelText>
+					</ExtendedProperties>
+				</Control>
+				<Control Type="Button">
+				 	<EmbeddedIcon>false</EmbeddedIcon>				
+					<Id>1815000000016</Id>
+					<Name><![CDATA[tab_viewAreaEstadisticas_viewAreaEstadisticas]]></Name>
+					<X>2490</X><Y>3</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
+					<BasicProperties Width="90" Height="22">
+                        <EmbeddedIcon>false</EmbeddedIcon>	
+						<TextColor>-16777216</TextColor>
+						<Enabled>false</Enabled>
+						<ActionCode><![CDATA[viewAreaEstadisticas.navigateTo();]]></ActionCode>
+					</BasicProperties>
+					<ExtendedProperties>
+						<Font Name="Dialog" Size="11" Style="1"/>
+						<LabelText><![CDATA[Estadisticas]]></LabelText>
 					</ExtendedProperties>
 				</Control>
 				<Group>
@@ -9173,28 +9448,52 @@ T(n) duracion de la labor [dias]]]></Text>
 			</Presentation>
 			<Areas>
 				<Area>
-					<Id>1256808491432</Id>
-					<Name><![CDATA[viewArea3D]]></Name>
-					<X>0</X><Y>-800</Y>
-					<Label><X>0</X><Y>-10</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>false</ShowLabel>
-					<Title><![CDATA[3D]]></Title>
-					<Width>950</Width>
-					<Height>600</Height>
-				</Area>
-				<Area>
 					<Id>1256808567539</Id>
 					<Name><![CDATA[viewArea2D]]></Name>
-					<X>0</X><Y>0</Y>
+					<X>-20</X><Y>-20</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>false</ShowLabel>
 					<Title><![CDATA[2D]]></Title>
-					<Width>1550</Width>
-					<Height>750</Height>
+					<Width>1200</Width>
+					<Height>640</Height>
+				</Area>
+				<Area>
+					<Id>1256808491432</Id>
+					<Name><![CDATA[viewArea3D]]></Name>
+					<X>0</X><Y>-785</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Title><![CDATA[3D]]></Title>
+					<Width>1200</Width>
+					<Height>640</Height>
+				</Area>
+				<Area>
+					<Id>1814000000001</Id>
+					<Name><![CDATA[viewAreaLogica]]></Name>
+					<X>0</X><Y>700</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Title><![CDATA[Logica]]></Title>
+					<Width>1200</Width>
+					<Height>640</Height>
+				</Area>
+				<Area>
+					<Id>1814000000002</Id>
+					<Name><![CDATA[viewAreaEstadisticas]]></Name>
+					<X>1400</X><Y>0</Y>
+					<Label><X>0</X><Y>-10</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>false</ShowLabel>
+					<Title><![CDATA[Estadisticas]]></Title>
+					<Width>1200</Width>
+					<Height>640</Height>
 				</Area>
 			</Areas>
 
@@ -10578,7 +10877,7 @@ return txt;]]></Body>
 				<Rectangle>
 					<Id>1170015903551</Id>
 					<Name><![CDATA[rectangle]]></Name>
-					<X>20</X><Y>660</Y>
+					<X>0</X><Y>820</Y>
 					<Label><X>10</X><Y>10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -10600,7 +10899,7 @@ return txt;]]></Body>
 				<Text>
 					<Id>1169805904231</Id>
 					<Name><![CDATA[text2]]></Name>
-					<X>20</X><Y>160</Y>
+					<X>21.307</X><Y>216.19</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -10636,7 +10935,7 @@ Beneficio de evitar pérdidas de rendimiento.
 ]]></Text>
 					<Font>
 						<Name>SansSerif</Name>
-						<Size>11</Size>
+						<Size>18</Size>
 						<Style>0</Style>
 					</Font>
 					<Alignment>LEFT</Alignment>
@@ -10644,7 +10943,7 @@ Beneficio de evitar pérdidas de rendimiento.
 				<Line>
 					<Id>1169814132684</Id>
 					<Name><![CDATA[line]]></Name>
-					<X>20</X><Y>108</Y>
+					<X>21.307</X><Y>139.841</Y>
 					<Label><X>10</X><Y>0</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -10661,14 +10960,14 @@ Beneficio de evitar pérdidas de rendimiento.
 					<BeginArrowStyle>0</BeginArrowStyle>
 					<EndArrowSize>1</EndArrowSize>
 					<EndArrowStyle>0</EndArrowStyle>
-					<Dx>917</Dx>
+					<Dx>1516</Dx>
 					<Dy>0</Dy>
 					<Dz>0</Dz>
 				</Line>
 				<Text>
 					<Id>1169814132686</Id>
 					<Name><![CDATA[text]]></Name>
-					<X>20</X><Y>40</Y>
+					<X>21.307</X><Y>40</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -10682,7 +10981,7 @@ Beneficio de evitar pérdidas de rendimiento.
 de Operaciones Agricolas]]></Text>
 					<Font>
 						<Name>SansSerif</Name>
-						<Size>27</Size>
+						<Size>30</Size>
 						<Style>1</Style>
 					</Font>
 					<Alignment>LEFT</Alignment>
@@ -10690,7 +10989,7 @@ de Operaciones Agricolas]]></Text>
 				<Text>
 					<Id>1169814132704</Id>
 					<Name><![CDATA[text3]]></Name>
-					<X>20</X><Y>110</Y>
+					<X>21.307</X><Y>142.778</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -10703,7 +11002,7 @@ de Operaciones Agricolas]]></Text>
 					<Text><![CDATA[Grupo N°6 - Cátedra de Simulación - Año 2026]]></Text>
 					<Font>
 						<Name>SansSerif</Name>
-						<Size>9</Size>
+						<Size>16</Size>
 						<Style>0</Style>
 					</Font>
 					<Alignment>LEFT</Alignment>
@@ -10711,7 +11010,7 @@ de Operaciones Agricolas]]></Text>
 				<Image>
 					<Id>1169814132714</Id>
 					<Name><![CDATA[image1]]></Name>
-					<X>50</X><Y>1100</Y>
+					<X>30</X><Y>1260</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -10733,7 +11032,7 @@ de Operaciones Agricolas]]></Text>
 				<Image>
 					<Id>1527602558186</Id>
 					<Name><![CDATA[image2]]></Name>
-					<X>50</X><Y>1160</Y>
+					<X>30</X><Y>1320</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -10755,7 +11054,7 @@ de Operaciones Agricolas]]></Text>
 				<Image>
 					<Id>1567519889465</Id>
 					<Name><![CDATA[image]]></Name>
-					<X>481</X><Y>124</Y>
+					<X>783.634</X><Y>163.333</Y>
 					<Label><X>0</X><Y>-10</Y></Label>
 					<PublicFlag>true</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
@@ -10763,8 +11062,8 @@ de Operaciones Agricolas]]></Text>
 					<DrawMode>SHAPE_DRAW_2D3D</DrawMode>
 					<EmbeddedIcon>false</EmbeddedIcon>
 					<Z>0</Z>
-					<Width>408</Width>
-					<Height>419</Height>
+					<Width>674.6840390879479</Width>
+					<Height>615.1984126984127</Height>
 					<Rotation>0.0</Rotation>
 					<ImageFiles>
 						<ImageResourceReference>
